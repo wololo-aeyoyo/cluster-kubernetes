@@ -14,7 +14,7 @@ spec:
   healthChecks:
     - apiVersion: apps/v1
       kind: Deployment
-      name: metallb-controller
+      name: controller
       namespace: metallb-system
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -35,5 +35,5 @@ spec:
   healthChecks:
     - apiVersion: apps/v1
       kind: Deployment
-      name: metallb-controller
+      name: controller
       namespace: metallb-system
