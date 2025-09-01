@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vault-configmap
+  namespace: vault
+data:
+  values.yaml: |
+    server:
+      standalone:
+        enabled: true
+        config: |
+          ui = true
+
+          listener "tcp" {
+            tls_disable = 1
+            address = "[::]:8200"
+            cluster_address = "[::]:8201"
+          }
+          storage "file" {
+            path = "/vault/data"
+          }
+      service:
+        enabled: true
+      dataStorage:
+        enabled: true
+        size: 5Gi
+        storageClass: longhorn
+        accessMode: ReadWriteOnce
+    ui:
+     enabled: true
+     serviceType: LoadBalancer
+    injector:
+      enabled: falseo
