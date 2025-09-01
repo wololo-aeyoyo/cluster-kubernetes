@@ -3,7 +3,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: vault
-  namespace: flux-system
+  namespace: vault
 spec:
   interval: 1m0s
   url: https://helm.releases.hashicorp.com
