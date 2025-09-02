@@ -14,3 +14,4 @@ spec:
         name: longhorn-repo
       version: v1.9.1
   interval: 1m0s
+  timeout: 15m
