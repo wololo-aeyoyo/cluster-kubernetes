@@ -1,0 +1,32 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discord-bot
+  namespace: default
+  labels:
+    app: discord-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: discord-bot
+  template:
+    metadata:
+      labels:
+        app: discord-bot
+    spec:
+      containers:
+        - env:
+            - name: OWNER
+              value: '186538096580493312'
+            - name: PREFIX
+              value: '!!'
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: token-discord
+                  key: token
+          image: harshraj9812/hr-bot-jmusicbot:0.3.9
+          name: discord-hr-music-bot
+      restartPolicy: Always
