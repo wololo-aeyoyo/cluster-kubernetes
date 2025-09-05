@@ -29,5 +29,6 @@ data:
     ui:
      enabled: true
      serviceType: LoadBalancer
+     externalPort: 8200
     injector:
-      enabled: falseo
+      enabled: false
