@@ -28,7 +28,7 @@ data:
         accessMode: ReadWriteOnce
     ui:
      enabled: true
-     serviceType: LoadBalancer
+     serviceType: ClusterIP
      externalPort: 8200
     injector:
       enabled: false
