@@ -19,9 +19,15 @@ spec:
       containers:
         - env:
             - name: OWNER
-              value: '186538096580493312'
+              valueFrom:
+                secretKeyRef:
+                  name: token-discord
+                  key: OWNER
             - name: PREFIX
-              value: '!!'
+              valueFrom:
+                secretKeyRef:
+                  name: token-discord
+                  key: PREFIX
             - name: TOKEN
               valueFrom:
                 secretKeyRef:
