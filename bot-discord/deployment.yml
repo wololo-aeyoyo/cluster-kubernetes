@@ -32,7 +32,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: discord-bot-secret
-                  key: token
+                  key: token-discord
           image: harshraj9812/hr-bot-jmusicbot:0.3.9
           name: discord-hr-music-bot
       restartPolicy: Always
