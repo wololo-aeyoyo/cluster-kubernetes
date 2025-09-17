@@ -16,4 +16,4 @@ spec:
               service:
                 name: grafana-grafana-deployment
                 port:
-                  number: 3000
+                  number: 80
