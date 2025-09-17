@@ -14,6 +14,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: grafana-release-ui
+                name: grafana-grafana-deployment
                 port:
-                  number: 80
+                  number: 3000
