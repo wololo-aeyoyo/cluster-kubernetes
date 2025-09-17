@@ -16,16 +16,8 @@ spec:
   interval: 1m0s
   values:
     admin:
-      userKey: 
-        valueFrom:
-        secretKeyRef:
-          name: grafana-secret
-          key: userKey
-      passwordKey: 
-        valueFrom:
-          secretKeyRef:
-            name: grafana-secret
-            key: passwordKey
+      userKey: admin
+      passwordKey: admin
     replicaCount: 1
     plugins:
     - grafana-github-datasource
