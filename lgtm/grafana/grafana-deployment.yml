@@ -15,9 +15,6 @@ spec:
       version: 9.2.10
   interval: 1m0s
   values:
-    admin:
-      userKey: admin
-      passwordKey: admin
     replicaCount: 1
     plugins:
     - grafana-github-datasource
