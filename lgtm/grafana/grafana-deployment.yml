@@ -17,14 +17,15 @@ spec:
   values:
     admin:
       userKey: 
-        valueFromSecret:
+        valueFrom:
+        secretKeyRef:
           name: grafana-secret
           key: userKey
       passwordKey: 
-        valueFromSecret:
-          name: grafana-secret
-          key: passwordKey
-
+        valueFrom:
+          secretKeyRef:
+            name: grafana-secret
+            key: passwordKey
     replicaCount: 1
     plugins:
     - grafana-github-datasource
