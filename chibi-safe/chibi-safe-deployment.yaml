@@ -22,7 +22,7 @@ spec:
             - containerPort: 8001
           env:
             - name: BASE_API_URL
-              value: http://hibisafe-backend.wololoaeyoyo.com
+              value: http://chibisafe-backend.wololoaeyoyo.com
           volumeMounts:
             - name: chibisafe-pvc
               mountPath: /database:/app/database
