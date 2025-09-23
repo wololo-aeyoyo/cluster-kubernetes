@@ -1,0 +1,39 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: chibisafe-ingress
+  namespace: chibisafe
+  annotations:
+    kubernetes.io/ingress.class: cloudflare-tunnel
+spec:
+  rules:
+    - host: chibisafe.wololoaeyoyo.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: chibisafe-release-ui
+                port:
+                  number: 8001
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: chibisafe-backend-ingress
+  namespace: chibisafe-backend
+  annotations:
+    kubernetes.io/ingress.class: cloudflare-tunnel
+spec:
+  rules:
+    - host: chibisafe-backend.wololoaeyoyo.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: chibisafe-backend-release-ui
+                port:
+                  number: 8000
