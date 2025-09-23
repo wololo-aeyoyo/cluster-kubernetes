@@ -18,35 +18,29 @@ spec:
         - name: chibisafe
           image: chibisafe/chibisafe:latest
           ports:
-            - containerPort: 8000
+            - containerPort: 8001
           env:
-            - name: NODE_ENV
-              value: development
-            - name: CHIBISAFE_DB_DIALECT
-              value: sqlite
-            - name: CHIBISAFE_DB_STORAGE
-              value: /data/db.sqlite
-            - name: CHIBISAFE_UPLOAD_DIRECTORY
-              value: /data/uploads
-            - name: CHIBISAFE_SECRET
-              value: changeme
             - name: BASE_API_URL
               value: http://chibisafe_server:8000
           volumeMounts:
             - name: chibisafe-pvc
-              mountPath: /data
+              mountPath: /database:/app/database
+            - name: chibisafe-pvc
+              mountPath: /uploads:/app/uploads
+            - name: chibisafe-pvc
+              mountPath: /logs:/app/logs
         - name: caddy
           image: caddy:2-alpine
           ports:
-            - containerPort: 9000
+            - containerPort: 80
           env:
             - name: BASE_URL
-              value: '":80"'
+              value: ":80"
           volumeMounts:
             - name: chibisafe-pvc
-              mountPath: /etc/caddy/Caddyfile
+              mountPath: /Caddyfile:/etc/caddy/Caddyfile
             - name: chibisafe-pvc
-              mountPath: /app/uploads
+              mountPath: /uploads:/app/uploads
       restartPolicy: Always
       volumes:
         - name: chibisafe-pvc

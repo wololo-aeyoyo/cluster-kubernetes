@@ -23,6 +23,6 @@ spec:
     app: caddy
   ports:
     - protocol: TCP
-      port: 9000
-      targetPort: 9000
+      port: 80
+      targetPort: 80
   type: ClusterIP
