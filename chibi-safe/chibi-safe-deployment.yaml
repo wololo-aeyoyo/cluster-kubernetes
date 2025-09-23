@@ -22,7 +22,7 @@ spec:
             - containerPort: 8001
           env:
             - name: BASE_API_URL
-              value: http://chibisafe_server:8000
+              value: http://chibisafe-backend.chibisafe.svc.cluster.local:8000
           volumeMounts:
             - name: chibisafe-pvc
               mountPath: /database:/app/database
