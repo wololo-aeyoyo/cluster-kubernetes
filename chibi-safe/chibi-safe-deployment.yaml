@@ -22,7 +22,7 @@ spec:
             - containerPort: 8001
           env:
             - name: BASE_API_URL
-              value: https://chibisafe-backend.wololoaeyoyo.com
+              value: http://chibisafe_server:8000
           volumeMounts:
             - name: chibisafe-pvc
               mountPath: /database:/app/database
@@ -33,10 +33,10 @@ spec:
         - name: caddy
           image: caddy:2-alpine
           ports:
-            - containerPort: 80
+            - containerPort: 24424
           env:
             - name: BASE_URL
-              value: "wololoaeyoyo.com"
+              value: ":80"
           volumeMounts:
             - name: chibisafe-pvc
               mountPath: /Caddyfile:/etc/caddy/Caddyfile
