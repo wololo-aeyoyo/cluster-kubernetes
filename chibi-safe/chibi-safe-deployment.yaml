@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chibisafe
+  labels:
+    app: chibisafe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chibisafe
+  template:
+    metadata:
+      labels:
+        app: chibisafe
+    spec:
+      containers:
+        - name: chibisafe
+          image: chibisafe/chibisafe:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: NODE_ENV
+              value: development
+            - name: CHIBISAFE_DB_DIALECT
+              value: sqlite
+            - name: CHIBISAFE_DB_STORAGE
+              value: /data/db.sqlite
+            - name: CHIBISAFE_UPLOAD_DIRECTORY
+              value: /data/uploads
+            - name: CHIBISAFE_SECRET
+              value: changeme
+            - name: BASE_API_URL
+              value: http://chibisafe_server:8000
+          volumeMounts:
+            - name: chibisafe-pvc
+              mountPath: /data
+        - name: caddy
+          image: caddy:2-alpine
+          ports:
+            - containerPort: 9000
+          env:
+            - name: BASE_URL
+              value: '":80"'
+          volumeMounts:
+            - name: chibisafe-pvc
+              mountPath: /etc/caddy/Caddyfile
+            - name: chibisafe-pvc
+              mountPath: /app/uploads
+      restartPolicy: Always
+      volumes:
+        - name: chibisafe-pvc
+          persistentVolumeClaim:
+            claimName: chibisafe-pvc
+
