@@ -56,4 +56,4 @@ spec:
               service:
                 name: caddy-service
                 port:
-                  number: 24424
+                  number: 80

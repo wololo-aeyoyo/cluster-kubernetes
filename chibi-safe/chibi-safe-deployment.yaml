@@ -21,6 +21,8 @@ spec:
           ports:
             - containerPort: 8001
           env:
+            - name: NODE_ENV
+              value: development
             - name: BASE_API_URL
               value: http://chibisafe-backend.chibisafe.svc.cluster.local:8000
           volumeMounts:
@@ -33,10 +35,10 @@ spec:
         - name: caddy
           image: caddy:2-alpine
           ports:
-            - containerPort: 24424
+            - containerPort: 80
           env:
             - name: BASE_URL
-              value: "chibisafe.wololoaeyoyo.com:80"
+              value: "chibisafe.wololoaeyoyo.com"
           volumeMounts:
             - name: chibisafe-pvc
               mountPath: /etc/caddy
