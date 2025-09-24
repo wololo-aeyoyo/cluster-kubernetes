@@ -36,12 +36,12 @@ spec:
             - containerPort: 24424
           env:
             - name: BASE_URL
-              value: ":80"
+              value: "wololoaeyoyo.com:80"
           volumeMounts:
             - name: chibisafe-pvc
-              mountPath: /Caddyfile:/etc/caddy/Caddyfile
+              mountPath: /etc/caddy
             - name: chibisafe-pvc
-              mountPath: /uploads:/app/uploads
+              mountPath: /app/uploads
       restartPolicy: Always
       volumes:
         - name: chibisafe-pvc
