@@ -40,7 +40,7 @@ spec:
             - containerPort: 80
           env:
             - name: BASE_URL
-              value: "chibisafe.wololoaeyoyo.com"
+              value: "caddy.wololoaeyoyo.com"
           volumeMounts:
             - name: chibisafe-pvc
               mountPath: /etc/caddy
