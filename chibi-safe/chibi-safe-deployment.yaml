@@ -32,6 +32,8 @@ spec:
               mountPath: /uploads:/app/uploads
             - name: chibisafe-pvc
               mountPath: /logs:/app/logs
+            - name: chibisafe-pvc
+              mountPath: /etc/caddy
         - name: caddy
           image: caddy:2-alpine
           ports:
