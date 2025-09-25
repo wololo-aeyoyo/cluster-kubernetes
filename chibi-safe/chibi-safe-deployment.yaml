@@ -41,7 +41,7 @@ spec:
               value: "chibisafe.wololoaeyoyo.com"
           volumeMounts:
             - name: chibisafe-pvc
-              mountPath: /etc/caddy
+              mountPath: /config:/etc/caddy
             - name: chibisafe-pvc
               mountPath: /app/uploads
       restartPolicy: Always
