@@ -43,6 +43,8 @@ spec:
             - name: chibisafe-pvc
               mountPath: /etc/caddy
             - name: chibisafe-pvc
+              mountPath: /test:/etc/caddy
+            - name: chibisafe-pvc
               mountPath: /app/uploads
       restartPolicy: Always
       volumes:
