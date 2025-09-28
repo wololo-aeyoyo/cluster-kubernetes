@@ -20,6 +20,7 @@ spec:
           image: chibisafe/chibisafe:latest
           ports:
             - containerPort: 8001
+            - containerPort: 8000
           env:
             - name: NODE_ENV
               value: development
@@ -32,20 +33,6 @@ spec:
               mountPath: /uploads:/app/uploads
             - name: chibisafe-pvc
               mountPath: /logs:/app/logs
-            - name: chibisafe-pvc
-              mountPath: /etc/caddy
-        - name: caddy
-          image: caddy:2-alpine
-          ports:
-            - containerPort: 80
-          env:
-            - name: BASE_URL
-              value: "caddy.wololoaeyoyo.com"
-          volumeMounts:
-            - name: chibisafe-pvc
-              mountPath: /etc/caddy
-            - name: chibisafe-pvc
-              mountPath: /app/uploads
       restartPolicy: Always
       volumes:
         - name: chibisafe-pvc
