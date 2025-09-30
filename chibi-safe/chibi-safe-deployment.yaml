@@ -20,22 +20,8 @@ spec:
           image: chibisafe/chibisafe:latest
           ports:
             - containerPort: 8001
-            - containerPort: 8000
           env:
-            - name: NODE_ENV
-              value: development
             - name: BASE_API_URL
               value: http://chibisafe-backend.chibisafe.svc.cluster.local:8000
-          volumeMounts:
-            - name: chibisafe-pvc
-              mountPath: /database:/app/database
-            - name: chibisafe-pvc
-              mountPath: /uploads:/app/uploads
-            - name: chibisafe-pvc
-              mountPath: /logs:/app/logs
       restartPolicy: Always
-      volumes:
-        - name: chibisafe-pvc
-          persistentVolumeClaim:
-            claimName: chibisafe-pvc
 

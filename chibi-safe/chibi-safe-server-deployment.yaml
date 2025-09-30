@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: chibisafe
+  name: chibisafe-server
+  labels:
+    app: chibisafe-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chibisafe-server
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: chibisafe-server
+    spec:
+      containers:
+        - image: chibisafe/chibisafe-server:latest
+          name: chibisafe-server
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /app/database
+              name: chibisafe-pvc
+            - mountPath: /app/uploads
+              name: chibisafe-pvc
+            - mountPath: /app/logs
+              name: chibisafe-pvc
+      restartPolicy: Always
+      volumes:
+        - name: chibisafe-pvc
+          persistentVolumeClaim:
+            claimName: chibisafe-pvc
