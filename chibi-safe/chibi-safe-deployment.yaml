@@ -22,6 +22,6 @@ spec:
             - containerPort: 8001
           env:
             - name: BASE_API_URL
-              value: http://chibisafe-backend.chibisafe.svc.cluster.local:8000
+              value: http://chibisafe-backend.wololoaeyoyo.com
       restartPolicy: Always
 

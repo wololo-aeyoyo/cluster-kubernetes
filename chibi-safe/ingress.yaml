@@ -34,7 +34,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: chibisafe-server
+                name: chibisafe-backend
                 port:
                   number: 8000
 ---
