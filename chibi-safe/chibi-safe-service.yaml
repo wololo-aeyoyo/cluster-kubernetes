@@ -36,7 +36,7 @@ metadata:
   namespace: chibisafe
 spec:
   selector:
-    app: caddy
+    app: chibisafe
   ports:
     - protocol: TCP
       port: 8001
