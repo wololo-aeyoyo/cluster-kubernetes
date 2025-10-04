@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: chibisafe
+  labels:
+    app: chibisafe-caddy
+  name: caddy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chibisafe-caddy
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: chibisafe-caddy
+    spec:
+      containers:
+        - env:
+            - name: BASE_URL
+              value: "http://chibisafe.wololoaeyoyo.com"
+          image: caddy:2-alpine
+          name: caddy
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /etc/caddy/Caddyfile
+              name: chibisafe-pvc
+            - mountPath: /app/uploads
+              name: chibisafe-pvc
+      restartPolicy: Always
+      volumes:
+        - name: chibisafe-pvc
+          persistentVolumeClaim:
+            claimName: chibisafe-pvc

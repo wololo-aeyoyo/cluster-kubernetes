@@ -15,19 +15,19 @@ spec:
       targetPort: 8000
   type: LoadBalancer
 ---
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: caddy-service
-#   namespace: chibisafe
-# spec:
-#   selector:
-#     app: caddy
-#   ports:
-#     - protocol: TCP
-#       port: 80
-#       targetPort: 80
-#   type: ClusterIP
+apiVersion: v1
+kind: Service
+metadata:
+  name: caddy-service
+  namespace: chibisafe
+spec:
+  selector:
+    app: caddy
+  ports:
+    - protocol: TCP
+      port: 24424
+      targetPort: 80
+  type: ClusterIP
 ---
 apiVersion: v1
 kind: Service
