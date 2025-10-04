@@ -30,6 +30,8 @@ spec:
               name: chibisafe-pvc
             - mountPath: /app/logs
               name: chibisafe-pvc
+            - mountPath: /etc/caddy/Caddyfile
+              name: chibisafe-pvc
       restartPolicy: Always
       volumes:
         - name: chibisafe-pvc
