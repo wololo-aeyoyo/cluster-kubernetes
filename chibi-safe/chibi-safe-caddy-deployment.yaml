@@ -27,7 +27,7 @@ spec:
             - containerPort: 80
               protocol: TCP
           volumeMounts:
-            - mountPath: /etc/caddy
+            - mountPath: /etc/caddy/Caddyfile
               name: chibisafe-pvc
             - mountPath: /app/uploads
               name: chibisafe-pvc
