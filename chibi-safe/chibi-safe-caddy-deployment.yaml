@@ -36,3 +36,6 @@ spec:
         - name: chibisafe-pvc
           persistentVolumeClaim:
             claimName: chibisafe-pvc
+        - name: chibisafe-caddy-pvc
+          persistentVolumeClaim:
+            claimName: chibisafe-caddy-pvc
