@@ -25,8 +25,11 @@ spec:
         image: nginx:latest
           
         volumeMounts:
-          - mountPath: /etc/nginx/
+          - mountPath: /etc/nginx/sites-enabled
             name: nginx-pvc
+          - mountPath: /etc/nginx/sites-available
+            name: nginx-pvc
+
       restartPolicy: Always
       volumes:
         - name: nginx-pvc
