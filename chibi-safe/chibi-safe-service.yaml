@@ -22,7 +22,7 @@ metadata:
   namespace: chibisafe
 spec:
   selector:
-    app: caddy
+    app: chibisafe-caddy
   ports:
     - protocol: TCP
       port: 24424

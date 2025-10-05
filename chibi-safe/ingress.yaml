@@ -38,22 +38,22 @@ spec:
                 port:
                   number: 8000
 ---
-# apiVersion: networking.k8s.io/v1
-# kind: Ingress
-# metadata:
-#   name: caddy-ingress
-#   namespace: chibisafe
-#   annotations:
-#     kubernetes.io/ingress.class: cloudflare-tunnel
-# spec:
-#   rules:
-#     - host: caddy.wololoaeyoyo.com
-#       http:
-#         paths:
-#           - path: /
-#             pathType: Prefix
-#             backend:
-#               service:
-#                 name: caddy-service
-#                 port:
-#                   number: 80
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: caddy-ingress
+  namespace: chibisafe
+  annotations:
+    kubernetes.io/ingress.class: cloudflare-tunnel
+spec:
+  rules:
+    - host: caddy.wololoaeyoyo.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: caddy-service
+                port:
+                  number: 80
