@@ -20,11 +20,11 @@ spec:
       containers:
         - env:
             - name: BASE_URL
-              value: "http://chibisafe.wololoaeyoyo.com"
+              value: "https://caddy.wololoaeyoyo.com"
           image: caddy:2-alpine
           name: caddy
           ports:
-            - containerPort: 80
+            - containerPort: 443
               protocol: TCP
           volumeMounts:
             - mountPath: /etc/caddy
