@@ -28,7 +28,7 @@ spec:
               protocol: TCP
           volumeMounts:
             - mountPath: /etc/caddy
-              name: chibisafe-pvc
+              name: chibisafe-caddy-pvc
             - mountPath: /app/uploads
               name: chibisafe-pvc
       restartPolicy: Always

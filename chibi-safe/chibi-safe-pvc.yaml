@@ -10,3 +10,16 @@ spec:
   resources:
     requests:
       storage: 25Gi
+---
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: chibisafe-caddy-pvc
+  namespace: chibisafe
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
