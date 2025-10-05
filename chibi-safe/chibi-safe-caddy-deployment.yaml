@@ -20,7 +20,7 @@ spec:
       containers:
         - env:
             - name: BASE_URL
-              value: "https://chibisafe.wololoaeyoyo.com"
+              value: "http://chibisafe.wololoaeyoyo.com"
           image: caddy:2-alpine
           name: caddy
           ports:
