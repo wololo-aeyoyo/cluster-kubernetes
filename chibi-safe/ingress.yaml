@@ -54,6 +54,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: chibiproxy
+                name: chibiproxy-service
                 port:
                   number: 3001
