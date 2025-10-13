@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: chibi-safe-proxy
-          image: wololoaeyoyo/chibiproxy:latest
+          image: wololoaeyoyo/chibiproxy:1.0
           ports:
             - containerPort: 3001
               protocol: TCP
