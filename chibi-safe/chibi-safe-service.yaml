@@ -13,7 +13,7 @@ spec:
     - protocol: TCP
       port: 8000
       targetPort: 8000
-  type: LoadBalancer
+  type: ClusterIP
 ---
 apiVersion: v1
 kind: Service
@@ -27,4 +27,18 @@ spec:
     - protocol: TCP
       port: 8001
       targetPort: 8001
-  type: LoadBalancer
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chibiproxy
+  namespace: chibisafe
+spec:
+  selector:
+    app: chibiproxy
+  ports:
+    - protocol: TCP
+      port: 3001
+      targetPort: 3001
+  type: ClusterIP

@@ -37,3 +37,23 @@ spec:
                 name: chibisafe-backend
                 port:
                   number: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: chibiproxy-ingress
+  namespace: chibisafe
+  annotations:
+    kubernetes.io/ingress.class: cloudflare-tunnel
+spec:
+  rules:  
+    - host: chibisafe.wololoaeyoyo.com
+      http:
+        paths: 
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: chibiproxy
+                port:
+                  number: 3001
