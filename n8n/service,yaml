@@ -23,7 +23,7 @@ metadata:
   name: postgres-service
   namespace: n8n
 spec:
-  clusterIP: None
+  clusterIP: ClusterIP
   ports:
     - name: "5432"
       port: 5432
