@@ -14,6 +14,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: postgres-n8n
+                name: n8n
                 port:
                   number: 5678
