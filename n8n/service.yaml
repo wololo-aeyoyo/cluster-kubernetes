@@ -21,7 +21,7 @@ metadata:
   name: postgres-service
   namespace: n8n
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app: postgres
   ports:
