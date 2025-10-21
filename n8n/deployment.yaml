@@ -81,14 +81,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    service: postgres-n8n
+    service: postgres-service
   name: postgres
   namespace: n8n
 spec:
   replicas: 1
   selector:
     matchLabels:
-      service: postgres-n8n
+      service: postgres-service
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -97,7 +97,7 @@ spec:
   template:
     metadata:
       labels:
-        service: postgres-n8n
+        service: postgres-service
     spec:
       containers:
         - image: postgres:11
