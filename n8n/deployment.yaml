@@ -33,6 +33,10 @@ spec:
           env:
             - name: N8N_HOST
               value: n8n.wololoaeyoyo.com
+            - name: WEBHOOK_URL
+              value: https://n8n.wololoaeyoyo.com
+            - name: N8N_PROTOCOL
+              value: https
             - name: DB_TYPE
               value: postgresdb
             - name: DB_POSTGRESDB_HOST
