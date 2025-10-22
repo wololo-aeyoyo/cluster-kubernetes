@@ -31,6 +31,8 @@ spec:
             - -c
             - sleep 5; n8n start
           env:
+            - name: N8N_HOST
+              value: n8n.wololoaeyoyo.com
             - name: DB_TYPE
               value: postgresdb
             - name: DB_POSTGRESDB_HOST
@@ -118,8 +120,6 @@ spec:
               mountPath: /docker-entrypoint-initdb.d/init-n8n-user.sh
               subPath: init-data.sh
           env:
-            - name: N8N_HOST
-              value: n8n
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata      
             - name: POSTGRES_USER
