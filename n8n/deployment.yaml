@@ -27,10 +27,10 @@ spec:
       containers:
         - command:
             - /bin/sh
+          args:
             -  apk update
             -  apk upgrade
             -  apk add texlive-full
-          args:
             - -c
             - sleep 5; n8n start
           env:
