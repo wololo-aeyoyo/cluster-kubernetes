@@ -28,12 +28,12 @@ spec:
         - command:
             - /bin/sh
             - -c
-          args:
-          -  |
+            -  |
             -  apk update
             -  apk upgrade
             -  apk add texlive-full
             - sleep 5; n8n start
+          args:
 
           env:
             - name: N8N_HOST
