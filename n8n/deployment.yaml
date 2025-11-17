@@ -27,7 +27,6 @@ spec:
       containers:
         - command:
             - /bin/sh
-            - c
             -  apk update
             -  apk upgrade
             -  apk add texlive-full
