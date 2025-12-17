@@ -41,8 +41,8 @@ spec:
             - name: N8N_RUNNERS_AUTH_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: N8N_RUNNERS_AUTH_TOKEN
-                  key: n8n-secret
+                  name: n8n-secret
+                  key: N8N_RUNNERS_AUTH_TOKEN
             - name: N8N_RUNNERS_MODE
               value: "external"
             - name: N8N_RUNNERS_BROKER_LISTEN_ADDRESS
