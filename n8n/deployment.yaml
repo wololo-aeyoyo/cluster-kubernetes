@@ -36,17 +36,6 @@ spec:
             - -c
             - sleep 5; n8n start
           env:
-            - name: N8N_RUNNERS_ENABLED
-              value: "true"
-            - name: N8N_RUNNERS_AUTH_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: n8n-secret
-                  key: N8N_RUNNERS_AUTH_TOKEN
-            - name: N8N_RUNNERS_MODE
-              value: "external"
-            - name: N8N_RUNNERS_BROKER_LISTEN_ADDRESS
-              value: "0.0.0.0"
             - name: N8N_HOST
               value: n8n.wololoaeyoyo.com
             - name: WEBHOOK_URL
