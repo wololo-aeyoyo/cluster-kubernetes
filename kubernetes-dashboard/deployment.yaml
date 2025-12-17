@@ -1,0 +1,25 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kubernetes-deployment
+  namespace: kubernetes-dashboard
+spec:
+  targetNamespace: kubernetes-dashboard
+  chart:
+    spec:
+      chart: kubernetes-dashboard
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: kubernetes-dashboard
+      version: 7.14.0
+  interval: 1m0s
+  values:
+    protocolHttp: true
+    service:
+      type: LoadBalancer
+    rbac:
+      clusterAdminRole: true
+    serviceAccount:
+      create: true
+      name: kubernetes-dashboard
