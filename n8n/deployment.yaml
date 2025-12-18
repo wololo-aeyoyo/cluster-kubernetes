@@ -62,7 +62,8 @@ spec:
                   key: POSTGRES_NON_ROOT_PASSWORD
             - name: N8N_PORT
               value: "5678"
-          image: wololoaeyoyo/n8n-latex
+          image: wololoaeyoyo/n8n-latex:latest
+          imagePullPolicy: "Always"
           name: n8n
           ports:
             - containerPort: 5678
