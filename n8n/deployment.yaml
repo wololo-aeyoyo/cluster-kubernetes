@@ -38,6 +38,8 @@ spec:
           env:
             - name: N8N_HOST
               value: n8n.wololoaeyoyo.com
+            - name: NODES_EXCLUDE
+              value: "[]"
             - name: WEBHOOK_URL
               value: https://n8n.wololoaeyoyo.com
             - name: N8N_PROTOCOL
