@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1m
-  path: ./lgtm/grafana
+  path: ./lgtm
   prune: true
   timeout: 1m
   sourceRef:
