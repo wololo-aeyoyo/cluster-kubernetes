@@ -4,7 +4,7 @@ metadata:
   name: loki-deployment
   namespace: loki
 spec:
-  targetNamespace: grafana
+  targetNamespace: loki
   chart:
     spec:
       chart: loki
