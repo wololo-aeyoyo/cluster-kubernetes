@@ -1,0 +1,21 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: loki
+  namespace: loki
+spec:
+  targetNamespace: loki 
+  chart:
+    spec:
+      chart: loki
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: grafana-helm
+        namespace: grafana
+      version: 6.49.0
+
+  interval: 1m0s
+  valuesFrom:
+    - kind: ConfigMap
+      name: loki-configmap
