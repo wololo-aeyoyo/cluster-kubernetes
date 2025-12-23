@@ -20,12 +20,12 @@ data:
                 __path__  = "/var/log/syslog",
                 job       = "node/syslog",
                 node_name = sys.env("HOSTNAME"),
-                cluster   = wololo-cluster,
+                cluster   = "default",
             }]
           }
 
 
           loki.source.file "node_logs" {
             targets    = local.file_match.node_logs.targets
-            forward_to = [loki.write.wololocluster.receiver]
+            forward_to = [loki.write.default.receiver]
           }
