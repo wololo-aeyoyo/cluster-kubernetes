@@ -1,0 +1,30 @@
+#source https://grafana.com/docs/alloy/latest/collect/logs-in-kubernetes/
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alloy-configmap
+  namespace: alloy
+data:
+  values.yaml: |
+    alloy:
+  configMap:
+    content: |-
+      loki.write "default" {
+        endpoint = "http://loki.loki.svc.cluster.local:3100/loki/api/v1/push"
+      }
+
+      local.file_match "node_logs" {
+        path_targets = [{
+            // Monitor syslog to scrape node-logs
+            __path__  = "/var/log/syslog",
+            job       = "node/syslog",
+            node_name = sys.env("HOSTNAME"),
+            cluster   = wololo-cluster,
+        }]
+      }
+
+
+      loki.source.file "node_logs" {
+        targets    = local.file_match.node_logs.targets
+        forward_to = [loki.write.default-cluster.receiver]
+      }
