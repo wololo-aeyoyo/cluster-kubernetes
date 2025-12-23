@@ -10,22 +10,22 @@ data:
       configMap:
         create: true
         content: |-
-        loki.write "default" {
-          endpoint = "http://loki.loki.svc.cluster.local:3100/loki/api/v1/push"
-        }
+          loki.write "default" {
+            endpoint = "http://loki.loki.svc.cluster.local:3100/loki/api/v1/push"
+          }
 
-        local.file_match "node_logs" {
-          path_targets = [{
-              // Monitor syslog to scrape node-logs
-              __path__  = "/var/log/syslog",
-              job       = "node/syslog",
-              node_name = sys.env("HOSTNAME"),
-              cluster   = wololo-cluster,
-          }]
-        }
+          local.file_match "node_logs" {
+            path_targets = [{
+                // Monitor syslog to scrape node-logs
+                __path__  = "/var/log/syslog",
+                job       = "node/syslog",
+                node_name = sys.env("HOSTNAME"),
+                cluster   = wololo-cluster,
+            }]
+          }
 
 
-        loki.source.file "node_logs" {
-          targets    = local.file_match.node_logs.targets
-          forward_to = [loki.write.wololocluster.receiver]
-        }
+          loki.source.file "node_logs" {
+            targets    = local.file_match.node_logs.targets
+            forward_to = [loki.write.wololocluster.receiver]
+          }
