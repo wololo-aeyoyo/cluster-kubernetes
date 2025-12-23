@@ -7,8 +7,6 @@ metadata:
 data:
   values.yaml: |
     alloy:
-  configMap:
-    content: |-
       loki.write "default" {
         endpoint = "http://loki.loki.svc.cluster.local:3100/loki/api/v1/push"
       }
@@ -26,5 +24,5 @@ data:
 
       loki.source.file "node_logs" {
         targets    = local.file_match.node_logs.targets
-        forward_to = [loki.write.default-cluster.receiver]
+        forward_to = [loki.write.wololocluster.receiver]
       }
