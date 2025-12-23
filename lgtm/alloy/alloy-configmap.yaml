@@ -14,7 +14,7 @@ data:
               endpoint {
                 url = "http://loki.loki.svc.cluster.local:3100/loki/api/v1/push"
               }
-                  }
+            }
 
           local.file_match "node_logs" {
             path_targets = [{
