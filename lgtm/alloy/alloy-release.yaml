@@ -1,0 +1,22 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: alloy
+  namespace: alloy
+spec:
+  targetNamespace: alloy 
+  chart:
+    spec:
+      chart: alloy
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: grafana-helm
+        namespace: grafana
+      version: 1.5.1
+
+  interval: 1m0s
+  valuesFrom:
+    - kind: ConfigMap
+      name: alloy-configmap
+      valuesKey: values.yaml
