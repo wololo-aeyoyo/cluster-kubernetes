@@ -18,4 +18,4 @@ spec:
   interval: 1m0s
   valuesFrom:
     - kind: ConfigMap
-      name: alloy-alloy
+      name: alloy-configmap
