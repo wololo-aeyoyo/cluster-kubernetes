@@ -8,6 +8,7 @@ data:
   values.yaml: |
     alloy:
       configMap:
+      name: alloy-configmap
         content: |-
           loki.write "default" {
               endpoint {
