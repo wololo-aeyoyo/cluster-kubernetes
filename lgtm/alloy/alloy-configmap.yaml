@@ -5,7 +5,7 @@ metadata:
   name: alloy-alloy
   namespace: alloy
 data:
-  values.yaml: |
+  config.alloy: |
     alloy:
       configMap:
         create: true
