@@ -1,0 +1,17 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: reloader-release
+  namespace: reloader-system
+spec:
+  chart:
+    spec:
+      chart: reloader
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: reloader-system
+      version: v2.2.7
+  interval: 1m0s
+  timeout: 15m
