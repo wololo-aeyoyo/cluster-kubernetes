@@ -8,6 +8,7 @@ data:
   values.yaml: |
     alloy:
       configMap:
+      create: true
       name: alloy-configmap
         content: |-
           loki.write "default" {
@@ -93,6 +94,7 @@ data:
                   separator = "/"
                   replacement = "/var/log/pods/*$1/*.log"
                 }
+            }
             // loki.source.kubernetes tails logs from Kubernetes containers using the Kubernetes API.
             loki.source.kubernetes "pod_logs" {
               targets    = discovery.relabel.pod_logs.output

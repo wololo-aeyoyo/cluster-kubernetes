@@ -11,7 +11,7 @@ spec:
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
-        name: reloader-system
+        name: reloader-repo
       version: v2.2.7
   interval: 1m0s
   timeout: 15m
