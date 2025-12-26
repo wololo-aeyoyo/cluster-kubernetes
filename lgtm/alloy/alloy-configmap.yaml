@@ -7,13 +7,15 @@ metadata:
 data:
   values.yaml: |
     alloy:
+      listenAddr: 0.0.0.0
+      listenPort: 12345
       configMap:
         create: true
         name: alloy-configmap
         content: |-
           loki.write "default" {
               endpoint {
-                url = "http://loki-loki-gateway.loki.svc.cluster.local/loki/api/v1/push"
+                url = "http://loki.loki.svc.cluster.local:3100/loki/api/v1/push"
               }
             }
 
