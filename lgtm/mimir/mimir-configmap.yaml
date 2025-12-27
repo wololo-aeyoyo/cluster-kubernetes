@@ -25,6 +25,7 @@ data:
         resources:
           limits:
             memory: 2.8Gi
+            compactor_blocks_retention_period: 2h
           requests:
             cpu: 1
             memory: 1Gi
