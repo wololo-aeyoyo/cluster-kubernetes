@@ -7,7 +7,7 @@ spec:
   targetNamespace: mimir 
   chart:
     spec:
-      chart: mimir
+      chart: mimir-distributed
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
