@@ -115,6 +115,9 @@ data:
               forward_to = [loki.write.default.receiver]
             }
 
+          discovery.kubernetes "metric_pod" {
+            role = "pod"
+          }
           prometheus.exporter.self "self_metrics" {
           }
 
@@ -123,8 +126,13 @@ data:
             forward_to = [prometheus.remote_write.mimir.receiver]
           }
 
+          prometheus.scrape "pods" {
+            targets    = discovery.kubernetes.metric_pod.targets
+            forward_to = [prometheus.remote_write.mimir.receiver]
+          }
+
           prometheus.remote_write "mimir" {
             endpoint {
-              url = "http://mimir-mimir-gateway.mimir.svc.cluster.local/prometheus/api/v1/push"
+              url = "http://mimir-mimir-gateway.mimir.svc.cluster.local/api/v1/push"
             }
           }
