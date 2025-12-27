@@ -39,6 +39,10 @@ data:
             cpu: 2
             memory: 1Gi
 
+      server:
+        grpc_server_max_send_msg_size: 1395725856
+        grpc-max-recv-msg-size-bytes: 1395725856
+
       ingester:
         persistentVolume:
           size: 50Gi
