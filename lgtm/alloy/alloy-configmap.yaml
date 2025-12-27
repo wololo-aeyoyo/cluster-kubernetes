@@ -114,7 +114,10 @@ data:
 
               forward_to = [loki.write.default.receiver]
             }
-
+            
+          discovery.kubernetes "node_metrics" {
+            role = "node"
+          }
           discovery.kubernetes "metric_pod" {
             role = "pod"
           }
@@ -123,6 +126,11 @@ data:
 
           prometheus.scrape "self_scrape" {
             targets    = prometheus.exporter.self.self_metrics.targets
+            forward_to = [prometheus.remote_write.mimir.receiver]
+          }
+
+                    prometheus.scrape "nodes" {
+            targets    =  discovery.kubernetes.node_metrics.targets
             forward_to = [prometheus.remote_write.mimir.receiver]
           }
 
