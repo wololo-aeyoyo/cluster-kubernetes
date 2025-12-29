@@ -1,0 +1,15 @@
+#source https://grafana.com/docs/alloy/latest/collect/logs-in-kubernetes/
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: k8s-monitoring-configmap
+  namespace: alloy
+data:
+  values.yaml: |
+    cluster:
+      name: default
+    externalServices:
+      loki:
+        host: http://loki-loki-gateway.loki.svc.cluster.local/loki/api/v1/push
+      prometheus:
+        host: http://mimir-mimir-gateway.mimir.svc.cluster.local/api/v1/push
