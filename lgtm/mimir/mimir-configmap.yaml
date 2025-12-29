@@ -161,8 +161,8 @@ data:
           s3:
             endpoint: s3.us-east-1.amazonaws.com
             region: us-east-1
-            secret_access_key: {{ .SECRET_KEY }}
-            access_key_id: {{ .ACCESS_KEY }}
+            secret_access_key: "{{ .SECRET_KEY }}"
+            access_key_id: "{{ .ACCESS_KEY }}"
 
       blocks_storage:
         s3:
