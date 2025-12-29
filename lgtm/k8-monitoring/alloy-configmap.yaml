@@ -8,8 +8,10 @@ data:
   values.yaml: |
     cluster:
       name: default
-    externalServices:
-      loki:
-        host: http://loki-loki-gateway.loki.svc.cluster.local/loki/api/v1/push
-      prometheus:
-        host: http://mimir-mimir-gateway.mimir.svc.cluster.local/api/v1/push
+    destinations:
+      - name: logs-service
+        type: loki
+        url: http://loki-loki-gateway.loki.svc.cluster.local/loki/api/v1/push
+      - name: metrics-service
+        type: prometheus
+        url: http://mimir-mimir-gateway.mimir.svc.cluster.local/api/v1/push
