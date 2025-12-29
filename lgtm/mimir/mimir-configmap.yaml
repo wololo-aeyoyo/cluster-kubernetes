@@ -161,8 +161,8 @@ data:
           s3:
             endpoint: s3.us-east-1.amazonaws.com
             region: us-east-1
-            secret_access_key: "{{SECRET_KEY}}" # This is a secret injected via an environment variable
-            access_key_id: "{{ACCESS_KEY}}" # This is a secret injected via an environment variable
+            secret_access_key: {{ .SECRET_KEY }}
+            access_key_id: {{ .ACCESS_KEY }}
 
       blocks_storage:
         s3:
