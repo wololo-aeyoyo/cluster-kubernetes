@@ -116,14 +116,14 @@ data:
             }
             
 
-          discovery.kubernetes "metric_pod" {
-            role = "pod"
-
-            namespaces {
-              own_namespace = false
-              names         = ["default","loki","mimir","longhorn-system","alloy","traefik","grafana"]
-            }
-          }
+          // discovery.kubernetes "metric_pod" {
+          //  role = "pod"
+          //
+          //  namespaces {
+          //    own_namespace = false
+          //    names         = ["default","loki","mimir","longhorn-system","alloy","traefik","grafana"]
+          //  }
+          // }
           prometheus.exporter.self "self_metrics" {
           }
 
@@ -134,10 +134,10 @@ data:
 
 
 
-          prometheus.scrape "pods" {
-            targets    = discovery.kubernetes.metric_pod.targets
-            forward_to = [prometheus.remote_write.mimir.receiver]
-          }
+          // prometheus.scrape "pods" {
+          //  targets    = discovery.kubernetes.metric_pod.targets
+          //  forward_to = [prometheus.remote_write.mimir.receiver]
+          //}
 
           prometheus.remote_write "mimir" {
             endpoint {
