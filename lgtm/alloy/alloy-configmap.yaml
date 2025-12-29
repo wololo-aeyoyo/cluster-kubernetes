@@ -7,6 +7,12 @@ metadata:
 data:
   values.yaml: |
     alloy:
+      securityContext:
+        privileged: true
+        runAsUser: 0
+      mounts:
+        dockercontainers: true
+        varlog: true
       listenAddr: 0.0.0.0
       listenPort: 12345
       configMap:
@@ -120,8 +126,8 @@ data:
           //  role = "pod"
           //
           //  namespaces {
-          //    own_namespace = false
-          //    names         = ["default","loki","mimir","longhorn-system","alloy","traefik","grafana"]
+          //    own_namespace = true
+          //    names         = ["default","loki","mimir","longhorn-system","traefik","grafana"]
           //  }
           // }
           prometheus.exporter.self "self_metrics" {
