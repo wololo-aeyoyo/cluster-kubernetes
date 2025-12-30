@@ -25,13 +25,20 @@ data:
       enabled: true
     alloy-metrics: 
       enabled: true
-      securityContext:
-        allowPrivilegeEscalation: true
-        privileged: true
-        runAsUser: 0
     alloy-profiles: 
       enabled: false
     alloy-logs:
       enabled: true
     alloy-singleton:
       enabled: true
+    alloy-operator:
+      deploy: true
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ["ALL"]
+        readOnlyRootFilesystem: true
+        runAsNonRoot: false
+        runAsUser: 0
+        seccompProfile:
+          type: RuntimeDefault
