@@ -27,8 +27,7 @@ data:
       enabled: true
       alloy:
         securityContext:
-          allowPrivilegeEscalation: false
-          privileged: true
+          allowPrivilegeEscalation: true
           runAsUser: 0
     alloy-profiles: 
       enabled: false
