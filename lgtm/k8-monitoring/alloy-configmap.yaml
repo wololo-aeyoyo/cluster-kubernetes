@@ -25,7 +25,6 @@ data:
       enabled: true
     alloy-metrics: 
       enabled: true
-      a
     alloy-profiles: 
       enabled: false
     alloy-logs:
