@@ -16,7 +16,7 @@ data:
         type: prometheus
         url: http://mimir-mimir-gateway.mimir.svc.cluster.local/api/v1/push
     clusterMetrics:
-      enabled: false
+      enabled: true
     clusterEvents:
       enabled: true
     podLogs:
@@ -24,12 +24,63 @@ data:
     nodeLogs:
       enabled: true
     alloy-metrics: 
-      enabled: false
+      enabled: true
+      extraConfigs: |
+        prometheus.exporter.unix "integrations_node_exporter" {
+          disable_collectors = ["ipvs", "btrfs", "infiniband", "xfs", "zfs"]
+          enable_collectors = ["meminfo"]
+
+          filesystem {
+            fs_types_exclude     = "^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|tmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$"
+            mount_points_exclude = "^/(dev|proc|run/credentials/.+|sys|var/lib/docker/.+)($|/)"
+            mount_timeout        = "5s"
+          }
+
+          netclass {
+            ignored_devices = "^(veth.*|cali.*|[a-f0-9]{15})$"
+          }
+
+          netdev {
+            device_exclude = "^(veth.*|cali.*|[a-f0-9]{15})$"
+          }
+        }
+
+        // There are two discovery.relabel components in this configuration. This discovery.relabel component replaces the instance and job labels that come in from the node_exporter with the hostname of the machine and a standard job name for all metrics.
+        discovery.relabel "integrations_node_exporter" {
+          targets = prometheus.exporter.unix.integrations_node_exporter.targets
+
+          rule {
+            target_label = "instance"
+            replacement  = sys.env("HOSTNAME")
+          }
+
+          rule {
+            target_label = "job"
+            replacement = "integrations/node_exporter"
+          }
+        }
+
+
+        // The prometheus.scrape component scrapes node_exporter metrics and forwards them to a receiver. In this example, the component requires the following arguments:
+        prometheus.scrape "integrations_node_exporter" {
+          scrape_interval = "15s"
+          targets    = discovery.relabel.integrations_node_exporter.output
+          forward_to = [prometheus.remote_write.metrics_service.receiver]
+        }
+        
     alloy-profiles: 
       enabled: false
     alloy-logs:
       enabled: true
     alloy-singleton:
       enabled: true
+    collectorCommon:
+      alloy:
+        securityContext:
+          privileged: true
+          runAsUser: 0
+        mounts:
+          dockercontainers: true
+          varlog: true
 
 
