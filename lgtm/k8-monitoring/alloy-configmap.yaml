@@ -25,6 +25,10 @@ data:
       enabled: true
     alloy-metrics: 
       enabled: true
+      alloy:
+        securityContext:
+          privileged: true
+          runAsUser: 0
     alloy-profiles: 
       enabled: false
     alloy-logs:
