@@ -31,4 +31,12 @@ data:
       enabled: true
     alloy-singleton:
       enabled: true
+    collectorCommon:
+      alloy:
+        securityContext:
+          privileged: true
+          runAsUser: 0
+        mounts:
+          dockercontainers: true
+          varlog: true
 
