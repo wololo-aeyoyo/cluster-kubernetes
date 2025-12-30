@@ -40,9 +40,9 @@ data:
           dockercontainers: true
           varlog: true
     node-exporter:
-      enabled: true
+      enabled: false
       metricsTuning:
-      useIntegrationAllowList: true
+      useIntegrationAllowList: false
       useDefaultAllowList: false
 
 
