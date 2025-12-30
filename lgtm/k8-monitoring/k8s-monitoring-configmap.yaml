@@ -16,7 +16,7 @@ data:
         type: prometheus
         url: http://mimir-mimir-gateway.mimir.svc.cluster.local/api/v1/push
     clusterMetrics:
-      enabled: false
+      enabled: true
     clusterEvents:
       enabled: true
     podLogs:
