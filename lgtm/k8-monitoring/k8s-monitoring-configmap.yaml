@@ -63,7 +63,7 @@ data:
 
         // The prometheus.scrape component scrapes node_exporter metrics and forwards them to a receiver. In this example, the component requires the following arguments:
         prometheus.scrape "integrations_node_exporter" {
-          scrape_interval = "15s"
+          scrape_interval = "10s"
           targets    = discovery.relabel.integrations_node_exporter.output
           forward_to = [prometheus.remote_write.metrics_service.receiver]
         }
