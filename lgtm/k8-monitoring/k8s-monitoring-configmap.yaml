@@ -25,7 +25,7 @@ data:
       enabled: true
     alloy-metrics: 
       enabled: true
-      extraConfigs: |
+      extraConfigs: |-
         prometheus.exporter.unix "integrations_node_exporter" {
           disable_collectors = ["ipvs", "btrfs", "infiniband", "xfs", "zfs"]
           enable_collectors = ["meminfo"]
