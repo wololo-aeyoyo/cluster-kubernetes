@@ -16,7 +16,7 @@ data:
         type: prometheus
         url: http://mimir-mimir-gateway.mimir.svc.cluster.local/api/v1/push
     clusterMetrics:
-      enabled: true
+      enabled: false
     clusterEvents:
       enabled: true
     podLogs:
@@ -24,19 +24,12 @@ data:
     nodeLogs:
       enabled: true
     alloy-metrics: 
-      enabled: true
+      enabled: false
     alloy-profiles: 
       enabled: false
     alloy-logs:
       enabled: true
     alloy-singleton:
       enabled: true
-    collectorCommon:
-      alloy:
-        securityContext:
-          privileged: true
-          runAsUser: 0
-        mounts:
-          dockercontainers: true
-          varlog: true
+
 
