@@ -24,7 +24,7 @@ data:
     nodeLogs:
       enabled: true
     alloy-metrics: 
-      enabled: false
+      enabled: true
     alloy-profiles: 
       enabled: false
     alloy-logs:
