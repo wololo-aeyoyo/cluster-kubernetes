@@ -24,19 +24,11 @@ data:
     nodeLogs:
       enabled: true
     alloy-metrics: 
-      enabled: true
-      alloy:
-        securityContext:
-          allowPrivilegeEscalation: true
-          runAsUser: 0
+      enabled: false
     alloy-profiles: 
       enabled: false
     alloy-logs:
       enabled: true
     alloy-singleton:
       enabled: true
-    collectorCommon:
-      alloy:
-        securityContext:
-          privileged: true
-          runAsUser: 0
+
