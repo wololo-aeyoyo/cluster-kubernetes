@@ -24,21 +24,13 @@ data:
     nodeLogs:
       enabled: true
     alloy-metrics: 
-      enabled: false
+      enabled: true
     alloy-profiles: 
       enabled: false
     alloy-logs:
       enabled: true
     alloy-singleton:
       enabled: true
-    collectorCommon:
-      alloy:
-        securityContext:
-          privileged: true
-          runAsUser: 0
-        mounts:
-          dockercontainers: true
-          varlog: true
     node-exporter:
       enabled: false
       metricsTuning:
