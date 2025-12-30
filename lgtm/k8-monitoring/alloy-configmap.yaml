@@ -15,3 +15,11 @@ data:
       - name: metrics-service
         type: prometheus
         url: http://mimir-mimir-gateway.mimir.svc.cluster.local/api/v1/push
+    clusterMetrics:
+      enabled: true
+    clusterEvents:
+      enabled: true
+    podLogs:
+      enabled: true
+    nodeLogs:
+      enabled: true
