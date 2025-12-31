@@ -31,10 +31,6 @@ data:
       enabled: true
     alloy-singleton:
       enabled: true
-    node-exporter:
-      enabled: false
-      metricsTuning:
-      useIntegrationAllowList: false
-      useDefaultAllowList: false
+
 
 
