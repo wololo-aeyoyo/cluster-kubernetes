@@ -17,6 +17,5 @@ spec:
 
   interval: 1m0s
   valuesFrom:
-    - kind: ConfigMap
-      name: tempo-configmap
-      valuesKey: values.yaml
+    - kind: Secret
+      name: tempo-secret
