@@ -20,3 +20,15 @@ spec:
     - kind: ConfigMap
       name: tempo-configmap
       valuesKey: values.yaml
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: StatefulSet
+              name: tempo
+            patch: |
+              - op: add
+                path: /spec/template/spec/containers/0/envFrom
+                value:
+                  - secretRef:
+                      name: tempo-s3-secret
