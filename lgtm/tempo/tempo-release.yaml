@@ -16,6 +16,10 @@ spec:
       version: 1.24.1
 
   interval: 1m0s
+  values:
+    tempo:
+      extraArgs:
+        config.expand-env: true
   valuesFrom:
     - kind: ConfigMap
       name: tempo-configmap
