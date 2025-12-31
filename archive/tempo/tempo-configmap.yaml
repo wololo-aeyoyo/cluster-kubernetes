@@ -11,11 +11,11 @@ data:
         trace:
           backend: s3
           s3:
-            access_key: "{{ .ACCESS_KEY }}"
+            access_key: ${ACCESS_KEY}
             bucket: tempo-metrics-212878776795-us-east-1
             endpoint: minio:9000
             insecure: true
-            secret_key: "{{ .SECRET_KEY }}"
+            secret_key: ${SECRET_KEY}
           pool:
             queue_depth: 2000
           wal:
