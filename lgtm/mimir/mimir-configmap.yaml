@@ -155,23 +155,29 @@ data:
             cpu: 1
             memory: 512Mi
 
-      structuredConfig:
-        alertmanager_storage:
-          s3:
-            bucket_name: mimir-metrics-212878776795-us-east-1
-            access_key_id: ${ACCESS_KEY}
-            endpoint:  s3.us-east-1.amazonaws.com 
-            secret_access_key: ${SECRET_KEY}
-        blocks_storage:
-          backend: s3
-          s3:
-            bucket_name: mimir-block-metrics-us-east-1
-            access_key_id: ${ACCESS_KEY}
-            endpoint:  s3.us-east-1.amazonaws.com 
-            secret_access_key: ${SECRET_KEY}
-        ruler_storage:
-          s3:
-            bucket_name: mimir-metrics-212878776795-us-east-1
-            access_key_id: ${ACCESS_KEY}
-            endpoint:  s3.us-east-1.amazonaws.com 
-            secret_access_key: ${SECRET_KEY}
+      storage:
+        backend: s3
+        s3:
+          bucket_name: mimir-metrics-212878776795-us-east-1
+          access_key_id: ${ACCESS_KEY}
+          endpoint:  s3.us-east-1.amazonaws.com 
+          secret_access_key: ${SECRET_KEY} 
+      alertmanager_storage:
+        s3:
+          bucket_name: mimir-metrics-212878776795-us-east-1
+          access_key_id: ${ACCESS_KEY}
+          endpoint:  s3.us-east-1.amazonaws.com 
+          secret_access_key: ${SECRET_KEY}
+      blocks_storage:
+        backend: s3
+        s3:
+          bucket_name: mimir-block-metrics-us-east-1
+          access_key_id: ${ACCESS_KEY}
+          endpoint:  s3.us-east-1.amazonaws.com 
+          secret_access_key: ${SECRET_KEY}
+      ruler_storage:
+        s3:
+          bucket_name: mimir-metrics-212878776795-us-east-1
+          access_key_id: ${ACCESS_KEY}
+          endpoint:  s3.us-east-1.amazonaws.com 
+          secret_access_key: ${SECRET_KEY}
