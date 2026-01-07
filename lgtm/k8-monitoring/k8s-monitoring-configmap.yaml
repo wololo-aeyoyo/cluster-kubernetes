@@ -15,6 +15,9 @@ data:
       - name: metrics-service
         type: prometheus
         url: http://mimir-mimir-gateway.mimir.svc.cluster.local/api/v1/push
+      - name: otlpGateway
+        type: otlp
+        url: http://tempo-tempo-release.tempo.svc.cluster.local:4317
     clusterMetrics:
       enabled: true
     clusterEvents:
