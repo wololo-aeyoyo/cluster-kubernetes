@@ -13,16 +13,21 @@ spec:
         kind: HelmRepository
         name: grafana-helm
         namespace: grafana
-      version: 6.1.0-weekly.375
+      version: 6.1.0-weekly.376
 
   interval: 1m0s
   values:
-    mimir:
-      extraArgs:
-        config.expand-env: true
-      extraEnvFrom:
-        - secretRef:
+    containerEnvVars:
+      ACCESS_KEY: 
+        valueFrom:
+          secretKeyRef:
             name: mimir-secret
+            key: ACCESS_KEY
+      SECRET_KEY: 
+        valueFrom:
+          secretKeyRef:
+            name: mimir-secret
+            key: SECRET_KEY
   valuesFrom:
     - kind: ConfigMap
       name: mimir-configmap
