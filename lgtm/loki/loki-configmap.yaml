@@ -34,7 +34,7 @@ data:
           admin: loki-metrics-212878776795-us-east-1
         s3:
           s3: loki-metrics-212878776795-us-east-1
-          endpoint: null
+          endpoint: s3.us-east-1.amazonaws.com
           region: us-east-1
           accessKeyId: ${ACCESS_KEY}
           secretAccessKey: ${SECRET_KEY}
