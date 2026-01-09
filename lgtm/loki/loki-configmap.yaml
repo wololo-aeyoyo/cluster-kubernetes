@@ -36,6 +36,8 @@ data:
           s3: loki-metrics-212878776795-us-east-1
           endpoint: s3.us-east-1.amazonaws.com
           region: us-east-1
+          accessKeyId: ${ACCESS_KEY}
+          secretAccessKey: ${SECRET_KEY}
           s3ForcePathStyle: false
           insecure: false
 

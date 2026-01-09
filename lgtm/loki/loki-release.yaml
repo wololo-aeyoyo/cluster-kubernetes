@@ -17,19 +17,12 @@ spec:
 
   interval: 1m0s
   values:
-    loki:
-      storage:
-        s3:
-          accessKeyId: 
-            valueFrom:
-              secretKeyRef:
-                name: loki-secret
-                key: ACCESS_KEY
-          secretAccessKey: 
-            valueFrom:
-              secretKeyRef:
-                name: loki-secret
-                key: SECRET_KEY
+    tempo:
+      extraArgs:
+        config.expand-env: true
+      extraEnvFrom:
+        - secretRef:
+            name: loki-secret
   valuesFrom:
     - kind: ConfigMap
       name: loki-configmap
