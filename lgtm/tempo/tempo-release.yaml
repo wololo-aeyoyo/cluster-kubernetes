@@ -18,11 +18,12 @@ spec:
   interval: 1m0s
   values:
     tempo:
-      extraArgs:
-        config.expand-env: true
-      extraEnvFrom:
-        - secretRef:
-            name: tempo-s3-secret
+      storage:
+        extraArgs:
+          config.expand-env: true
+        extraEnvFrom:
+          - secretRef:
+              name: tempo-s3-secret
   valuesFrom:
     - kind: ConfigMap
       name: tempo-configmap
