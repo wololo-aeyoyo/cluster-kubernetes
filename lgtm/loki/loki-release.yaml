@@ -23,7 +23,7 @@ spec:
           config.expand-env: true
         extraEnvFrom:
           - secretRef:
-              name: loki-secret
+              name: loki-s3-secret
   valuesFrom:
     - kind: ConfigMap
       name: loki-configmap
