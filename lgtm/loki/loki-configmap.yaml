@@ -29,9 +29,6 @@ data:
       storage:
         extraArgs:
           config.expand-env: true
-        extraEnvFrom:
-          - secretRef:
-            name: loki-s3-secret      
         type: s3
         bucketNames:
           chunks: loki-metrics-212878776795-us-east-1

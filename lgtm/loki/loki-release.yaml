@@ -16,6 +16,18 @@ spec:
       version: 6.49.0
 
   interval: 1m0s
+  values:
+    env:
+      - name: ACCESS_KEY 
+        valueFrom:
+          secretKeyRef:
+            name: loki-s3-secret
+            key: ACCESS_KEY
+      - name: SECRET_KEY 
+        valueFrom:
+          secretKeyRef:
+            name: loki-s3-secret
+            key: SECRET_KEY
   valuesFrom:
     - kind: ConfigMap
       name: loki-configmap
