@@ -31,3 +31,4 @@ spec:
   valuesFrom:
     - kind: ConfigMap
       name: loki-configmap
+      valuesKey: values.yaml
