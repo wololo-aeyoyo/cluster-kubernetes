@@ -18,11 +18,12 @@ spec:
   interval: 1m0s
   values:
     loki:
-      extraArgs:
-        config.expand-env: true
-      extraEnvFrom:
-        - secretRef:
-            name: loki-secret
+      storage:
+        extraArgs:
+          config.expand-env: true
+        extraEnvFrom:
+          - secretRef:
+              name: loki-secret
   valuesFrom:
     - kind: ConfigMap
       name: loki-configmap
