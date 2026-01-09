@@ -17,7 +17,7 @@ spec:
 
   interval: 1m0s
   values:
-    tempo:
+    loki:
       extraArgs:
         config.expand-env: true
       extraEnvFrom:
