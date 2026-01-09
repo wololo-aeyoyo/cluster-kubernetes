@@ -16,13 +16,6 @@ spec:
       version: 6.49.0
 
   interval: 1m0s
-  values:
-    loki:
-      extraArgs:
-        config.expand-env: true
-      extraEnvFrom:
-        - secretRef:
-          name: loki-s3-secret
   valuesFrom:
     - kind: ConfigMap
       name: loki-configmap
