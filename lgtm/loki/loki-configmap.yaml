@@ -23,11 +23,27 @@ data:
       limits_config:
         allow_structured_metadata: true
         volume_enabled: true
+        split_queries_by_interval: 15m
       ruler:
         enable_api: true
 
+    storage:
+      bucketNames:
+        chunks: loki-metrics-212878776795-us-east-1
+        ruler: loki-metrics-212878776795-us-east-1
+        admin: loki-metrics-212878776795-us-east-1
+      type: s3
+      s3:
+        s3: loki-metrics-212878776795-us-east-1
+        endpoint: null
+        region: us-east-1
+        accessKeyId: ${ACCESS_KEY}
+        secretAccessKey: ${SECRET_KEY}
+        s3ForcePathStyle: false
+        insecure: false
+
     minio:
-      enabled: true
+      enabled: false
           
     deploymentMode: SingleBinary
 
