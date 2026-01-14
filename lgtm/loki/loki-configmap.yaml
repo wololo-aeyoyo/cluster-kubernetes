@@ -7,7 +7,7 @@ data:
   values.yaml: |
     loki:
       extraArgs:
-        "-config.expand-env=true"
+       - -config.expand-env=true
       auth_enabled: false
       commonConfig:
         replication_factor: 1
