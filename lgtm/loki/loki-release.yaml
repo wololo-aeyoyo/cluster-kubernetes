@@ -16,8 +16,15 @@ spec:
       version: 6.49.0
 
   interval: 1m0s
+  valuesFrom:
+    - kind: ConfigMap
+      name: loki-configmap
+      valuesKey: values.yaml
   values:
-    env:
+    loki:
+      extraArgs:
+        config.expand-env: true
+      extraEnvFrom:
       - name: ACCESS_KEY 
         valueFrom:
           secretKeyRef:
@@ -28,7 +35,3 @@ spec:
           secretKeyRef:
             name: loki-s3-secret
             key: SECRET_KEY
-  valuesFrom:
-    - kind: ConfigMap
-      name: loki-configmap
-      valuesKey: values.yaml
