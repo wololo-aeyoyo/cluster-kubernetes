@@ -7,7 +7,7 @@ data:
   values.yaml: |
     loki:
       extraArgs:
-      config.expand-env: true
+        "-config.expand-env=true"
       auth_enabled: false
       commonConfig:
         replication_factor: 1
@@ -50,6 +50,17 @@ data:
 
     singleBinary:
       replicas: 1
+      extraEnv:
+        - name: ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: loki-s3-secret
+              key: ACCESS_KEY
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: loki-s3-secret
+              key: SECRET_KEY
 
     # Zero out replica counts of other deployment modes
     backend:
