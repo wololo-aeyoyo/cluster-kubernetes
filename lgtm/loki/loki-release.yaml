@@ -14,24 +14,8 @@ spec:
         name: grafana-helm
         namespace: grafana
       version: 6.49.0
-
   interval: 1m0s
-  timeout: 10m0s
   valuesFrom:
     - kind: ConfigMap
       name: loki-configmap
       valuesKey: values.yaml
-  values:
-    loki:
-      backend:
-        extraEnvFrom:
-        - name: ACCESS_KEY 
-          valueFrom:
-            secretKeyRef:
-              name: loki-s3-secret
-              key: ACCESS_KEY
-        - name: SECRET_KEY 
-          valueFrom:
-            secretKeyRef:
-              name: loki-s3-secret
-              key: SECRET_KEY

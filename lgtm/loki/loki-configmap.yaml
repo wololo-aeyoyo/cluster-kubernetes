@@ -6,8 +6,6 @@ metadata:
 data:
   values.yaml: |
     loki:
-      extraArgs:
-       - -config.expand-env=true
       auth_enabled: false
       commonConfig:
         replication_factor: 1
@@ -49,6 +47,8 @@ data:
     deploymentMode: SingleBinary
 
     singleBinary:
+      extraArgs:
+        - -config.expand-env=true
       replicas: 1
       extraEnv:
         - name: ACCESS_KEY
