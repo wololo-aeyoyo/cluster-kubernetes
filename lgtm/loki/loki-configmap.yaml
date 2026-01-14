@@ -6,6 +6,8 @@ metadata:
 data:
   values.yaml: |
     loki:
+      extraArgs:
+      config.expand-env: true
       auth_enabled: false
       commonConfig:
         replication_factor: 1
@@ -27,8 +29,6 @@ data:
       ruler:
         enable_api: true
       storage:
-        extraArgs:
-          config.expand-env: true
         type: s3
         bucketNames:
           chunks: loki-metrics-212878776795-us-east-1
