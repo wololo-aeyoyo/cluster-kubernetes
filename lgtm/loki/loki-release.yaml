@@ -20,14 +20,16 @@ spec:
     - kind: ConfigMap
       name: loki-configmap
       valuesKey: values.yaml
-  extraEnv:
-  - name: ACCESS_KEY 
-    valueFrom:
-      secretKeyRef:
-        name: loki-s3-secret
-        key: ACCESS_KEY
-  - name: SECRET_KEY 
-    valueFrom:
-      secretKeyRef:
-        name: loki-s3-secret
-        key: SECRET_KEY
+  values:
+    loki:
+      extraEnv:
+      - name: ACCESS_KEY 
+        valueFrom:
+          secretKeyRef:
+            name: loki-s3-secret
+            key: ACCESS_KEY
+      - name: SECRET_KEY 
+        valueFrom:
+          secretKeyRef:
+            name: loki-s3-secret
+            key: SECRET_KEY
