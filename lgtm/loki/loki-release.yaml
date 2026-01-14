@@ -23,8 +23,7 @@ spec:
       valuesKey: values.yaml
   values:
     loki:
-    storage:
-      extraEnv:
+      extraEnvFrom:
       - name: ACCESS_KEY 
         valueFrom:
           secretKeyRef:
