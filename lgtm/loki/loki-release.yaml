@@ -20,7 +20,7 @@ spec:
     - kind: ConfigMap
       name: loki-configmap
       valuesKey: values.yaml
-  extraEnvFrom:
+  extraEnv:
   - name: ACCESS_KEY 
     valueFrom:
       secretKeyRef:
