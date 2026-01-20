@@ -22,7 +22,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: longhorn-ingress
-  namespace: longhorn-system
+  namespace: default
   annotations:
     kubernetes.io/ingress.class: cloudflare-tunnel
 spec:
@@ -34,6 +34,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: longhorn-frontend
+                name: nginx
                 port:
                   number: 80
