@@ -5,6 +5,25 @@ metadata:
   namespace: default
 data:
   nginx.conf: |
+    user  nginx;
+    worker_processes auto;
+    events {}
+    http{
+      include      mime.types;
+      include      /etc/nginx/sites-enabled/*.conf;
+      sendfile        on;
+      keepalive_timeout 65;
+      default_type  application/octet-stream;
+    }
+
+--- 
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-sites-enabled
+  namespace: default
+data:
+  longhorn.conf: |
     events {}
     http{
       server {

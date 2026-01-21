@@ -1,6 +1,5 @@
----
-kind: Deployment
 apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: nginx
   namespace: default
@@ -8,8 +7,6 @@ metadata:
     app: nginx
 spec:
   replicas: 3
-  progressDeadlineSeconds: 600
-  revisionHistoryLimit: 2
   strategy:
     type: Recreate
   selector:
@@ -23,14 +20,27 @@ spec:
       containers:
       - name: nginx
         image: nginx:latest
+
         volumeMounts:
-          - mountPath: /etc/nginx/
-            name: nginx-pvc        
-      restartPolicy: Always
+          - name: nginx-config
+            mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf
+
+          - name: nginx-sites
+            mountPath: /etc/nginx/sites-enabled/longhorn.conf
+            subPath: longhorn.conf
+
       volumes:
-        - name: nginx-pvc
+        - name: nginx-config
           configMap:
             name: nginx-config
             items:
               - key: nginx.conf
                 path: nginx.conf
+
+        - name: nginx-sites
+          configMap:
+            name: nginx-sites-enabled
+            items:
+              - key: longhorn.conf
+                path: longhorn.conf
