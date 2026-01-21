@@ -24,12 +24,18 @@ spec:
             - containerPort: 8000
               protocol: TCP
           volumeMounts:
-            - mountPath: /app/database
-              name: chibisafe-pvc
-            - mountPath: /app/uploads
-              name: chibisafe-pvc
-            - mountPath: /app/logs
-              name: chibisafe-pvc
+            - name: chibisafe-pvc
+              mountPath: /app/database
+              subPath: database
+
+            - name: chibisafe-pvc
+              mountPath: /app/uploads
+              subPath: uploads
+
+            - name: chibisafe-pvc
+              mountPath: /app/logs
+              subPath: logs
+              
       restartPolicy: Always
       volumes:
         - name: chibisafe-pvc

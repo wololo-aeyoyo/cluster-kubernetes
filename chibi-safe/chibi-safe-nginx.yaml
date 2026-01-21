@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-chibisafe
+  namespace: chibisafe
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+
+        volumeMounts:
+          - name: nginx-config
+            mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf
+
+          - name: nginx-chibisafe
+            mountPath: /etc/nginx/sites-enabled/chibisafe.conf
+            subPath: chibisafe.conf
+
+          - name: nginx-pvc
+            mountPath: /app/uploads
+
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+        
+        - name: nginx-chibisafe
+          configMap:
+            name: nginx-chibisafe
+            items:
+              - key: chibisafe.conf
+                path: chibisafe.conf
+
+        - name: nginx-pvc
+          persistentVolumeClaim:
+            claimName: nginx-pvc
