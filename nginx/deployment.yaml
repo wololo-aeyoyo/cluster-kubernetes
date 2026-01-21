@@ -23,7 +23,6 @@ spec:
       containers:
       - name: nginx
         image: nginx:latest
-
         volumeMounts:
           - mountPath: /etc/nginx/
             name: nginx-pvc
@@ -32,6 +31,12 @@ spec:
         - name: nginx-pvc
           configMap:
             name: nginx-config
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+        - name: nginx-pvc
+          configMap:
+            name: nginx-enabled-sites
             items:
               - key: nginx.conf
                 path: nginx.conf
