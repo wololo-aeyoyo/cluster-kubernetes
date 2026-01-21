@@ -34,7 +34,7 @@ spec:
             items:
               - key: nginx.conf
                 path: nginx.conf
-        - name: nginx-pvc
+        - name: nginx-pvc-sites
           configMap:
             name: nginx-enabled-sites
             items:
