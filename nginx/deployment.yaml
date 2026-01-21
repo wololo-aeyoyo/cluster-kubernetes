@@ -23,12 +23,15 @@ spec:
       containers:
       - name: nginx
         image: nginx:latest
-          
+
         volumeMounts:
-          - mountPath: /etc/nginx
+          - mountPath: /etc/nginx/
             name: nginx-pvc
       restartPolicy: Always
       volumes:
         - name: nginx-pvc
-          persistentVolumeClaim:
-            claimName: nginx-pvc
+          configMap:
+            name: nginx-config
+            items:
+              - key: nginx.conf
+                path: nginx.conf
