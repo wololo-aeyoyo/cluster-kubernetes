@@ -29,7 +29,6 @@ spec:
       targetPort: 8001
   type: ClusterIP
 ---
----
 apiVersion: v1
 kind: Service
 metadata:

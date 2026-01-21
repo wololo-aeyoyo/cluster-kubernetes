@@ -32,6 +32,7 @@ spec:
 
           - name: chibisafe-pvc
             mountPath: /app/uploads
+            subPath: uploads
 
       volumes:
         - name: nginx-config
