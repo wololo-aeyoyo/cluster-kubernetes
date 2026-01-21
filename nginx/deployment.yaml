@@ -29,6 +29,10 @@ spec:
           - name: nginx-longhorn
             mountPath: /etc/nginx/sites-enabled/longhorn.conf
             subPath: longhorn.conf
+          
+          - name: nginx-chibisafe
+            mountPath: /etc/nginx/sites-enabled/chibisafe.conf
+            subPath: chibisafe.conf
 
       volumes:
         - name: nginx-config
@@ -44,3 +48,10 @@ spec:
             items:
               - key: longhorn.conf
                 path: longhorn.conf
+        
+        - name: nginx-chibisafe
+          configMap:
+            name: nginx-chibisafe
+            items:
+              - key: chibisafe.conf
+                path: chibisafe.conf

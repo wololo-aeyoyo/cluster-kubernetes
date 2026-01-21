@@ -52,25 +52,36 @@ metadata:
   name: nginx-chibisafe
   namespace: default
 data:
-  longhorn.conf: |
+  chibisafe.conf: |
     server {
         listen 80;
-        listen [::]:80;
-        listen 443;
-        listen [::]:443;
-        server_name longhorn.wololoaeyoyo.com;
+        server_name chibisafe.wololoaeyoyo.com;
+
+        root /app/uploads;
+
+        location ^~ /api/ {
+            proxy_pass http://chibisafe-backend.chibisafe.svc.cluster.local:8000;
+            proxy_set_header Host 127.0.0.1:8000;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+
+        location ^~ /docs/ {
+            try_files $uri @docs;
+        }
+
+        location @docs {
+            proxy_pass http://chibisafe-backend.chibisafe.svc.cluster.local:8000;
+            proxy_set_header Host 127.0.0.1:8000;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
 
         location / {
-            proxy_pass http://longhorn-frontend.longhorn-system.svc.cluster.local:80;
+            try_files $uri @frontend;
+        }
 
-            proxy_set_header Host $host;
+        location @frontend {
+            proxy_pass http://chibisafe.chibisafe.svc.cluster.local:8001;
+            proxy_set_header Host 127.0.0.1:8001;
             proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
-
-            # Required for Longhorn UI / websockets
-            proxy_http_version 1.1;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection "upgrade";
         }
     }
