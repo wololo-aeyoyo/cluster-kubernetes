@@ -20,7 +20,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nginx-sites-enabled
+  name: nginx-longhorn
   namespace: default
 data:
   longhorn.conf: |
@@ -45,4 +45,32 @@ data:
             proxy_set_header Connection "upgrade";
         }
     }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-chibisafe
+  namespace: default
+data:
+  longhorn.conf: |
+    server {
+        listen 80;
+        listen [::]:80;
+        listen 443;
+        listen [::]:443;
+        server_name longhorn.wololoaeyoyo.com;
 
+        location / {
+            proxy_pass http://longhorn-frontend.longhorn-system.svc.cluster.local:80;
+
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+
+            # Required for Longhorn UI / websockets
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+        }
+    }

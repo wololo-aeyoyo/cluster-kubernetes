@@ -26,7 +26,7 @@ spec:
             mountPath: /etc/nginx/nginx.conf
             subPath: nginx.conf
 
-          - name: nginx-sites
+          - name: nginx-longhorn
             mountPath: /etc/nginx/sites-enabled/longhorn.conf
             subPath: longhorn.conf
 
@@ -38,9 +38,9 @@ spec:
               - key: nginx.conf
                 path: nginx.conf
 
-        - name: nginx-sites
+        - name: nginx-longhorn
           configMap:
-            name: nginx-sites-enabled
+            name: nginx-longhorn
             items:
               - key: longhorn.conf
                 path: longhorn.conf
