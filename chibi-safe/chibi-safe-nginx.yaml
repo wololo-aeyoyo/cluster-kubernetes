@@ -48,6 +48,6 @@ spec:
               - key: chibisafe.conf
                 path: chibisafe.conf
 
-        - name: nginx-pvc
+        - name: chibisafe-pvc
           persistentVolumeClaim:
-            claimName: nginx-pvc
+            claimName: chibisafe-pvc
