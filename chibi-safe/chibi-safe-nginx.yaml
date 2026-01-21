@@ -30,7 +30,7 @@ spec:
             mountPath: /etc/nginx/sites-enabled/chibisafe.conf
             subPath: chibisafe.conf
 
-          - name: nginx-pvc
+          - name: chibisafe-pvc
             mountPath: /app/uploads
 
       volumes:
