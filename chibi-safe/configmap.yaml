@@ -32,7 +32,7 @@ data:
 
         location ^~ /api/ {
             proxy_pass http://chibisafe-backend.chibisafe.svc.cluster.local:8000;
-            proxy_set_header Host 127.0.0.1:8000;
+            proxy_set_header Host chibisafe.wololoaeyoyo.com;
             proxy_set_header X-Real-IP $remote_addr;
         }
 
@@ -42,7 +42,7 @@ data:
 
         location @docs {
             proxy_pass http://chibisafe-backend.chibisafe.svc.cluster.local:8000;
-            proxy_set_header Host 127.0.0.1:8000;
+            proxy_set_header Host chibisafe.wololoaeyoyo.com;
             proxy_set_header X-Real-IP $remote_addr;
         }
 
@@ -52,7 +52,7 @@ data:
 
         location @frontend {
             proxy_pass http://chibisafe.chibisafe.svc.cluster.local:8001;
-            proxy_set_header Host 127.0.0.1:8001;
+            proxy_set_header Host chibisafe.wololoaeyoyo.com;
             proxy_set_header X-Real-IP $remote_addr;
         }
     }
