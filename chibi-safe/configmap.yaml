@@ -42,8 +42,11 @@ data:
 
         location ^~ /docs/ {
             try_files $uri @docs;
+        }
+
+        location @docs {
             add_header Access-Control-Allow-Origin *;
-            proxy_pass http://chibisafe-backend.chibisafe.svc.cluster.local:8000;
+            proxy_pass http://chibisafe-backend.chibisafe.svc.cluster.local:8000/docs/;
             proxy_set_header Host chibisafe.wololoaeyoyo.com;
             proxy_set_header X-Real-IP $remote_addr;
         }
