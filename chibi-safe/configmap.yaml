@@ -44,6 +44,10 @@ data:
           try_files $uri @docs;
         }
 
+        location ^~ /testa/ {
+            root /app/uploads/thumbs;
+        }        
+
         location @docs {
             add_header Access-Control-Allow-Origin *;
             proxy_pass http://chibisafe-backend.chibisafe.svc.cluster.local:8000;
