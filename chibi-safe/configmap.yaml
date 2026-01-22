@@ -36,6 +36,7 @@ data:
             proxy_pass http://chibisafe-backend.chibisafe.svc.cluster.local:8000;
             proxy_set_header Host chibisafe.wololoaeyoyo.com;
             proxy_set_header X-Real-IP $remote_addr;
+          
         }
 
         location ^~ /docs/ {
@@ -53,6 +54,7 @@ data:
         }
 
         location @frontend {
+            add_header Access-Control-Allow-Origin *;            
             proxy_pass http://chibisafe.chibisafe.svc.cluster.local:8001;
             proxy_set_header Host chibisafe.wololoaeyoyo.com;
             proxy_set_header X-Real-IP $remote_addr;
