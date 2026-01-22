@@ -26,7 +26,9 @@ data:
   chibisafe.conf: |
     server {
         listen 80;
+        listen [::]:80;
         server_name chibisafe.wololoaeyoyo.com;
+        client_max_body_size 1024M; # Change this to the max file size you want to allow
 
         root /app/uploads;
 
