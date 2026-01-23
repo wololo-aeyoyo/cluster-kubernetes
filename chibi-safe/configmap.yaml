@@ -48,7 +48,7 @@ data:
             alias /app/uploads/;
 
             # Only serve existing files
-            try_files $uri =404;
+            try_files $request_filename =404;
         }    
 
         location @docs {
