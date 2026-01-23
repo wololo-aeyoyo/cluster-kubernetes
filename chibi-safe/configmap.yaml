@@ -44,9 +44,12 @@ data:
           try_files $uri @docs;
         }
 
-        location ^~ /testa/ {
-            root /app/uploads/thumbs;
-        }        
+        location /thumbs/ {
+            alias /app/uploads/;
+
+            # Only serve existing files
+            try_files $uri;
+        }    
 
         location @docs {
             add_header Access-Control-Allow-Origin *;
