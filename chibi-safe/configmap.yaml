@@ -46,9 +46,6 @@ data:
 
         location /thumbs/ {
             alias /app/uploads/;
-
-            # Only serve existing files
-            try_files $request_filename =404;
         }    
 
         location @docs {
