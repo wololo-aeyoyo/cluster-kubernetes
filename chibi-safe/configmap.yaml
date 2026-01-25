@@ -45,7 +45,7 @@ data:
         }
 
         location /thumbs/ {
-            alias /app/uploads/;
+            alias /app/uploads/thumbs/;
         }    
 
         location @docs {
