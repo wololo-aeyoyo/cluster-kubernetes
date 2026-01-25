@@ -44,7 +44,8 @@ data:
           try_files $uri @docs;
         }
 
-        location /thumbs/ {
+        location /thumbs {
+            add_header Access-Control-Allow-Origin *;
             alias /app/uploads/thumbs/;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
