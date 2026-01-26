@@ -1,4 +1,5 @@
 #source https://grafana.com/docs/alloy/latest/collect/logs-in-kubernetes/
+#source https://grafana.com/docs/alloy/latest/collect/logs-in-kubernetes/
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -34,6 +35,19 @@ data:
       enabled: true
     alloy-singleton:
       enabled: true
-
+    alloy-receiver: # Enable the alloy-receiver
+      enabled: true
+      alloy:
+        extraPorts: # Expose the OTLP gRPC port
+          - name: otlp-grpc
+            port: 4317
+            targetPort: 4317
+            protocol: TCP
+    applicationObservability: # If you're receiving application traces directly into Alloy.
+      enabled: true
+      receivers:
+        otlp:
+          grpc:
+            enabled: true # Enable OTLP gRPC receiver
 
 
