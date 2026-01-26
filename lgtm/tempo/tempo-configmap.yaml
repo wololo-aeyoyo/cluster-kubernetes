@@ -6,6 +6,9 @@ metadata:
   namespace: tempo
 data:
   values.yaml: |
+    metricsGenerator:
+      enabled: true
+      remoteWriteUrl: "http://mimir-mimir-gateway.mimir.svc.cluster.local/api/v1/push"
     tempo:
       metricsGenerator:
         enabled: true
