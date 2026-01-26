@@ -7,6 +7,9 @@ metadata:
 data:
   values.yaml: |
     tempo:
+      metricsGenerator:
+        enabled: true
+        remoteWriteUrl: "http://mimir-mimir-gateway.mimir.svc.cluster.local/api/v1/push"
       storage:
         trace:
           backend: s3
