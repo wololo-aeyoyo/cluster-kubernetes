@@ -17,6 +17,7 @@ spec:
       labels:
         service: n8n
     spec:
+      terminationGracePeriodSeconds: 30
       tolerations:
         - key: kubernetes.io/arch
           operator: Equal
