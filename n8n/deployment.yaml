@@ -66,6 +66,7 @@ spec:
             - name: N8N_PORT
               value: "5678"
           image: wololoaeyoyo/n8n-latex:latest
+          terminationGracePeriodSeconds: 30
           imagePullPolicy: "Always"
           name: n8n
           ports:
