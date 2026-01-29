@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: k6-trace-generator
-  namespace: monitoring
+  namespace: tempo
   labels:
     app: k6-trace-generator
 spec:
