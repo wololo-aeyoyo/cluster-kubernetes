@@ -11,7 +11,7 @@ data:
       overrides:
         defaults:
           metrics_generator:
-            processors: ["service-graphs", "span-metrics", "local-blocks"]
+            processors: [service-graphs, span-metrics, local-blocks]
       metricsGenerator:
         enabled: true
         remoteWriteUrl: "http://mimir-mimir-gateway.mimir.svc.cluster.local/api/v1/push"
