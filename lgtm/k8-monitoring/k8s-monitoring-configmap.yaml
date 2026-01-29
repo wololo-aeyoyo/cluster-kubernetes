@@ -40,5 +40,13 @@ data:
       enabled: true
     alloy-receiver: # Enable the alloy-receiver
       enabled: true
-
-
+    applicationObservability: # Enable Application Observability
+      enabled: true
+      receivers:
+        otlp:
+          http: # Enable OTLP HTTP receiver if you plan to send data via HTTP
+            enabled: true
+            port: 4318 # Explicitly define the port if it's not the default 4318
+          grpc: # Enable OTLP gRPC receiver if you plan to send data via gRPC
+            enabled: true
+            port: 4317 # Explicitly define the port if it's not the default 4317
