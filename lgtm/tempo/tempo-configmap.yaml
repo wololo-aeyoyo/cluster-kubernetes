@@ -33,3 +33,5 @@ data:
             host: a-tempo-distributed-memcached
             service: memcached-client
             timeout: 500ms
+    persistence:
+      enabled: true
