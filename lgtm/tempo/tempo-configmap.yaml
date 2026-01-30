@@ -33,5 +33,18 @@ data:
             host: a-tempo-distributed-memcached
             service: memcached-client
             timeout: 500ms
+      traces:
+        otlp:
+          grpc:
+            enabled: true
+          http:
+            enabled: true
+        zipkin:
+          enabled: false
+        jaeger:
+          thriftHttp:
+            enabled: false
+        opencensus:
+          enabled: false
     persistence:
       enabled: true
