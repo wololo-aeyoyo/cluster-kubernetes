@@ -50,5 +50,3 @@ data:
         enabled: true
         basicAuth:
           enabled: false
-    persistence:
-      enabled: true
