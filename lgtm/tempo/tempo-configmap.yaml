@@ -46,5 +46,9 @@ data:
             enabled: false
         opencensus:
           enabled: false
+      gateway:
+        enabled: true
+        basicAuth:
+          enabled: false
     persistence:
       enabled: true
