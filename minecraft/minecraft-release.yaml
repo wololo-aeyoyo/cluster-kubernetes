@@ -1,0 +1,21 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: minecraft-deployment
+  namespace: minecraft
+spec:
+  targetNamespace: minecraft
+  chart:
+    spec:
+      chart: minecraft
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: minecraft-repo
+      version: 5.0.0
+  interval: 1m0s
+  valuesFrom:
+    - kind: ConfigMap
+      name: minecraft-configmap
+      valuesKey: values.yaml
+
