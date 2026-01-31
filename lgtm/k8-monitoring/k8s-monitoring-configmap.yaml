@@ -19,6 +19,8 @@ data:
       - name: otlpGateway
         type: otlp
         url: http://tempo-tempo-release.tempo.svc.cluster.local:4317
+        tls:
+          insecure: true
         metrics: { enabled: true }
         logs:    { enabled: true }
         traces:  { enabled: true }
