@@ -1,0 +1,28 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: pyroscope
+  namespace: pyroscope
+spec:
+  targetNamespace: pyroscope 
+  chart:
+    spec:
+      chart: pyroscope
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: grafana-helm
+        namespace: grafana
+      version: 1.18.1
+  interval: 1m0s
+  values:
+    tempo:
+      extraArgs:
+        config.expand-env: true
+      extraEnvFrom:
+        - secretRef:
+            name: pyroscope-secret
+  valuesFrom:
+    - kind: ConfigMap
+      name: pyroscope-configmap
+      valuesKey: values.yaml
