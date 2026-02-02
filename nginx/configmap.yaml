@@ -45,3 +45,14 @@ data:
             proxy_set_header Connection "upgrade";
         }
     }
+
+--- 
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-password
+  namespace: default
+data:
+  pass.txt: |
+    acceder:${acceder}
+    admin:${admin}
