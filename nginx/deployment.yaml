@@ -20,17 +20,7 @@ spec:
       containers:
       - name: nginx
         image: nginx:latest
-        env:
-          - name: admin
-            valueFrom:
-              secretKeyRef:
-                name: nginx-password
-                key: admin
-          - name: acceder
-            valueFrom:
-              secretKeyRef:
-                name: nginx-password
-                key: acceder
+
         volumeMounts:
           - name: nginx-config
             mountPath: /etc/nginx/nginx.conf
