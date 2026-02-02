@@ -6,13 +6,14 @@ metadata:
   namespace: pyroscope
 data:
   values.yaml: |
-    storage:
-      backend: s3
-      s3:
-        bucket_name: pyroscope-metrics-212878776795-us-east-1
-        region: us-east-1
-        endpoint: s3.us-east-1.amazonaws.com 
-        access_key_id: ${ACCESS_KEY}
-        secret_access_key: ${SECRET_KEY}
+    pyroscope:
+      storage:
+        backend: s3
+        s3:
+          bucket_name: pyroscope-metrics-212878776795-us-east-1
+          region: us-east-1
+          endpoint: s3.us-east-1.amazonaws.com 
+          access_key_id: ${ACCESS_KEY}
+          secret_access_key: ${SECRET_KEY}
     minio:
       enabled: false
