@@ -59,8 +59,8 @@ spec:
                 path: longhorn.conf
         
         - name: nginx-password
-          configMap:
-            name: nginx-password
+          secret:
+            secretName: nginx-password
             items:
               - key: pass.txt
                 path: pass.txt

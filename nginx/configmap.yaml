@@ -46,13 +46,3 @@ data:
         }
     }
 
---- 
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: nginx-password
-  namespace: default
-data:
-  pass.txt: |
-    acceder:${acceder}
-    admin:${admin}
