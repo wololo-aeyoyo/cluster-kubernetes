@@ -58,7 +58,7 @@ metadata:
 data:
   loki.conf: |
     upstream loki {
-      server http://loki-loki-gateway.loki.svc.cluster.local;
+      server loki-loki-gateway.loki.svc.cluster.local:80;
       keepalive 15;
     }
 
