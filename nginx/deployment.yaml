@@ -29,10 +29,15 @@ spec:
           - name: nginx-longhorn
             mountPath: /etc/nginx/sites-enabled/longhorn.conf
             subPath: longhorn.conf
+
+          - name: nginx-loki
+            mountPath: /etc/nginx/sites-enabled/loki.conf
+            subPath: loki.conf
           
           - name: nginx-password
             mountPath: /etc/nginx/pass.txt
             subPath: pass.txt
+            
       volumes:
         - name: nginx-config
           configMap:
@@ -47,6 +52,13 @@ spec:
             items:
               - key: longhorn.conf
                 path: longhorn.conf
+
+        - name: nginx-loki
+          configMap:
+            name: nginx-loki
+            items:
+              - key: loki.conf
+                path: loki.conf
         
         - name: nginx-password
           secret:
