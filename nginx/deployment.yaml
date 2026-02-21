@@ -66,10 +66,3 @@ spec:
             items:
               - key: pass.txt
                 path: pass.txt
-
-        - name: nginx-octoprint
-          configMap:
-            name: nginx-octoprint
-            items:
-              - key: octoprint.conf
-                path: octoprint.conf
