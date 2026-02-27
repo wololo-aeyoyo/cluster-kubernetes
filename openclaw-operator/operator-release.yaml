@@ -8,8 +8,9 @@ spec:
   chart:
     spec:
       chart: openclaw-operator
+      version: "*"
       sourceRef:
-        kind: OCIRepository
+        kind: HelmRepository
         name: openclaw-operator
         namespace: openclaw-operator-system
       interval: 1m0s
