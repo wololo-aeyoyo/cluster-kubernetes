@@ -1,0 +1,19 @@
+apiVersion: openclaw.rocks/v1alpha1
+kind: OpenClawInstance
+metadata:
+  name: my-agent
+  namespace: openclaw
+spec:
+  envFrom:
+    - secretRef:
+        name: claude-secret
+  config:
+    raw:
+      agents:
+        defaults:
+          model:
+            primary: "anthropic/claude-sonnet-4-20250514"
+  storage:
+    persistence:
+      enabled: true
+      size: 10Gi
