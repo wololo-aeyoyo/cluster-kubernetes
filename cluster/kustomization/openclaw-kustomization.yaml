@@ -8,6 +8,8 @@ spec:
   path: ./openclaw
   prune: true
   timeout: 1m
+  dependsOn:
+    - name: openclaw-operator
   sourceRef:
     kind: GitRepository
     name: flux-system
