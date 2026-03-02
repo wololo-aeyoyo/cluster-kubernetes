@@ -1,10 +1,9 @@
 apiVersion: source.toolkit.fluxcd.io/v1beta2
-kind: HelmRepository
+kind: OCIRepository
 metadata:
   name: openclaw-operator
   namespace: openclaw-operator-system
 spec:
   interval: 1m0s
-  type: oci
-  url: oci://ghcr.io/openclaw-rocks/charts
+  url: oci://ghcr.io/openclaw-rocks/charts/openclaw-operator
 
