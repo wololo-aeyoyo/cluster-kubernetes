@@ -4,6 +4,10 @@ metadata:
   name: cloudflare-tunnel-ingress-controller-kustomization
   namespace: flux-system
 spec:
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-gpg
   interval: 1m
   path: ./cloudflare
   prune: true
