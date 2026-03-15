@@ -1,0 +1,5 @@
+---
+creation_rules:
+  - path_regex: .*.yaml
+    encrypted_regex: "^(data|stringData|secret|secureJsonData)$" # You can add required regex here
+    pgp: 16CF812FC89789B4EEAA733C61680D932EDF98A7
