@@ -25,6 +25,3 @@ spec:
     - kind: Secret
       name: cloudflare-api
       valuesKey: values.yaml
-  values:
-    cloudflare:
-      tunnelName: "tunelcito"
