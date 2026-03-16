@@ -21,16 +21,10 @@ spec:
   upgrade:
     remediation:
       retries: 3
+  valuesFrom:
+    - kind: Secret
+      name: cloudflare-api
+      valuesKey: values.yaml
   values:
     cloudflare:
-      apiToken: 
-        valueFrom:
-          secretKeyRef:
-            name: cloudflare-api
-            key: cloudflaresecret
-      accountId: 
-        valueFrom:
-          secretKeyRef:
-            name: cloudflare-api
-            key: cloudflareaccount
       tunnelName: "tunelcito"
