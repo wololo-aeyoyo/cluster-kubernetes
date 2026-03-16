@@ -26,11 +26,11 @@ spec:
       apiToken: 
         valueFrom:
           secretKeyRef:
-            name: cloudflare-api-key
+            name: cloudflare-api
             key: cloudflaresecret
       accountId: 
         valueFrom:
           secretKeyRef:
-            name: cloudflare-api-key
+            name: cloudflare-api
             key: cloudflareaccount
       tunnelName: "tunelcito"
