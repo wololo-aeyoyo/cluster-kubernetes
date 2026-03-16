@@ -21,7 +21,3 @@ spec:
   upgrade:
     remediation:
       retries: 3
-  valuesFrom:
-    - kind: Secret
-      name: cloudflare-api
-      valuesKey: values.yaml
