@@ -1,9 +1,0 @@
-apiVersion: source.toolkit.fluxcd.io/v1beta2
-kind: OCIRepository
-metadata:
-  name: openclaw-operator
-  namespace: openclaw-operator-system
-spec:
-  interval: 1m0s
-  url: oci://ghcr.io/openclaw-rocks/charts/openclaw-operator
-
