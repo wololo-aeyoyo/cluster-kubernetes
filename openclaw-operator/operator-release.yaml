@@ -10,7 +10,7 @@ spec:
       chart: openclaw-operator
       version: "*"
       sourceRef:
-        kind: OCIRepository
+        kind: HelmRepository
         name: openclaw-operator
         namespace: flux-system
       interval: 1m0s
