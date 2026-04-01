@@ -20,6 +20,13 @@ spec:
       containers:
       - name: nginx
         image: nginx:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
 
         volumeMounts:
           - name: nginx-config
@@ -37,6 +44,10 @@ spec:
           - name: nginx-password
             mountPath: /etc/nginx/pass.txt
             subPath: pass.txt
+
+          - name: nginx-openclaw
+            mountPath: /etc/nginx/sites-enabled/openclaw.conf
+            subPath: openclaw.conf
             
       volumes:
         - name: nginx-config
@@ -66,3 +77,10 @@ spec:
             items:
               - key: pass.txt
                 path: pass.txt
+
+        - name: nginx-openclaw
+          configMap:
+            name: nginx-openclaw
+            items:
+              - key: openclaw.conf
+                path: openclaw.conf
