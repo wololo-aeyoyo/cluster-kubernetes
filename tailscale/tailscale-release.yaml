@@ -21,3 +21,5 @@ spec:
     oauth:
       clientSecret:
         secretName: operator-oauth
+    apiserverProxyConfig:
+      enabled: true
