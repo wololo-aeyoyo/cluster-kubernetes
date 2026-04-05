@@ -19,13 +19,5 @@ spec:
   targetNamespace: tailscale
   values:
     oauth:
-      client_id:
-        valueFrom:
-          secretKeyRef:
-            name: operator-oauth
-            key: CLIENT_ID
-      client_secret:
-        valueFrom:
-          secretKeyRef:
-            name: operator-oauth
-            key: CLIENT_SECRET
+      clientSecret:
+        secretName: operator-oauth
