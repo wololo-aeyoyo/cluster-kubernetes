@@ -17,15 +17,7 @@ spec:
     createNamespace: true
   interval: 1h0m0s
   targetNamespace: tailscale
-  values:
-    oauth:
-      clientId:
-        valueFrom:
-          secretKeyRef:
-            name: tailscale-secret
-            key: CLIENT_ID
-      clientSecret:
-        valueFrom:
-          secretKeyRef:
-            name: tailscale-secret
-            key: CLIENT_SECRET
+  valuesFrom:
+    - kind: Secret
+      name: tailscale-secret
+      valuesKey: values.yaml
