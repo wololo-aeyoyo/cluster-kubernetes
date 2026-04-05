@@ -19,12 +19,12 @@ spec:
   targetNamespace: tailscale
   values:
     oauth:
-      clientId:
+      client_id:
         valueFrom:
           secretKeyRef:
             name: tailscale-secret
             key: CLIENT_ID
-      clientSecret:
+      client_secret:
         valueFrom:
           secretKeyRef:
             name: tailscale-secret
