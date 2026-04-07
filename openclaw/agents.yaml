@@ -36,3 +36,6 @@ spec:
     extraEnv:
       - name: DISPLAY
         value: ":99"
+  gateway:
+    controlUi:
+      allowedOrigins: "*"
