@@ -39,3 +39,20 @@ spec:
   gateway:
     controlUiOrigins:
       - "*"
+  networking:
+    service:
+      type: ClusterIP
+    ingress:
+      enabled: true
+      className: cloudflare-tunnel
+      hosts:
+        - host: openclaw.wololoaeyoyo.com
+          paths:
+            - path: /
+              pathType: Prefix
+      security:
+        forceHTTPS: true
+        enableHSTS: true
+        rateLimiting:
+          enabled: true
+          requestsPerSecond: 50
