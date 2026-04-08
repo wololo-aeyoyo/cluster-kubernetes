@@ -6,7 +6,7 @@ metadata:
 spec:
   envFrom:
     - secretRef:
-        name: claude-secret
+        name: openclaw-api-keys
   config:
     raw:
       agents:
