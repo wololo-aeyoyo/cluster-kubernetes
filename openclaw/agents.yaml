@@ -4,9 +4,17 @@ metadata:
   name: my-agent
   namespace: openclaw
 spec:
-  envFrom:
-    - secretRef:
-        name: openclaw-api-keys
+  env:
+    - name: ANTHROPIC_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: openclaw-api-keys
+          key: ANTHROPIC_API_KEY
+    - name: OPENAI_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: openclaw-api-keys
+          key: OPENAI_API_KEY
   config:
     raw:
       agents:
