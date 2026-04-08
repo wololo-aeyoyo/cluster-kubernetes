@@ -41,4 +41,6 @@ spec:
       enabled: true
       allowedIngressNamespaces:
         - default
-
+  gateway:
+    controlUiOrigins:
+      - "https://openclaw.wololoaeyoyo.com"
