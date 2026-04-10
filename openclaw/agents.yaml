@@ -4,6 +4,12 @@ metadata:
   name: my-agent
   namespace: openclaw
 spec:
+  autoUpdate:  
+    enabled: true  
+    checkInterval: "24h"  
+    backupBeforeUpdate: true  
+    rollbackOnFailure: true  
+    healthCheckTimeout: "10m"
   env:
     - name: ANTHROPIC_API_KEY
       valueFrom:
