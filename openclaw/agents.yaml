@@ -11,6 +11,8 @@ spec:
     rollbackOnFailure: true  
     healthCheckTimeout: "10m"
   env:
+    - name: OLLAMA_API_KEY  
+      value: "not-needed"
     - name: ANTHROPIC_API_KEY
       valueFrom:
         secretKeyRef:
