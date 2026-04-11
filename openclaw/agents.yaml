@@ -26,7 +26,8 @@ spec:
       agents:
         defaults:
           model:
-            primary: "anthropic/claude-sonnet-4-20250514"
+            primary: kimi-k2.5:cloud"
+            fallbacks: ["nomic-embed-text", "anthropic/claude-sonnet-4-20250514"]
   storage:
     persistence:
       enabled: true
