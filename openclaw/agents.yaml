@@ -58,3 +58,8 @@ spec:
   gateway:
     controlUiOrigins:
       - "https://openclaw.wololoaeyoyo.com"
+  ollama:  
+    enabled: true  
+    models:  
+      - nomic-embed-text
+      - kimi-k2.5:cloud
