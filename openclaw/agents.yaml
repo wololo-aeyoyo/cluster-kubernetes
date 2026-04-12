@@ -28,8 +28,8 @@ spec:
       agents:
         defaults:
           model:
-            primary: "ollama/kimi-k2.5:cloud"
-            fallbacks: ["ollama/gemma4:e2b", "anthropic/claude-sonnet-4-20250514"]
+            primary: "kimi-k2.5"
+            fallbacks: ["gemma4", "anthropic/claude-sonnet-4-20250514"]
   storage:
     persistence:
       enabled: true
