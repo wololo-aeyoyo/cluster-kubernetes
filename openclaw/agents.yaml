@@ -12,7 +12,7 @@ spec:
     healthCheckTimeout: "10m"
   env:
     - name: OLLAMA_API_KEY  
-      value: "not-needed"
+      value: "ollama-local"
     - name: ANTHROPIC_API_KEY
       valueFrom:
         secretKeyRef:
