@@ -29,7 +29,7 @@ spec:
         defaults:
           model:
             primary: "ollama/kimi-k2.5:cloud"
-            fallbacks: ["ollama/nomic-embed-text", "anthropic/claude-sonnet-4-20250514"]
+            fallbacks: ["ollama/nomic-embed-text:latest", "anthropic/claude-sonnet-4-20250514"]
   storage:
     persistence:
       enabled: true
