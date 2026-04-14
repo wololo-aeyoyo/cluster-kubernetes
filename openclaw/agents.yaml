@@ -10,15 +10,9 @@ spec:
     backupBeforeUpdate: true  
     rollbackOnFailure: true  
     healthCheckTimeout: "10m"
-  envFrom:
-    - secretRef:
-        name: openclaw-api-keys
   env:
-    - name: OLLAMA_API_KEY  
-      valueFrom:
-        secretKeyRef:
-          name: openclaw-api-keys
-          key: OLLAMA_API_KEY
+    - name: OPENAI_BASE_URL
+      value: "http://localhost:11434"
     - name: ANTHROPIC_API_KEY
       valueFrom:
         secretKeyRef:
@@ -67,8 +61,41 @@ spec:
   gateway:
     controlUiOrigins:
       - "https://openclaw.wololoaeyoyo.com"
-  ollama:  
-    enabled: true  
-    models:  
-      - nomic-embed-text
-      - kimi-k2.5:cloud
+  ollama:
+    enabled: false
+  # Use custom sidecar with API key  
+  sidecars:  
+    - name: ollama  
+      image: ollama/ollama:latest  
+      ports:  
+        - containerPort: 11434  
+          protocol: TCP  
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          ollama serve &
+          sleep 5
+          ollama pull kimi-k2.5:cloud
+          ollama pull gemma4:e2b
+          wait
+      env:
+        - name: OLLAMA_API_KEY
+          valueFrom:  
+            secretKeyRef:  
+              name: ollama-api-keys  
+              key: OLLAMA_API_KEY  
+      volumeMounts:  
+        - name: ollama-models  
+          mountPath: /root/.ollama  
+      resources:  
+        requests:  
+          cpu: "2"  
+          memory: 4Gi  
+        limits:  
+          cpu: "8"  
+          memory: 16Gi  
+    
+  sidecarVolumes:  
+    - name: ollama-models  
+      emptyDir:  
+        sizeLimit: 20Gi  
