@@ -10,6 +10,9 @@ spec:
     backupBeforeUpdate: true  
     rollbackOnFailure: true  
     healthCheckTimeout: "10m"
+  envFrom:
+    - secretRef:
+        name: openclaw-api-keys
   env:
     - name: OLLAMA_API_KEY  
       valueFrom:
