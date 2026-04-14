@@ -12,7 +12,10 @@ spec:
     healthCheckTimeout: "10m"
   env:
     - name: OLLAMA_API_KEY  
-      value: "ollama-local"
+      valueFrom:
+        secretKeyRef:
+          name: openclaw-api-keys
+          key: OLLAMA_API_KEY
     - name: ANTHROPIC_API_KEY
       valueFrom:
         secretKeyRef:
