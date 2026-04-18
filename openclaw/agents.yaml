@@ -11,6 +11,8 @@ spec:
     rollbackOnFailure: true  
     healthCheckTimeout: "10m"
   env:
+    - name: OLLAMA_API_KEY  
+      valu: "not needed if using ollama sidecar"
     - name: OPENAI_BASE_URL
       value: "http://localhost:11434"
     - name: ANTHROPIC_API_KEY
