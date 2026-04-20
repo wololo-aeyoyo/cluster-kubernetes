@@ -6,7 +6,7 @@ metadata:
   labels:
     app: resume-web
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: resume-web
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: resume-web
-          image: wololo-aeyoyo/humberto-resume:master
+          image: wololoaeyoyo/humberto-resume:master
           ports:
             - containerPort: 3000
           env:
