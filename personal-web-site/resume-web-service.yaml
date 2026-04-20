@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: resume-web-service
+  namespace: personal-web-site
+  labels:
+    app: resume-web
+spec:
+  type: ClusterIP
+  selector:
+    app: resume-web
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3000
