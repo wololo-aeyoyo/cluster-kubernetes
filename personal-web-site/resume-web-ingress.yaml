@@ -16,4 +16,4 @@ spec:
               service:
                 name: resume-web-service
                 port:
-                  number: 80
+                  number: 3000
