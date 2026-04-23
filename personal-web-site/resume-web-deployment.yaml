@@ -25,8 +25,12 @@ spec:
               value: "production"
             - name: PORT
               value: "3000"
-            - name: HOSTNAME
-              value: "0.0.0.0"
+            - name: NEXT_TELEMETRY_DISABLED
+              value: "1"
+          envFrom:
+            - secretRef:
+                name: resume-web-env
+                optional: true
           resources:
             requests:
               cpu: "100m"
