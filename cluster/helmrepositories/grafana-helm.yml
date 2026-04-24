@@ -6,4 +6,15 @@ metadata:
 spec:
   interval: 1m0s
   url: https://grafana.github.io/helm-charts
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: OCIRepository
+metadata:
+  name: grafana-operator
+  namespace: flux-system
+spec:
+  interval: 10m
+  url: oci://ghcr.io/grafana/kustomize/grafana-operator
+  ref:
+    tag: v5.22.2
 

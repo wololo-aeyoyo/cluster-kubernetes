@@ -1,27 +1,30 @@
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
+apiVersion: grafana.integreatly.org/v1beta1
+kind: Grafana
 metadata:
   name: grafana-deployment
   namespace: grafana
+  labels:
+    dashboards: "grafana"
 spec:
-  targetNamespace: grafana
-  chart:
+  config:
+    log:
+      mode: "console"
+    auth:
+      disable_login_form: "false"
+  deployment:
     spec:
-      chart: grafana
-      reconcileStrategy: ChartVersion
-      sourceRef:
-        kind: HelmRepository
-        name: grafana-helm
-      version: 9.2.10
-  interval: 1m0s
-  values:
-    replicaCount: 1
-    plugins:
-    - grafana-github-datasource
-    persistence:
-      type: pvc
-      enabled: true
-      storageClassName: longhorn
-      accessModes:
-      - ReadWriteOnce
-    size: 1Gi
+      template:
+        spec:
+          containers:
+            - name: grafana
+              env:
+                - name: GF_SECURITY_ADMIN_USER
+                  valueFrom:
+                    secretKeyRef:
+                      key: USERADMIN
+                      name: grafana-secret
+                - name: GF_SECURITY_ADMIN_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      key: PASS
+                      name: grafana-secret
