@@ -19,3 +19,5 @@ spec:
     access: proxy
     isDefault: false
     url: https://api.github.com
+    secureJsonData:  
+      "accessToken": "${GITHUB_TOKEN}"
