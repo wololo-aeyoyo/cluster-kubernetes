@@ -1,21 +1,15 @@
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: grafana-system
   namespace: flux-system
 spec:
-  force: false
   dependsOn:
     - name: grafana-operator # Depends on the grafana-operator being synced
-  healthChecks: # Check that grafana-deployment comes up
-    - apiVersion: apps/v1
-      kind: Deployment
-      name: grafana-deployment
-      namespace: grafana
   interval: 1m
-  targetNamespace: grafana
   path: ./lgtm/grafana
   prune: true
+  timeout: 1m
   sourceRef:
     kind: GitRepository
     name: flux-system
