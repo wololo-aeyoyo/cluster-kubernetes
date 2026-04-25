@@ -18,8 +18,5 @@ spec:
     type: grafana-github-datasource
     access: proxy  
     jsonData:  
-      "githubUrl": "https://github.com"
-      enterpriseServer: false   
-    secureJsonData:  
-      name: github-datasource-secret
-      key: GITHUB_TOKEN
+      githubUrl: "https://api.github.com"
+      enterpriseServer: false
