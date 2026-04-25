@@ -13,10 +13,12 @@ spec:
         secretKeyRef:
           name: github-datasource-secret
           key: GITHUB_TOKEN
-  datasource:
+  datasource:  
     name: GitHub
     type: grafana-github-datasource
-    access: proxy
-    isDefault: false
-    jsonData:
-      selectedAuthType: personalAccessToken
+    access: proxy  
+    url: https://api.github.com  
+    jsonData:  
+      "githubUrl": "https://github.com"  
+    secureJsonData:  
+      "accessToken": "${GITHUB_TOKEN}"
