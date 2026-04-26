@@ -1,9 +1,12 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: umami-web
+  name: umami-web-ingress
+  namespace: umami-web
   labels:
     app: umami-web
+  annotations:
+    kubernetes.io/ingress.class: cloudflare-tunnel
 spec:
   ingressClassName: nginx
   rules:
@@ -14,6 +17,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: umami-web
+                name: umami-web-service
                 port:
                   number: 5000
