@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: umami-web
+  namespace: umami-web
+  annotations:
+    keel.sh/policy: force
+    keel.sh/pollSchedule: '@every 24h'
+    keel.sh/trigger: poll
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: umami-web
+  template:
+    metadata:
+      labels:
+        app: umami-web
+    spec:
+      containers:
+        - name: web
+          image: ghcr.io/umami-software/umami:postgresql-latest
+          ports:
+            - containerPort: 5000
+              protocol: TCP
+          env:
+            - name: PORT
+              value: '5000'
+            - name: DB_DATABASE
+              value: "umami"
+            - name: DB_HOST
+              value: '192.168.1.82'
+            - name: DB_PORT
+              value: '5432'
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: umami-secret
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: umami-secret
+                  key: password
+            - name: DATABASE_URL
+              value: "postgres://$(DB_USERNAME):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_DATABASE)"
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
