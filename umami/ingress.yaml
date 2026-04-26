@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: umami-web
+  labels:
+    app: umami-web
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: umami.wololoaeyoyo.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: umami-web
+                port:
+                  number: 5000
