@@ -1,7 +1,7 @@
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDatasource
 metadata:
-  name: postgres-datasource
+  name: postgres-datasource-umami
   namespace: grafana
 spec:
   instanceSelector:
@@ -19,7 +19,7 @@ spec:
           name: pg-grafana-secret
           key: PG_GRAFANA_PASSWORD
   datasource:
-    name: Postgres
+    name: Postgres-umami
     type: postgres
     access: proxy
     url: 192.168.1.82:5432
@@ -27,7 +27,45 @@ spec:
     secureJsonData:
       password: ${PG_GRAFANA_PASSWORD}
     jsonData:
-      database: grafana
+      database: umami
+      sslmode: 'disable' # disable/require/verify-ca/verify-full
+      maxOpenConns: 100
+      maxIdleConns: 100
+      maxIdleConnsAuto: true
+      connMaxLifetime: 14400
+      postgresVersion: 903 # 903=9.3, 904=9.4, 905=9.5, 906=9.6, 1000=10
+      timescaledb: false
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  name: postgres-datasource-n8n
+  namespace: grafana
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: "grafana"
+  valuesFrom:
+    - targetPath: "user"
+      valueFrom:
+        secretKeyRef:
+          name: pg-grafana-secret
+          key: PG_GRAFANA_USER
+    - targetPath: "secureJsonData.password"
+      valueFrom:
+        secretKeyRef:
+          name: pg-grafana-secret
+          key: PG_GRAFANA_PASSWORD
+  datasource:
+    name: Postgres-n8n
+    type: postgres
+    access: proxy
+    url: 192.168.1.82:5432
+    user: ${PG_GRAFANA_USER}
+    secureJsonData:
+      password: ${PG_GRAFANA_PASSWORD}
+    jsonData:
+      database: n8n
       sslmode: 'disable' # disable/require/verify-ca/verify-full
       maxOpenConns: 100
       maxIdleConns: 100
