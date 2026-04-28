@@ -7,7 +7,8 @@ spec:
   resyncPeriod: 30s
   instanceSelector:
     matchLabels:
-      dashboards: "kubernetes observability"
+      dashboards: "grafana"
+  folder: "Kubernetes"
   grafanaCom:
     id: 15757
 ---
@@ -20,7 +21,8 @@ spec:
   resyncPeriod: 30s
   instanceSelector:
     matchLabels:
-      dashboards: "kubernetes observability"
+      dashboards: "grafana"
+  folder: "Kubernetes"
   grafanaCom:
     id: 15758
 ---
@@ -33,7 +35,8 @@ spec:
   resyncPeriod: 30s
   instanceSelector:
     matchLabels:
-      dashboards: "kubernetes observability"
+      dashboards: "grafana"
+  folder: "Kubernetes"
   grafanaCom:
     id: 15759
 ---
@@ -46,7 +49,8 @@ spec:
   resyncPeriod: 30s
   instanceSelector:
     matchLabels:
-      dashboards: "kubernetes observability"
+      dashboards: "grafana"
+  folder: "Kubernetes"
   grafanaCom:
     id: 15760
 ---
@@ -59,7 +63,8 @@ spec:
   resyncPeriod: 30s
   instanceSelector:
     matchLabels:
-      dashboards: "kubernetes observability"
+      dashboards: "grafana"
+  folder: "Kubernetes"
   grafanaCom:
     id: 15761
 ---
@@ -72,7 +77,8 @@ spec:
   resyncPeriod: 30s
   instanceSelector:
     matchLabels:
-      dashboards: "kubernetes observability"
+      dashboards: "grafana"
+  folder: "Kubernetes"
   grafanaCom:
     id: 15762
 ---
@@ -85,7 +91,8 @@ spec:
   resyncPeriod: 30s
   instanceSelector:
     matchLabels:
-      dashboards: "kubernetes observability"
+      dashboards: "grafana"
+  folder: "Kubernetes"
   grafanaCom:
     id: 19105
 ---
@@ -98,6 +105,7 @@ spec:
   resyncPeriod: 30s
   instanceSelector:
     matchLabels:
-      dashboards: "kubernetes observability"
+      dashboards: "grafana"
+  folder: "Kubernetes"
   grafanaCom:
     id: 16337
