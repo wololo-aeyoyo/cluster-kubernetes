@@ -1,0 +1,651 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: umami-dashboard
+  namespace: grafana
+spec:
+  resyncPeriod: 30s
+  instanceSelector:
+    matchLabels:
+      dashboards: "grafana"
+  datasources:
+    - inputName: "DS_UMAMI-POSTGRES"
+      datasourceName: "Postgres-umami"
+  json: >
+    {
+      "__inputs": [
+        {
+          "name": "DS_UMAMI-POSTGRES",
+          "label": "umami-postgres",
+          "description": "",
+          "type": "datasource",
+          "pluginId": "grafana-postgresql-datasource",
+          "pluginName": "PostgreSQL"
+        }
+      ],
+      "__elements": {},
+      "__requires": [
+        {
+          "type": "panel",
+          "id": "gauge",
+          "name": "Gauge",
+          "version": ""
+        },
+        {
+          "type": "grafana",
+          "id": "grafana",
+          "name": "Grafana",
+          "version": "12.2.0"
+        },
+        {
+          "type": "datasource",
+          "id": "grafana-postgresql-datasource",
+          "name": "PostgreSQL",
+          "version": "12.2.0"
+        },
+        {
+          "type": "panel",
+          "id": "heatmap",
+          "name": "Heatmap",
+          "version": ""
+        },
+        {
+          "type": "panel",
+          "id": "timeseries",
+          "name": "Time series",
+          "version": ""
+        }
+      ],
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": {
+              "type": "grafana",
+              "uid": "-- Grafana --"
+            },
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 0,
+      "links": [],
+      "panels": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_UMAMI-POSTGRES}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "scaleDistribution": {
+                  "type": "linear"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 19,
+            "x": 0,
+            "y": 0
+          },
+          "id": 8,
+          "options": {
+            "calculate": false,
+            "calculation": {
+              "xBuckets": {
+                "mode": "count",
+                "value": ""
+              },
+              "yBuckets": {
+                "mode": "count",
+                "value": ""
+              }
+            },
+            "cellGap": 1,
+            "color": {
+              "exponent": 0.5,
+              "fill": "dark-orange",
+              "mode": "scheme",
+              "reverse": false,
+              "scale": "exponential",
+              "scheme": "Oranges",
+              "steps": 64
+            },
+            "exemplars": {
+              "color": "rgba(255,0,255,0.7)"
+            },
+            "filterValues": {
+              "le": 1e-9
+            },
+            "legend": {
+              "show": true
+            },
+            "rowsFrame": {
+              "layout": "auto"
+            },
+            "tooltip": {
+              "mode": "single",
+              "showColorScale": false,
+              "yHistogram": false
+            },
+            "yAxis": {
+              "axisPlacement": "right",
+              "reverse": false
+            }
+          },
+          "pluginVersion": "12.2.0",
+          "targets": [
+            {
+              "dataset": "hpr-534eb1ac-umami-db",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${DS_UMAMI-POSTGRES}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "WITH\nparams AS (\n  SELECT website_id\n  FROM website\n  WHERE name = '${website}'\n),\ntime_bounds AS (\n  SELECT $__timeFrom()::timestamptz AS from_ts,\n         $__timeTo()::timestamptz   AS to_ts\n),\nfiltered_sessions AS (\n  SELECT\n    s.session_id,\n    (s.created_at AT TIME ZONE '${timezone}') AS created_at_timezone\n  FROM session s\n  JOIN website_event w ON w.session_id = s.session_id\n  JOIN params p ON s.website_id = p.website_id AND w.website_id = p.website_id\n  WHERE w.created_at BETWEEN (SELECT from_ts FROM time_bounds)\n                         AND (SELECT to_ts FROM time_bounds)\n  GROUP BY s.session_id, s.created_at\n)\nSELECT\n  EXTRACT(HOUR FROM created_at_timezone)::int AS hour_of_day,\n  COUNT(DISTINCT session_id)                  AS visits\nFROM filtered_sessions\nGROUP BY hour_of_day\nORDER BY hour_of_day;\n",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Visits by hour of the day",
+          "type": "heatmap"
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_UMAMI-POSTGRES}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "percentage",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 20,
+            "w": 5,
+            "x": 19,
+            "y": 0
+          },
+          "id": 4,
+          "options": {
+            "minVizHeight": 75,
+            "minVizWidth": 75,
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": false,
+            "sizing": "auto"
+          },
+          "pluginVersion": "12.2.0",
+          "targets": [
+            {
+              "dataset": "hpr-534eb1ac-umami-db",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${DS_UMAMI-POSTGRES}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "WITH\nparams AS (\n  SELECT website_id\n  FROM website\n  WHERE name = '${website}'\n),\ntime_bounds AS (\n  SELECT $__timeFrom()::timestamptz AS from_ts,\n         $__timeTo()::timestamptz   AS to_ts\n),\nselected_events AS (\n  SELECT jsonb_array_elements_text(NULLIF('${events:json}','')::jsonb) AS event_name\n  UNION ALL\n  SELECT e.event_name\n  FROM (SELECT DISTINCT event_name\n        FROM website_event\n        WHERE event_name <> '') e\n  WHERE ('${events:json}' = '' OR '${events:json}' = '[]')\n),\n\n-- Base event totals\nevent_totals AS (\n  SELECT\n    we.event_name,\n    COUNT(*) AS count_total\n  FROM website_event we\n  JOIN params p ON we.website_id = p.website_id\n  WHERE we.event_name IN (SELECT event_name FROM selected_events)\n    AND we.created_at BETWEEN\n        (SELECT from_ts FROM time_bounds)\n        AND (SELECT to_ts FROM time_bounds)\n  GROUP BY we.event_name\n),\n\n-- Qualified session total (sessions with >2 events)\nqualified_sessions AS (\n  SELECT COUNT(*) AS count_total\n  FROM (\n    SELECT s.session_id\n    FROM session s\n    JOIN website_event w\n      ON w.session_id = s.session_id\n     AND w.website_id = s.website_id\n    JOIN params p\n      ON s.website_id = p.website_id\n    WHERE w.created_at BETWEEN\n          (SELECT from_ts FROM time_bounds)\n          AND (SELECT to_ts FROM time_bounds)\n    GROUP BY s.session_id\n    HAVING COUNT(w.event_id) > 2\n  ) qs\n)\n\n-- Merge both into one result set\nSELECT event_name, count_total AS \"event:\"\nFROM event_totals\nUNION ALL\nSELECT 'qualified_sessions', count_total\nFROM qualified_sessions\nORDER BY \"event:\" DESC;\n",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Raw stats",
+          "transformations": [
+            {
+              "id": "partitionByValues",
+              "options": {
+                "fields": [
+                  "event_name"
+                ],
+                "keepFields": false,
+                "naming": {
+                  "asLabels": true
+                }
+              }
+            }
+          ],
+          "type": "gauge"
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_UMAMI-POSTGRES}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 20,
+                "gradientMode": "hue",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "smooth",
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "normal"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 19,
+            "x": 0,
+            "y": 4
+          },
+          "id": 6,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.2.0",
+          "targets": [
+            {
+              "dataset": "hpr-534eb1ac-umami-db",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${DS_UMAMI-POSTGRES}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "WITH\nparams AS (\n  SELECT website_id\n  FROM website\n  WHERE name = '${website}'\n),\ntime_bounds AS (\n  SELECT $__timeFrom()::timestamptz AS from_ts,\n         $__timeTo()::timestamptz   AS to_ts\n),\nbounds AS (\n  SELECT\n    date_trunc('day', (from_ts AT TIME ZONE '${timezone}'))::timestamp AS from_day,\n    date_trunc('day', (to_ts   AT TIME ZONE '${timezone}'))::timestamp AS to_day\n  FROM time_bounds\n),\nbounds_ext AS (\n  SELECT (from_day - INTERVAL '7 days') AS from_day_ext, to_day FROM bounds\n),\nseries_all AS (\n  SELECT generate_series(\n    (SELECT from_day_ext FROM bounds_ext),\n    (SELECT to_day       FROM bounds_ext),\n    INTERVAL '1 day'\n  )::timestamp AS ts\n),\nseries AS (\n  SELECT generate_series(\n    (SELECT from_day FROM bounds),\n    (SELECT to_day   FROM bounds),\n    INTERVAL '1 day'\n  )::timestamp AS ts\n),\n\n-- First hit per session (landing), with referrer\nhits AS (\n  SELECT\n    we.session_id,\n    we.created_at,\n    lower(coalesce(we.referrer_domain,'')) AS dom,\n    date_trunc('day', we.created_at AT TIME ZONE '${timezone}')::timestamp AS day_ts\n  FROM website_event we\n  JOIN session s ON s.session_id = we.session_id\n  JOIN params  p ON we.website_id = p.website_id AND s.website_id = p.website_id\n  WHERE coalesce(we.referrer_domain,'') <> ''\n),\nfirst_hit AS (\n  SELECT DISTINCT ON (session_id)\n    session_id, created_at, dom,\n    date_trunc('day', created_at AT TIME ZONE '${timezone}')::timestamp AS ts\n  FROM hits\n  ORDER BY session_id, created_at\n),\n\n-- Classify referrer -> search / llm\nclassified AS (\n  SELECT\n    ts,\n    CASE\n      WHEN dom IN (\n        'chatgpt.com','claude.ai','perplexity.ai','www.perplexity.ai',\n        'you.com','phind.com','copilot.microsoft.com',\n        'gemini.google.com','bard.google.com','deepseek.com','reka.ai'\n      ) THEN 'llm'\n      WHEN dom IN (\n        'com.google.android.googlequicksearchbox',\n        'search.google.com','google.com',\n        'bing.com','duckduckgo.com','ecosia.org',\n        'startpage.com','qwant.com','yandex.ru',\n        'search.brave.com','mx.search.yahoo.com','yahoo.com'\n      ) THEN 'search'\n      WHEN dom LIKE '%.search.yahoo.com' THEN 'search'\n      WHEN dom LIKE '%.google.%'\n           AND dom NOT LIKE 'ads.google.%'\n           AND dom NOT LIKE 'accounts.google.%' THEN 'search'\n      ELSE 'other'\n    END AS src\n  FROM first_hit\n),\n\ndaily AS (\n  SELECT\n    sa.ts,\n    COUNT(*) FILTER (WHERE c.src='search') AS search_raw,\n    COUNT(*) FILTER (WHERE c.src='llm')    AS llm_raw,\n    COUNT(*) FILTER (WHERE c.src='other')  AS other_raw\n  FROM series_all sa\n  LEFT JOIN classified c ON c.ts = sa.ts\n  GROUP BY sa.ts\n),\n\nma7 AS (\n  SELECT\n    ts,\n    ROUND(AVG(search_raw) OVER (ORDER BY ts ROWS BETWEEN 6 PRECEDING AND CURRENT ROW), 2) AS search,\n    ROUND(AVG(llm_raw)    OVER (ORDER BY ts ROWS BETWEEN 6 PRECEDING AND CURRENT ROW), 2) AS llm,\n    ROUND(AVG(other_raw)  OVER (ORDER BY ts ROWS BETWEEN 6 PRECEDING AND CURRENT ROW), 2) AS other\n  FROM daily\n)\n\nSELECT s.ts AS \"time\", m.search, m.llm, m.other\nFROM series s\nLEFT JOIN ma7 m ON m.ts = s.ts\nORDER BY \"time\";\n",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Referrers (7d moving average)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_UMAMI-POSTGRES}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 20,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "smooth",
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 19,
+            "x": 0,
+            "y": 11
+          },
+          "id": 5,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Max",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.2.0",
+          "targets": [
+            {
+              "dataset": "hpr-534eb1ac-umami-db",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${DS_UMAMI-POSTGRES}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "WITH\nparams AS (\n  SELECT website_id\n  FROM website\n  WHERE name = '${website}'\n),\ntime_bounds AS (\n  SELECT $__timeFrom()::timestamptz AS from_ts,\n         $__timeTo()::timestamptz   AS to_ts\n),\n\n-- Build selected event list from the variable (fallback to all events)\nselected_events AS (\n  -- When user selected events\n  SELECT jsonb_array_elements_text(NULLIF('${events:json}','')::jsonb) AS event_name\n  UNION ALL\n  -- When empty or \"All\" → include all event names\n  SELECT e.event_name\n  FROM (SELECT DISTINCT event_name\n        FROM website_event\n        WHERE event_name <> '') e\n  WHERE ('${events:json}' = '' OR '${events:json}' = '[]')\n),\n\nevents_filtered AS (\n  SELECT\n    date_trunc('day', we.created_at AT TIME ZONE '${timezone}')::timestamp AS ts,\n    we.event_name\n  FROM website_event we\n  JOIN params p ON we.website_id = p.website_id\n  WHERE we.event_name IN (SELECT event_name FROM selected_events)\n    AND we.created_at BETWEEN\n        (SELECT from_ts - INTERVAL '7 days' FROM time_bounds)\n        AND (SELECT to_ts FROM time_bounds)\n),\n\ndaily AS (\n  SELECT\n    ts,\n    event_name,\n    COUNT(*) AS count_raw\n  FROM events_filtered\n  GROUP BY ts, event_name\n),\n\nma7 AS (\n  SELECT\n    ts,\n    event_name,\n    ROUND(\n      AVG(count_raw) OVER (\n        PARTITION BY event_name\n        ORDER BY ts\n        ROWS BETWEEN 6 PRECEDING AND CURRENT ROW\n      ), 2\n    ) AS count_ma\n  FROM daily\n)\n\nSELECT\n  ts AS \"time\",\n  event_name,\n  count_ma AS \"event:\"\nFROM ma7\nORDER BY \"time\", event_name;\n",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            },
+            {
+              "dataset": "hpr-534eb1ac-umami-db",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${DS_UMAMI-POSTGRES}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "WITH\nparams AS (\n  SELECT website_id\n  FROM website\n  WHERE name = '${website}'\n),\ntime_bounds AS (\n  SELECT $__timeFrom()::timestamptz AS from_ts,\n         $__timeTo()::timestamptz   AS to_ts\n),\nbounds AS (\n  SELECT\n    date_trunc('day', (from_ts AT TIME ZONE '${timezone}'))::timestamp AS from_day,\n    date_trunc('day', (to_ts   AT TIME ZONE '${timezone}'))::timestamp AS to_day\n  FROM time_bounds\n),\nbounds_ext AS (\n  SELECT (from_day - INTERVAL '7 days') AS from_day_ext, to_day\n  FROM bounds\n),\nseries_all AS (\n  SELECT generate_series(\n           (SELECT from_day_ext FROM bounds_ext),\n           (SELECT to_day       FROM bounds_ext),\n           INTERVAL '1 day'\n         )::timestamp AS ts\n),\n\nqualified_sessions AS (\n  SELECT\n    s.session_id,\n    date_trunc('day', MIN(s.created_at AT TIME ZONE '${timezone}'))::timestamp AS ts\n  FROM session s\n  JOIN website_event w\n    ON w.session_id = s.session_id\n   AND w.website_id = s.website_id\n  JOIN params p\n    ON s.website_id = p.website_id\n  WHERE w.created_at BETWEEN\n        (SELECT from_ts - INTERVAL '7 days' FROM time_bounds)\n        AND (SELECT to_ts FROM time_bounds)\n  GROUP BY s.session_id\n  HAVING COUNT(w.event_id) > 2\n),\n\ndaily AS (\n  SELECT\n    sa.ts,\n    COUNT(qs.session_id) AS count_raw\n  FROM series_all sa\n  LEFT JOIN qualified_sessions qs ON qs.ts = sa.ts\n  GROUP BY sa.ts\n),\n\nma7 AS (\n  SELECT\n    ts,\n    ROUND(\n      AVG(count_raw) OVER (\n        ORDER BY ts\n        ROWS BETWEEN 6 PRECEDING AND CURRENT ROW\n      ), 2\n    ) AS count_ma\n  FROM daily\n)\n\nSELECT\n  ts AS \"time\",\n  'qualified_sessions' AS event_name,\n  count_ma AS \"event:\"\nFROM ma7\nORDER BY \"time\";\n",
+              "refId": "B",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Metrics (7d moving average)",
+          "transformations": [
+            {
+              "id": "prepareTimeSeries",
+              "options": {
+                "format": "multi"
+              }
+            }
+          ],
+          "type": "timeseries"
+        }
+      ],
+      "schemaVersion": 42,
+      "tags": [],
+      "templating": {
+        "list": [
+          {
+            "allowCustomValue": true,
+            "current": {},
+            "datasource": {
+              "type": "grafana-postgresql-datasource",
+              "uid": "${DS_UMAMI-POSTGRES}"
+            },
+            "definition": "select name from website;",
+            "description": "",
+            "name": "website",
+            "options": [],
+            "query": "select name from website;",
+            "refresh": 1,
+            "regex": "",
+            "type": "query"
+          },
+          {
+            "current": {
+              "text": "Europe/Berlin",
+              "value": "Europe/Berlin"
+            },
+            "name": "timezone",
+            "options": [
+              {
+                "selected": true,
+                "text": "Europe/Berlin",
+                "value": "Europe/Berlin"
+              },
+              {
+                "selected": false,
+                "text": "UTC",
+                "value": "UTC"
+              },
+              {
+                "selected": false,
+                "text": "America/New_York",
+                "value": "America/New_York"
+              },
+              {
+                "selected": false,
+                "text": "Asia/Tokyo",
+                "value": "Asia/Tokyo"
+              }
+            ],
+            "query": "Europe/Berlin,UTC,America/New_York,Asia/Tokyo",
+            "type": "custom"
+          },
+          {
+            "allValue": "[]",
+            "allowCustomValue": false,
+            "current": {},
+            "datasource": {
+              "type": "grafana-postgresql-datasource",
+              "uid": "${DS_UMAMI-POSTGRES}"
+            },
+            "definition": "WITH time_bounds AS (\n  SELECT $__timeTo()::timestamptz AS to_ts,\n         ($__timeTo()::timestamptz - INTERVAL '7 days') AS from_ts\n),\nparams AS (\n  SELECT website_id FROM website WHERE name = '${website}'\n)\nSELECT\n  we.event_name\nFROM website_event we\nJOIN params p ON we.website_id = p.website_id\nWHERE we.event_name <> ''\n  AND we.created_at BETWEEN\n      (SELECT from_ts FROM time_bounds)\n      AND (SELECT to_ts FROM time_bounds)\nGROUP BY we.event_name\nORDER BY COUNT(*) DESC;\n",
+            "includeAll": true,
+            "multi": true,
+            "name": "events",
+            "options": [],
+            "query": "WITH time_bounds AS (\n  SELECT $__timeTo()::timestamptz AS to_ts,\n         ($__timeTo()::timestamptz - INTERVAL '7 days') AS from_ts\n),\nparams AS (\n  SELECT website_id FROM website WHERE name = '${website}'\n)\nSELECT\n  we.event_name\nFROM website_event we\nJOIN params p ON we.website_id = p.website_id\nWHERE we.event_name <> ''\n  AND we.created_at BETWEEN\n      (SELECT from_ts FROM time_bounds)\n      AND (SELECT to_ts FROM time_bounds)\nGROUP BY we.event_name\nORDER BY COUNT(*) DESC;\n",
+            "refresh": 1,
+            "regex": "",
+            "type": "query"
+          }
+        ]
+      },
+      "time": {
+        "from": "now-30d",
+        "to": "now"
+      },
+      "timepicker": {},
+      "timezone": "browser",
+      "title": "Umami Business Intelligence",
+      "uid": "adnttdc",
+      "version": 11,
+      "weekStart": "",
+      "id": null,
+      "gnetId": 24431,
+      "description": "A PostgreSQL-based analytics dashboard for Umami. Includes hourly visit heatmap, 7-day moving averages for referrers and events, qualified-session filtering, and raw KPI summaries for arbitrary time ranges."
+    }
