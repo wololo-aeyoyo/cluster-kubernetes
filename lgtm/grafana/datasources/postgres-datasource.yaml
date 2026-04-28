@@ -21,7 +21,8 @@ spec:
   datasource:
     name: Postgres
     type: postgres
-    url: localhost:5432
+    access: proxy
+    url: 192.168.1.82:5432
     user: ${PG_GRAFANA_USER}
     secureJsonData:
       password: ${PG_GRAFANA_PASSWORD}
