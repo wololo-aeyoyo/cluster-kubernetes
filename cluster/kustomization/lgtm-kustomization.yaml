@@ -8,6 +8,7 @@ spec:
     - name: grafana-operator # Depends on the grafana-operator being synced
   interval: 1m
   path: ./lgtm/grafana
+  force: true
   prune: true
   timeout: 1m
   sourceRef:
