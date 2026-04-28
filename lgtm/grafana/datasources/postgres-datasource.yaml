@@ -1,0 +1,36 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  name: postgres-datasource
+  namespace: grafana
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: "grafana"
+  valuesFrom:
+    - targetPath: "user"
+      valueFrom:
+        secretKeyRef:
+          name: pg-grafana-secret
+          key: PG_GRAFANA_USER
+    - targetPath: "secureJsonData.password"
+      valueFrom:
+        secretKeyRef:
+          name: pg-grafana-secret
+          key: PG_GRAFANA_PASSWORD
+  datasource:
+    name: Postgres
+    type: postgres
+    url: localhost:5432
+    user: ${PG_GRAFANA_USER}
+    secureJsonData:
+      password: ${PG_GRAFANA_PASSWORD}
+    jsonData:
+      database: grafana
+      sslmode: 'disable' # disable/require/verify-ca/verify-full
+      maxOpenConns: 100
+      maxIdleConns: 100
+      maxIdleConnsAuto: true
+      connMaxLifetime: 14400
+      postgresVersion: 903 # 903=9.3, 904=9.4, 905=9.5, 906=9.6, 1000=10
+      timescaledb: false
