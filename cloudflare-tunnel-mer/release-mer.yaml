@@ -8,6 +8,7 @@ spec:
     accountId: "85dfa5d3c083a5bc0b569603e781206c"
     domain: "merwebo.org"
     secret: cloudflare-api
+    accountName: "Humberto.raniolo@gmail.com's Account"
   newTunnel:
     name: "tunnel-cluster-mer"
   size: 2
