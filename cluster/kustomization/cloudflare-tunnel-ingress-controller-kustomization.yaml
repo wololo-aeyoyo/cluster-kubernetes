@@ -26,6 +26,8 @@ spec:
     provider: sops
     secretRef:
       name: sops-gpg
+  dependsOn:
+    - name: cloudflare-operator-kustomization
   interval: 1m
   path: ./cloudflare-tunnel-mer
   prune: true
