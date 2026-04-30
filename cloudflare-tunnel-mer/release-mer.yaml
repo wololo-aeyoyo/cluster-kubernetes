@@ -1,0 +1,12 @@
+apiVersion: networking.cfargotunnel.com/v1alpha1
+kind: ClusterTunnel
+metadata:
+  name: tunnel-cluster-mer
+spec:
+  cloudflare:
+    accountId: "85dfa5d3c083a5bc0b569603e781206c"
+    domain: "merwebo.org"
+    secret: cloudflare-api
+  newTunnel:
+    name: "tunnel-cluster-mer"
+  size: 2
