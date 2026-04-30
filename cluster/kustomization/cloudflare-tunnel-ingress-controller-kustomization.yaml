@@ -16,3 +16,23 @@ spec:
     kind: GitRepository
     name: flux-system
 ---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cloudflare-tunnel-mer-kustomization
+  namespace: flux-system
+spec:
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-gpg
+  dependsOn:
+    - name: cloudflare-tunnel-ingress-controller-kustomization
+  interval: 1m
+  path: ./cloudflare-tunnel-mer
+  prune: true
+  timeout: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+---
