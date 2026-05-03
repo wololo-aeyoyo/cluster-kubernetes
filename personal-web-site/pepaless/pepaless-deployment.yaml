@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: pepaless
-          image: wololoaeyoyo/meme-react
+          image: wololoaeyoyo/meme-react:master
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
