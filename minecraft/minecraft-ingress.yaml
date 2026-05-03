@@ -8,7 +8,7 @@ subjects:
   spec:
     protocol: tcp
     fqdn: minecrack.merwebo.org
-    target: tcp://minecraft-minecraft-deployment.minecraft.svc:25565
+    target: tcp://minecraft-minecraft-deployment.default.svc:25565
     proxyPort: 25565
 tunnelRef:
   kind: ClusterTunnel
