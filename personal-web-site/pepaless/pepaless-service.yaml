@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: resume-web-service
+  name: pepaless-service
   namespace: personal-web-site
   labels:
-    app: resume-web
+    app: pepaless
 spec:
   type: ClusterIP
   selector:
-    app: resume-web
+    app: pepaless
   ports:
     - name: http
       port: 3000

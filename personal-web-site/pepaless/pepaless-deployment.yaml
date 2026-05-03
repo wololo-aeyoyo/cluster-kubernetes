@@ -1,34 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: resume-web
+  name: pepaless
+  namespace: personal-web-site
   labels:
-    app: resume-web
+    app: pepaless
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: resume-web
+      app: pepaless
   template:
     metadata:
       labels:
-        app: resume-web
+        app: pepaless
     spec:
       containers:
-        - name: resume-web
-          image: wololoaeyoyo/humberto-resume:master
+        - name: pepaless
+          image: wololoaeyoyo/meme-react
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
           env:
             - name: NODE_ENV
               value: "production"
-            - name: NEXT_TELEMETRY_DISABLED
-              value: "1"
-          envFrom:
-            - secretRef:
-                name: resume-web-env
-                optional: true
           resources:
             requests:
               memory: "128Mi"
