@@ -21,7 +21,8 @@ The cluster hosts a diverse set of self-hosted services: AI agents, workflow aut
 | **OpenClaw** | AI agent platform with Ollama (local LLMs) + Chromium sidecars | `openclaw.wololoaeyoyo.com` |
 | **n8n** | Workflow automation with PostgreSQL backend and LaTeX support | `n8n.wololoaeyoyo.com` |
 | **Resume Web** | Personal resume / portfolio site (Next.js) | `resume.wololoaeyoyo.com` |
-| **Chibi Safe** | Self-hosted file sharing platform | — |
+| **Chibi Safe** | Self-hosted file sharing platform | `chibisafe.wololoaeyoyo.com` |
+| **Grafana** | Observability dashboards | `grafana.wololoaeyoyo.com` |
 | **Discord Bot** | HR Music Bot for Discord | — |
 | **Minecraft** | Game server via Helm | — |
 
