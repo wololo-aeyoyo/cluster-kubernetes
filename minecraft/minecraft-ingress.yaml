@@ -9,5 +9,5 @@ subjects:
     protocol: tcp
     fqdn: minecrack.merwebo.org
 tunnelRef:
-  kind: Tunnel
+  kind: ClusterTunnel
   name: tunnel-cluster-mer
