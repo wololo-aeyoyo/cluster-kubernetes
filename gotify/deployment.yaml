@@ -19,6 +19,9 @@ spec:
         - name: gotify
           image: ghcr.io/androidseb25/igotify-notification-assist:latest
           imagePullPolicy: Always
+          env:
+            - name: GOTIFY_URLS
+              value: "https://gotify.wololoaeyoyo.com"
           ports:
             - containerPort: 8080
               protocol: TCP
