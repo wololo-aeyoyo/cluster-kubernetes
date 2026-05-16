@@ -5,12 +5,13 @@ metadata:
   namespace: minecraft
   annotations:
     tailscale.com/hostname: "minecraft"
+    tailscale.com/proxy-group: "default"
 spec:
   type: LoadBalancer
   loadBalancerClass: tailscale.com/tailscale
   selector:
     app.kubernetes.io/name: minecraft
-    app.kubernetes.io/instance: minecraft-deployment
+    app.kubernetes.io/instance: minecraft-minecraft-deployment
   ports:
     - name: minecraft
       port: 25565
