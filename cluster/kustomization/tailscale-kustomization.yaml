@@ -4,6 +4,8 @@ metadata:
   name: tailscale-system
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: external-secrets-store
   interval: 1m
   path: ./tailscale
   prune: true
