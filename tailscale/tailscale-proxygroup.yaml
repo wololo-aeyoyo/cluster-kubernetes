@@ -1,0 +1,7 @@
+apiVersion: tailscale.com/v1alpha1
+kind: ProxyGroup
+metadata:
+  name: default
+  namespace: tailscale
+spec:
+  replicas: 1
