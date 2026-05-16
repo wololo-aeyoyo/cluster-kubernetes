@@ -5,6 +5,7 @@ metadata:
   namespace: minecraft
   annotations:
     tailscale.com/hostname: "minecraft"
+    tailscale.com/proxy-group: "default"
 spec:
   type: LoadBalancer
   loadBalancerClass: tailscale.com/tailscale
