@@ -4,11 +4,10 @@ metadata:
   name: minecraft-tailscale
   namespace: minecraft
   annotations:
+    tailscale.com/expose: "true"
     tailscale.com/hostname: "minecraft"
-    tailscale.com/proxy-group: "ingress"
 spec:
-  type: LoadBalancer
-  loadBalancerClass: tailscale.com/tailscale
+  type: ClusterIP
   selector:
     app.kubernetes.io/name: minecraft
     app.kubernetes.io/instance: minecraft-minecraft-deployment
