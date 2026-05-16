@@ -25,3 +25,8 @@ data:
       dataDir:
         enabled: true
         Size: 6Gi
+    serviceType: LoadBalancer
+    loadBalancerClass: tailscale.com/tailscale
+    serviceAnnotations:
+      tailscale.com/hostname: minecraft
+      tailscale.com/proxy-group: default
