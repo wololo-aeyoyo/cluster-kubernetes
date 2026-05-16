@@ -23,3 +23,4 @@ spec:
         secretName: operator-oauth
     apiserverProxyConfig:
       enabled: true
+      allowImpersonation: true
