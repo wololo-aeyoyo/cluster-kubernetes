@@ -8,6 +8,7 @@ metadata:
     tailscale.com/proxy-group: "default"
 spec:
   type: LoadBalancer
+  loadBalancerClass: tailscale.com/tailscale
   selector:
     app.kubernetes.io/name: minecraft
     app.kubernetes.io/instance: minecraft-minecraft-deployment
