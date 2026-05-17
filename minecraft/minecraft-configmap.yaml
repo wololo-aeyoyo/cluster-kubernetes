@@ -11,7 +11,7 @@ data:
       version: LATEST
       gameMode: survival
       motd: "Mariguanos y periqueros!!"
-      onlineMode: true
+      onlineMode: false
       memory: 4g
       servicePort: 25566
     resources:
