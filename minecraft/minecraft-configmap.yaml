@@ -30,15 +30,16 @@ data:
       - name: mmproxy-init
         image: busybox
         securityContext:
+          privileged: true
           capabilities:
-            add: ["NET_ADMIN"]
+            add: ["NET_ADMIN", "NET_RAW"]
         command: ["/bin/sh", "-c"]
         args:
           - |
-            ip rule add from 127.0.0.1/8 iif lo table 123
-            ip route add local 0.0.0.0/0 dev lo table 123
-            ip -6 rule add from ::1/128 iif lo table 123
-            ip -6 route add local ::/0 dev lo table 123
+            ip rule add from 127.0.0.1/8 iif lo table 123 || true
+            ip route add local 0.0.0.0/0 dev lo table 123 || true
+            ip -6 rule add from ::1/128 iif lo table 123 || true
+            ip -6 route add local ::/0 dev lo table 123 || true
     sidecarContainers:
       - name: go-mmproxy
         image: ghcr.io/path-network/go-mmproxy:latest
