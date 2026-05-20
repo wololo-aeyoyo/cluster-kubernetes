@@ -22,6 +22,10 @@ spec:
           env:
             - name: GOTIFY_URLS
               value: "https://gotify.wololoaeyoyo.com"
+            - name: ENABLE_CONSOLE_LOG
+              value: "true"
+            - name: ENABLE_SCALAR_UI
+              value: "true"
           ports:
             - containerPort: 80
               protocol: TCP
