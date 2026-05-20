@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: gotify
-          image: ghcr.io/androidseb25/igotify-notification-assist:latest
+          image: gotify/server:latest
           imagePullPolicy: Always
           env:
             - name: GOTIFY_URLS
