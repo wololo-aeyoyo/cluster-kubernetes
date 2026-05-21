@@ -19,7 +19,7 @@ data:
     destinations:
       - name: loki
         type: loki
-        url: htp://loki-loki-gateway.loki.svc.cluster.local/loki/api/v1/push
+        url: http://loki-loki-gateway.loki.svc.cluster.local/loki/api/v1/push
         # If Loki is running without auth (common in-cluster), leave auth empty.
         # Uncomment the block below if you've enabled basic auth on Loki:
         # auth:
