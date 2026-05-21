@@ -9,46 +9,79 @@ data:
   values.yaml: |
     cluster:
       name: default
+
+# =============================================================
+# k8s-monitoring v4.1 — values targeting in-cluster Loki
+# =============================================================
+    # -----------------------------------------------------------
+    # Destinations: where telemetry is shipped
+    # -----------------------------------------------------------
     destinations:
-      - name: logs-service
+      - name: loki
         type: loki
-        url: http://loki-loki-gateway.loki.svc.cluster.local/loki/api/v1/push
-      - name: metrics-service
-        type: prometheus
-        url: http://mimir-mimir-gateway.mimir.svc.cluster.local/api/v1/push
-      - name: otlpGateway
-        type: otlp
-        url: http://tempo-tempo-release.tempo.svc.cluster.local:4317
-        tls:
-          insecure: true
-        metrics: { enabled: true }
-        logs:    { enabled: true }
-        traces:  { enabled: true }
-    clusterMetrics:
-      enabled: true
-    clusterEvents:
-      enabled: true
-    podLogs:
-      enabled: true
-    nodeLogs:
-      enabled: true
-    alloy-metrics: 
-      enabled: true
-    alloy-profiles: 
-      enabled: false
+        url: htp://loki-loki-gateway.loki.svc.cluster.local/loki/api/v1/push
+        # If Loki is running without auth (common in-cluster), leave auth empty.
+        # Uncomment the block below if you've enabled basic auth on Loki:
+        # auth:
+        #   username: loki
+        #   password: secret
+    
+    # -----------------------------------------------------------
+    # Log collection via Alloy (replaces the old Grafana Agent)
+    # -----------------------------------------------------------
     alloy-logs:
       enabled: true
-    alloy-singleton:
-      enabled: true
-    alloy-receiver: # Enable the alloy-receiver
-      enabled: true
-    applicationObservability: # Enable Application Observability
-      enabled: true
-      receivers:
-        otlp:
-          http: # Enable OTLP HTTP receiver if you plan to send data via HTTP
-            enabled: true
-            port: 4318 # Explicitly define the port if it's not the default 4318
-          grpc: # Enable OTLP gRPC receiver if you plan to send data via gRPC
-            enabled: true
-            port: 4317 # Explicitly define the port if it's not the default 4317
+    
+      alloy:
+        configMap:
+          create: true
+    
+      # Forward pod logs to Loki
+      loki:
+        destination: loki
+    
+      # --- Pod log collection ---
+      logs:
+        pod_logs:
+          enabled: true
+          namespaces: []          # empty = all namespaces
+          # Optional label selectors to filter which pods are collected:
+          # extraRelabelingRules: |
+          #   rule {
+          #     source_labels = ["__meta_kubernetes_pod_label_app"]
+          #     action        = "keep"
+          #     regex         = "my-app"
+          #   }
+    
+        cluster_events:
+          enabled: true           # ship K8s events to Loki as logs
+    
+    # -----------------------------------------------------------
+    # Metrics collection via Alloy
+    # (keep enabled even if Loki-only; disables Prometheus remote-write)
+    # -----------------------------------------------------------
+    alloy-metrics:
+      enabled: false              # set true if you also have a Prometheus/Mimir destination
+    
+    # -----------------------------------------------------------
+    # Traces (optional — disable if no Tempo)
+    # -----------------------------------------------------------
+    alloy-receiver:
+      enabled: false
+    
+    # -----------------------------------------------------------
+    # Pod logs — extra Loki labels (applied to every log stream)
+    # -----------------------------------------------------------
+    extraConfig: |
+      // Enrich every log line with cluster label (Alloy river syntax)
+      loki.process "add_cluster_label" {
+        stage.static_labels {
+          values = {
+            cluster = env("CLUSTER_NAME"),
+          }
+        }
+        forward_to = [loki.write.loki.receiver]
+      }
+
+
+  
