@@ -13,10 +13,26 @@ spec:
         kind: HelmRepository
         name: grafana-helm
         namespace: grafana
-      version: 3.7.1
+      version: "4.1.*"
 
   interval: 1m0s
   valuesFrom:
     - kind: ConfigMap
       name: k8s-monitoring-configmap
       valuesKey: values.yaml
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
