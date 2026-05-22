@@ -49,3 +49,18 @@ spec:
       kind: HelmRelease
       name: k8s-monitoring
       namespace: alloy
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: mimir-system
+  namespace: flux-system
+spec:
+  interval: 1m
+  path: ./lgtm/mimir
+  prune: true
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+

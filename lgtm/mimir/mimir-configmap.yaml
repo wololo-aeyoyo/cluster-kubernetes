@@ -9,78 +9,76 @@ data:
       alertmanager:
         persistentVolume:
           enabled: true
-        replicas: 3
+        replicas: 1
         resources:
           limits:
             memory: 1.4Gi
           requests:
-            cpu: 1
-            memory: 1Gi
+            cpu: 100m
+            memory: 512Mi
         statefulSet:
           enabled: true
 
       compactor:
         persistentVolume:
           size: 50Gi
+        compactor_blocks_retention_period: 2h
         resources:
           limits:
             memory: 2.8Gi
-            compactor_blocks_retention_period: 2h
           requests:
-            cpu: 1
+            cpu: 500m
             memory: 1Gi
 
       distributor:
-        replicas: 12
+        replicas: 2
         resources:
           limits:
-            memory: 5.7Gi
+            memory: 2Gi
           requests:
-            cpu: 2
+            cpu: 500m
             memory: 1Gi
 
-      
       ingester:
         persistentVolume:
           size: 50Gi
-        replicas: 27
+        replicas: 3
         resources:
           limits:
             memory: 3Gi
           requests:
-            cpu: 3.5
-            memory: 1Gi
+            cpu: 1
+            memory: 1.5Gi
         topologySpreadConstraints: {}
         affinity:
           podAntiAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              - labelSelector:
-                  matchExpressions:
-                    - key: app.kubernetes.io/component
-                      operator: In
-                      values:
-                        - ingester
-                topologyKey: "kubernetes.io/hostname"
-
-        zoneAwareReplication:
-          topologyKey: "kubernetes.io/hostname"
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  labelSelector:
+                    matchExpressions:
+                      - key: app.kubernetes.io/component
+                        operator: In
+                        values:
+                          - ingester
+                  topologyKey: "kubernetes.io/hostname"
 
       chunks-cache:
         enabled: true
-        replicas: 3
+        replicas: 2
 
       index-cache:
         enabled: true
-        replicas: 3
+        replicas: 2
 
       metadata-cache:
         enabled: true
-        replicas: 3
+        replicas: 2
 
       results-cache:
         enabled: true
-        replicas: 3
-        allocatedMemory: 1024
+        replicas: 2
+        allocatedMemory: 512
 
       minio:
         enabled: false
@@ -95,72 +93,71 @@ data:
             memory: 128Mi
 
       querier:
-        replicas: 4
+        replicas: 2
         resources:
           limits:
-            memory: 8.5Gi
+            memory: 4Gi
           requests:
-            cpu: 2
-            memory: 6Gi
-
-      query_frontend:
-        replicas: 3
-        resources:
-          limits:
-            memory: 2.8Gi
-          requests:
-            cpu: 2
+            cpu: 500m
             memory: 2Gi
 
-      ruler:
-        replicas: 3
+      query_frontend:
+        replicas: 2
         resources:
           limits:
-            memory: 5.7Gi
+            memory: 2Gi
           requests:
-            cpu: 1
-            memory: 4Gi
+            cpu: 500m
+            memory: 1Gi
+
+      ruler:
+        replicas: 1
+        resources:
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 250m
+            memory: 1Gi
 
       store_gateway:
         persistentVolume:
           size: 50Gi
-        replicas: 6
+        replicas: 3
         resources:
           limits:
-            memory: 8.5Gi
+            memory: 4Gi
           requests:
-            cpu: 1
-            memory: 6Gi
+            cpu: 500m
+            memory: 2Gi
         topologySpreadConstraints: {}
         affinity:
           podAntiAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              - labelSelector:
-                  matchExpressions:
-                    - key: app.kubernetes.io/component
-                      operator: In
-                      values:
-                        - store-gateway
-                topologyKey: "kubernetes.io/hostname"
-
-        zoneAwareReplication:
-          topologyKey: "kubernetes.io/hostname"
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  labelSelector:
+                    matchExpressions:
+                      - key: app.kubernetes.io/component
+                        operator: In
+                        values:
+                          - store-gateway
+                  topologyKey: "kubernetes.io/hostname"
 
       gateway:
-        replicas: 3
+        replicas: 2
         resources:
           limits:
             memory: 731Mi
           requests:
-            cpu: 1
-            memory: 512Mi
+            cpu: 100m
+            memory: 256Mi
 
       storage:
         backend: s3
         s3:
           bucket_name: mimir-metrics-212878776795-us-east-1
           access_key_id: ${ACCESS_KEY}
-          endpoint:  s3.us-east-1.amazonaws.com 
+          endpoint: s3.us-east-1.amazonaws.com
           secret_access_key: ${SECRET_KEY}
           insecure: false
           s3_force_path_style: false
@@ -172,7 +169,7 @@ data:
         s3:
           bucket_name: mimir-metrics-212878776795-us-east-1
           access_key_id: ${ACCESS_KEY}
-          endpoint:  s3.us-east-1.amazonaws.com 
+          endpoint: s3.us-east-1.amazonaws.com
           secret_access_key: ${SECRET_KEY}
           insecure: false
           s3_force_path_style: false
@@ -185,7 +182,7 @@ data:
         s3:
           bucket_name: mimir-block-metrics-us-east-1
           access_key_id: ${ACCESS_KEY}
-          endpoint:  s3.us-east-1.amazonaws.com 
+          endpoint: s3.us-east-1.amazonaws.com
           secret_access_key: ${SECRET_KEY}
           insecure: false
           s3_force_path_style: false
@@ -197,7 +194,7 @@ data:
         s3:
           bucket_name: mimir-metrics-212878776795-us-east-1
           access_key_id: ${ACCESS_KEY}
-          endpoint:  s3.us-east-1.amazonaws.com 
+          endpoint: s3.us-east-1.amazonaws.com
           secret_access_key: ${SECRET_KEY}
           insecure: false
           s3_force_path_style: false
