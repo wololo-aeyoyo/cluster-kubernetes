@@ -9,7 +9,7 @@ data:
       name: default
 
     destinations:
-      - name: loki
+      loki:
         type: loki
         url: http://loki-loki-gateway.loki.svc.cluster.local/loki/api/v1/push
 
