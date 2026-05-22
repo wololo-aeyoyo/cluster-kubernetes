@@ -5,203 +5,214 @@ metadata:
   namespace: mimir
 data:
   values.yaml: |
+    # --- Component configs (root level, not under mimir:) ---
+
+    alertmanager:
+      persistentVolume:
+        enabled: true
+      replicas: 1
+      resources:
+        limits:
+          memory: 1.4Gi
+        requests:
+          cpu: 100m
+          memory: 512Mi
+      statefulSet:
+        enabled: true
+
+    compactor:
+      persistentVolume:
+        size: 50Gi
+      resources:
+        limits:
+          memory: 2.8Gi
+        requests:
+          cpu: 500m
+          memory: 1Gi
+
+    distributor:
+      replicas: 2
+      resources:
+        limits:
+          memory: 2Gi
+        requests:
+          cpu: 500m
+          memory: 1Gi
+
+    ingester:
+      persistentVolume:
+        size: 50Gi
+      replicas: 3
+      resources:
+        limits:
+          memory: 3Gi
+        requests:
+          cpu: 1
+          memory: 1.5Gi
+      topologySpreadConstraints: {}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/component
+                      operator: In
+                      values:
+                        - ingester
+                topologyKey: "kubernetes.io/hostname"
+
+    chunks-cache:
+      enabled: true
+      replicas: 2
+
+    index-cache:
+      enabled: true
+      replicas: 2
+
+    metadata-cache:
+      enabled: true
+      replicas: 2
+
+    results-cache:
+      enabled: true
+      replicas: 2
+      allocatedMemory: 512
+
+    overrides_exporter:
+      replicas: 1
+      resources:
+        limits:
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+
+    querier:
+      replicas: 2
+      resources:
+        limits:
+          memory: 4Gi
+        requests:
+          cpu: 500m
+          memory: 2Gi
+
+    query_frontend:
+      replicas: 2
+      resources:
+        limits:
+          memory: 2Gi
+        requests:
+          cpu: 500m
+          memory: 1Gi
+
+    ruler:
+      replicas: 1
+      resources:
+        limits:
+          memory: 2Gi
+        requests:
+          cpu: 250m
+          memory: 1Gi
+
+    store_gateway:
+      persistentVolume:
+        size: 50Gi
+      replicas: 3
+      resources:
+        limits:
+          memory: 4Gi
+        requests:
+          cpu: 500m
+          memory: 2Gi
+      topologySpreadConstraints: {}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/component
+                      operator: In
+                      values:
+                        - store-gateway
+                topologyKey: "kubernetes.io/hostname"
+
+    gateway:
+      replicas: 2
+      resources:
+        limits:
+          memory: 731Mi
+        requests:
+          cpu: 100m
+          memory: 256Mi
+
+    # --- Disable built-in MinIO (using AWS S3 instead) ---
+    minio:
+      enabled: false
+
+    # --- Mimir runtime config ---
     mimir:
-      alertmanager:
-        persistentVolume:
-          enabled: true
-        replicas: 1
-        resources:
-          limits:
-            memory: 1.4Gi
-          requests:
-            cpu: 100m
-            memory: 512Mi
-        statefulSet:
-          enabled: true
+      structuredConfig:
+        compactor:
+          blocks_retention_period: 2h
 
-      compactor:
-        persistentVolume:
-          size: 50Gi
-        compactor_blocks_retention_period: 2h
-        resources:
-          limits:
-            memory: 2.8Gi
-          requests:
-            cpu: 500m
-            memory: 1Gi
+        blocks_storage:
+          backend: s3
+          s3:
+            bucket_name: mimir-block-metrics-us-east-1
+            access_key_id: ${ACCESS_KEY}
+            endpoint: s3.us-east-1.amazonaws.com
+            secret_access_key: ${SECRET_KEY}
+            insecure: false
+            s3_force_path_style: false
+            http:
+              idle_conn_timeout: 90s
+              response_header_timeout: 0s
+              insecure_skip_verify: false
 
-      distributor:
-        replicas: 2
-        resources:
-          limits:
-            memory: 2Gi
-          requests:
-            cpu: 500m
-            memory: 1Gi
+        alertmanager_storage:
+          backend: s3
+          s3:
+            bucket_name: mimir-metrics-212878776795-us-east-1
+            access_key_id: ${ACCESS_KEY}
+            endpoint: s3.us-east-1.amazonaws.com
+            secret_access_key: ${SECRET_KEY}
+            insecure: false
+            s3_force_path_style: false
+            http:
+              idle_conn_timeout: 90s
+              response_header_timeout: 0s
+              insecure_skip_verify: false
 
-      ingester:
-        persistentVolume:
-          size: 50Gi
-        replicas: 3
-        resources:
-          limits:
-            memory: 3Gi
-          requests:
-            cpu: 1
-            memory: 1.5Gi
-        topologySpreadConstraints: {}
-        affinity:
-          podAntiAffinity:
-            preferredDuringSchedulingIgnoredDuringExecution:
-              - weight: 100
-                podAffinityTerm:
-                  labelSelector:
-                    matchExpressions:
-                      - key: app.kubernetes.io/component
-                        operator: In
-                        values:
-                          - ingester
-                  topologyKey: "kubernetes.io/hostname"
+        ruler_storage:
+          backend: s3
+          s3:
+            bucket_name: mimir-metrics-212878776795-us-east-1
+            access_key_id: ${ACCESS_KEY}
+            endpoint: s3.us-east-1.amazonaws.com
+            secret_access_key: ${SECRET_KEY}
+            insecure: false
+            s3_force_path_style: false
+            http:
+              idle_conn_timeout: 90s
+              response_header_timeout: 0s
+              insecure_skip_verify: false
 
-      chunks-cache:
-        enabled: true
-        replicas: 2
+        common:
+          storage:
+            backend: s3
+            s3:
+              bucket_name: mimir-metrics-212878776795-us-east-1
+              access_key_id: ${ACCESS_KEY}
+              endpoint: s3.us-east-1.amazonaws.com
+              secret_access_key: ${SECRET_KEY}
+              insecure: false
+              s3_force_path_style: false
 
-      index-cache:
-        enabled: true
-        replicas: 2
-
-      metadata-cache:
-        enabled: true
-        replicas: 2
-
-      results-cache:
-        enabled: true
-        replicas: 2
-        allocatedMemory: 512
-
-      minio:
-        enabled: false
-
-      overrides_exporter:
-        replicas: 1
-        resources:
-          limits:
-            memory: 128Mi
-          requests:
-            cpu: 100m
-            memory: 128Mi
-
-      querier:
-        replicas: 2
-        resources:
-          limits:
-            memory: 4Gi
-          requests:
-            cpu: 500m
-            memory: 2Gi
-
-      query_frontend:
-        replicas: 2
-        resources:
-          limits:
-            memory: 2Gi
-          requests:
-            cpu: 500m
-            memory: 1Gi
-
-      ruler:
-        replicas: 1
-        resources:
-          limits:
-            memory: 2Gi
-          requests:
-            cpu: 250m
-            memory: 1Gi
-
-      store_gateway:
-        persistentVolume:
-          size: 50Gi
-        replicas: 3
-        resources:
-          limits:
-            memory: 4Gi
-          requests:
-            cpu: 500m
-            memory: 2Gi
-        topologySpreadConstraints: {}
-        affinity:
-          podAntiAffinity:
-            preferredDuringSchedulingIgnoredDuringExecution:
-              - weight: 100
-                podAffinityTerm:
-                  labelSelector:
-                    matchExpressions:
-                      - key: app.kubernetes.io/component
-                        operator: In
-                        values:
-                          - store-gateway
-                  topologyKey: "kubernetes.io/hostname"
-
-      gateway:
-        replicas: 2
-        resources:
-          limits:
-            memory: 731Mi
-          requests:
-            cpu: 100m
-            memory: 256Mi
-
-      storage:
-        backend: s3
-        s3:
-          bucket_name: mimir-metrics-212878776795-us-east-1
-          access_key_id: ${ACCESS_KEY}
-          endpoint: s3.us-east-1.amazonaws.com
-          secret_access_key: ${SECRET_KEY}
-          insecure: false
-          s3_force_path_style: false
-          http:
-            idle_conn_timeout: 90s
-            response_header_timeout: 0s
-            insecure_skip_verify: false
-      alertmanager_storage:
-        s3:
-          bucket_name: mimir-metrics-212878776795-us-east-1
-          access_key_id: ${ACCESS_KEY}
-          endpoint: s3.us-east-1.amazonaws.com
-          secret_access_key: ${SECRET_KEY}
-          insecure: false
-          s3_force_path_style: false
-          http:
-            idle_conn_timeout: 90s
-            response_header_timeout: 0s
-            insecure_skip_verify: false
-      blocks_storage:
-        backend: s3
-        s3:
-          bucket_name: mimir-block-metrics-us-east-1
-          access_key_id: ${ACCESS_KEY}
-          endpoint: s3.us-east-1.amazonaws.com
-          secret_access_key: ${SECRET_KEY}
-          insecure: false
-          s3_force_path_style: false
-          http:
-            idle_conn_timeout: 90s
-            response_header_timeout: 0s
-            insecure_skip_verify: false
-      ruler_storage:
-        s3:
-          bucket_name: mimir-metrics-212878776795-us-east-1
-          access_key_id: ${ACCESS_KEY}
-          endpoint: s3.us-east-1.amazonaws.com
-          secret_access_key: ${SECRET_KEY}
-          insecure: false
-          s3_force_path_style: false
-          http:
-            idle_conn_timeout: 90s
-            response_header_timeout: 0s
-            insecure_skip_verify: false
+    # --- Kafka ingest ---
     kafka:
       enabled: true
       logRetentionHours: 2

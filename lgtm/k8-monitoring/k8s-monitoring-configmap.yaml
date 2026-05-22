@@ -12,9 +12,17 @@ data:
       loki:
         type: loki
         url: http://loki-loki-gateway.loki.svc.cluster.local/loki/api/v1/push
+      mimir:
+        type: prometheus
+        url: http://mimir-mimir-gateway.mimir.svc.cluster.local/api/v1/push
 
     collectors:
       alloy-logs:
+        enabled: true
+        alloy:
+          clustering:
+            enabled: true
+      alloy-metrics:
         enabled: true
         alloy:
           clustering:
@@ -25,3 +33,16 @@ data:
 
     clusterEvents:
       enabled: true
+
+    clusterMetrics:
+      enabled: true
+      destinations:
+        - mimir
+
+    podLogs:
+      enabled: false
+
+    hostMetrics:
+      enabled: true
+      destinations:
+        - mimir
