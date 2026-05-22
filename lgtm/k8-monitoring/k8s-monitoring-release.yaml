@@ -1,32 +1,23 @@
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: k8s-monitoring
   namespace: alloy
 spec:
-  targetNamespace: alloy 
+  targetNamespace: alloy
   chart:
     spec:
       chart: k8s-monitoring
-      reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
         name: grafana-helm
         namespace: grafana
       version: "4.1.*"
-
-  interval: 1m0s
+  interval: 5m0s
   valuesFrom:
     - kind: ConfigMap
       name: k8s-monitoring-configmap
       valuesKey: values.yaml
-
-
-
-
-
-
-
 
 
 
