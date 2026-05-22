@@ -16,6 +16,12 @@ spec:
       version: 6.1.0-weekly.376
 
   interval: 1m0s
+  timeout: 10m
+  upgrade:
+    force: true
+    timeout: 10m
+    remediation:
+      retries: 3
   values:
     global:
       extraEnv:
