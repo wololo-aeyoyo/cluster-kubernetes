@@ -1,23 +1,27 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: discord-bot
+  name: red-discordbot
   namespace: default
   labels:
-    app: discord-bot
+    app: red-discordbot
 spec:
-  replicas: 1
+  replicas: 1   # Must stay at 1 — multiple replicas would corrupt shared bot data
   selector:
     matchLabels:
-      app: discord-bot
+      app: red-discordbot
+  strategy:
+    type: Recreate   # Ensures the old pod is fully stopped before the new one starts (safe for single-writer PVCs)
   template:
     metadata:
       labels:
-        app: discord-bot
+        app: red-discordbot
     spec:
       containers:
-        - env:
+        - name: red-discordbot
+          image: phasecorex/red-discordbot:latest
+          imagePullPolicy: Always
+          env:
             - name: OWNER
               valueFrom:
                 secretKeyRef:
@@ -33,6 +37,18 @@ spec:
                 secretKeyRef:
                   name: discord-bot-secret
                   key: token-discord
-          image: harshraj9812/hr-bot-jmusicbot:0.3.9
-          name: discord-hr-music-bot
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: red-discordbot-pvc
       restartPolicy: Always
