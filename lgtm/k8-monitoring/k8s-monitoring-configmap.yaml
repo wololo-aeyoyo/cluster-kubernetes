@@ -17,17 +17,11 @@ data:
       alloy-logs:
         enabled: true
         alloy:
-          configMap:
-            create: true
-        logs:
-          pod_logs:
-            enabled: true
-            namespaces: []
-          cluster_events:
+          clustering:
             enabled: true
 
-      alloy-metrics:
-        enabled: false
+    podLogsViaKubernetesApi:
+      enabled: true
 
-      alloy-receiver:
-        enabled: false
+    clusterEvents:
+      enabled: true
