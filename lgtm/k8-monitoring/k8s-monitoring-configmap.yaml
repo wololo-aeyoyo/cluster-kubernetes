@@ -13,20 +13,21 @@ data:
         type: loki
         url: http://loki-loki-gateway.loki.svc.cluster.local/loki/api/v1/push
 
-    alloy-logs:
-      enabled: true
-      alloy:
-        configMap:
-          create: true
-      logs:
-        pod_logs:
-          enabled: true
-          namespaces: []
-        cluster_events:
-          enabled: true
+    collectors:
+      alloy-logs:
+        enabled: true
+        alloy:
+          configMap:
+            create: true
+        logs:
+          pod_logs:
+            enabled: true
+            namespaces: []
+          cluster_events:
+            enabled: true
 
-    alloy-metrics:
-      enabled: false
+      alloy-metrics:
+        enabled: false
 
-    alloy-receiver:
-      enabled: false
+      alloy-receiver:
+        enabled: false
