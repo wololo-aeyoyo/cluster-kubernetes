@@ -32,13 +32,20 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: k8-monitoring-system
+  name: k8s-monitoring-system
   namespace: flux-system
 spec:
   interval: 1m
   path: ./lgtm/k8-monitoring
   prune: true
-  timeout: 1m
+  timeout: 5m
   sourceRef:
     kind: GitRepository
     name: flux-system
+  dependsOn:
+    - name: loki-system   # adjust to match your Loki Kustomization name
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: k8s-monitoring
+      namespace: alloy
