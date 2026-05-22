@@ -17,18 +17,18 @@ spec:
 
   interval: 1m0s
   values:
-    containerEnvVars:
-      KAFKA_LOG_RETENTION_HOURS: 1
-      ACCESS_KEY: 
-        valueFrom:
-          secretKeyRef:
-            name: mimir-secret
-            key: ACCESS_KEY
-      SECRET_KEY: 
-        valueFrom:
-          secretKeyRef:
-            name: mimir-secret
-            key: SECRET_KEY
+    global:
+      extraEnv:
+        - name: ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mimir-secret
+              key: ACCESS_KEY
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mimir-secret
+              key: SECRET_KEY
   valuesFrom:
     - kind: ConfigMap
       name: mimir-configmap
