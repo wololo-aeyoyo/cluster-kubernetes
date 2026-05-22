@@ -1,5 +1,3 @@
-#source https://grafana.com/docs/alloy/latest/collect/logs-in-kubernetes/
-#source https://grafana.com/docs/alloy/latest/collect/logs-in-kubernetes/
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,78 +8,25 @@ data:
     cluster:
       name: default
 
-# =============================================================
-# k8s-monitoring v4.1 — values targeting in-cluster Loki
-# =============================================================
-    # -----------------------------------------------------------
-    # Destinations: where telemetry is shipped
-    # -----------------------------------------------------------
     destinations:
       - name: loki
         type: loki
         url: http://loki-loki-gateway.loki.svc.cluster.local/loki/api/v1/push
-        # If Loki is running without auth (common in-cluster), leave auth empty.
-        # Uncomment the block below if you've enabled basic auth on Loki:
-        # auth:
-        #   username: loki
-        #   password: secret
-    
-    # -----------------------------------------------------------
-    # Log collection via Alloy (replaces the old Grafana Agent)
-    # -----------------------------------------------------------
+
     alloy-logs:
       enabled: true
-    
       alloy:
         configMap:
           create: true
-    
-      # Forward pod logs to Loki
-      loki:
-        destination: loki
-    
-      # --- Pod log collection ---
       logs:
         pod_logs:
           enabled: true
-          namespaces: []          # empty = all namespaces
-          # Optional label selectors to filter which pods are collected:
-          # extraRelabelingRules: |
-          #   rule {
-          #     source_labels = ["__meta_kubernetes_pod_label_app"]
-          #     action        = "keep"
-          #     regex         = "my-app"
-          #   }
-    
+          namespaces: []
         cluster_events:
-          enabled: true           # ship K8s events to Loki as logs
-    
-    # -----------------------------------------------------------
-    # Metrics collection via Alloy
-    # (keep enabled even if Loki-only; disables Prometheus remote-write)
-    # -----------------------------------------------------------
+          enabled: true
+
     alloy-metrics:
-      enabled: false              # set true if you also have a Prometheus/Mimir destination
-    
-    # -----------------------------------------------------------
-    # Traces (optional — disable if no Tempo)
-    # -----------------------------------------------------------
+      enabled: false
+
     alloy-receiver:
       enabled: false
-    
-    # -----------------------------------------------------------
-    # Pod logs — extra Loki labels (applied to every log stream)
-    # -----------------------------------------------------------
-    extraConfig: |
-      // Enrich every log line with cluster label (Alloy river syntax)
-      loki.process "add_cluster_label" {
-        stage.static_labels {
-          values = {
-            cluster = env("CLUSTER_NAME"),
-          }
-        }
-        forward_to = [loki.write.loki.receiver]
-      }
-
-
-  
