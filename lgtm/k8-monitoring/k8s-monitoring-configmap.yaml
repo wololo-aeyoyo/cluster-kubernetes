@@ -49,11 +49,13 @@ data:
         - mimir
 
     clusterMetrics:  
-      enabled: true  
+      enabled: true
+      collector: alloy-logs  
       node-exporter:  
         enabled: true  
         metricsTuning:  
           useIntegrationAllowList: true  # This includes node_memory_MemTotal_bytes
+        
 
     podLogs:
       enabled: false
