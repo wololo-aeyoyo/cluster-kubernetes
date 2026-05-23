@@ -30,9 +30,11 @@ data:
 
     podLogsViaKubernetesApi:
       enabled: true
+      collector: alloy-logs
 
     clusterEvents:
       enabled: true
+      collector: alloy-logs
 
     telemetryServices:
       kube-state-metrics:
