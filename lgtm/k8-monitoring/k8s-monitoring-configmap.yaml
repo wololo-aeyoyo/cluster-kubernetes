@@ -59,6 +59,10 @@ data:
         metricsTuning:
           includeMetrics:
             - kube_namespace_created
+      cadvisor:
+        metricsTuning:
+          includeMetrics:
+            - machine_cpu_cores
 
     podLogs:
       enabled: false
