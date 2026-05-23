@@ -34,7 +34,7 @@ data:
 
     clusterEvents:
       enabled: true
-      collector: alloy-logs
+      collector: alloy-singleton
 
     telemetryServices:
       kube-state-metrics:
@@ -48,11 +48,12 @@ data:
       destinations:
         - mimir
 
-    clusterMetrics:
-      enabled: true
-      collector: alloy-metrics
-      destinations:
-        - mimir
+    clusterMetrics:  
+      enabled: true  
+      node-exporter:  
+        enabled: true  
+        metricsTuning:  
+          useIntegrationAllowList: true  # This includes node_memory_MemTotal_bytes
 
     podLogs:
       enabled: false
