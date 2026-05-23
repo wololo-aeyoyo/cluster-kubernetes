@@ -62,3 +62,4 @@ data:
       collector: alloy-metrics
       destinations:
         - mimir
+      useIntegrations: true
