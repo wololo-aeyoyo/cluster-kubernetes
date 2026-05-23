@@ -156,8 +156,8 @@ data:
     # --- Mimir runtime config ---
     mimir:
       structuredConfig:
-        compactor:
-          blocks_retention_period: 2h
+        limits:
+          compactor_blocks_retention_period: 2h
 
         blocks_storage:
           backend: s3
