@@ -39,6 +39,14 @@ data:
     telemetryServices:
       kube-state-metrics:
         deploy: true
+      node-exporter:
+        deploy: true
+
+    nodeMetrics:
+      enabled: true
+      collector: alloy-metrics
+      destinations:
+        - mimir
 
     clusterMetrics:
       enabled: true
