@@ -13,3 +13,7 @@ spec:
     access: proxy
     isDefault: true
     url: http://mimir-mimir-gateway.mimir.svc.cluster.local/prometheus
+    jsonData:
+      httpHeaderName1: X-Scope-OrgID
+    secureJsonData:
+      httpHeaderValue1: anonymous
