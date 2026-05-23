@@ -55,6 +55,10 @@ data:
       collector: alloy-metrics
       destinations:
         - mimir
+      kube-state-metrics:
+        metricsTuning:
+          includeMetrics:
+            - kube_namespace_created
 
     podLogs:
       enabled: false
