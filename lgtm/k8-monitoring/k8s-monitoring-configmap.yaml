@@ -36,6 +36,7 @@ data:
 
     clusterMetrics:
       enabled: true
+      collector: alloy-metrics
       destinations:
         - mimir
 
@@ -44,5 +45,6 @@ data:
 
     hostMetrics:
       enabled: true
+      collector: alloy-metrics
       destinations:
         - mimir
