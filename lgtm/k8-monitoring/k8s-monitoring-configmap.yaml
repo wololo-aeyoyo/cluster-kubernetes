@@ -58,8 +58,13 @@ data:
       enabled: false
 
     hostMetrics:
-      enabled: true
-      collector: alloy-metrics
-      destinations:
-        - mimir
-      useIntegrations: true
+      enabled: false
+
+    integrations:
+      node_exporter:
+        enabled: true
+        collector: alloy-metrics
+        destinations:
+          - mimir
+      metricsTuning:  
+        useIntegrationAllowList: true  # This includes node_memory_MemTotal_bytes
