@@ -49,13 +49,6 @@ data:
       collector: alloy-metrics
       destinations:
         - mimir
-      metricsTuning:
-        includeMetrics:
-          - node_boot_time_seconds
-          - node_time_seconds
-          - node_load1
-          - node_load5
-          - node_load15
 
     clusterMetrics:
       enabled: true
@@ -107,3 +100,8 @@ data:
         metricsTuning:
           includeMetrics:
             - node_uname_info
+            - node_boot_time_seconds
+            - node_time_seconds
+            - node_load1
+            - node_load5
+            - node_load15
