@@ -72,6 +72,11 @@ data:
             - apiserver_current_inflight_requests
             - apiserver_dropped_requests_total
             - apiserver_request_terminations_total
+            - apiserver_requested_deprecated_apis
+            - apiserver_request_duration_seconds_sum
+            - apiserver_request_duration_seconds_count
+            - workqueue_depth
+            - process_resident_memory_bytes
       coredns:
         metricsTuning:
           includeMetrics:
