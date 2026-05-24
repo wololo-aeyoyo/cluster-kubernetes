@@ -63,6 +63,15 @@ data:
         metricsTuning:
           includeMetrics:
             - machine_cpu_cores
+      apiServer:
+        enabled: true
+        metricsTuning:
+          includeMetrics:
+            - apiserver_request_total
+            - apiserver_request_duration_seconds
+            - apiserver_current_inflight_requests
+            - apiserver_dropped_requests_total
+            - apiserver_request_terminations_total
       coredns:
         metricsTuning:
           includeMetrics:
