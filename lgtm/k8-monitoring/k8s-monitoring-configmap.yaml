@@ -53,6 +53,9 @@ data:
         includeMetrics:
           - node_boot_time_seconds
           - node_time_seconds
+          - node_load1
+          - node_load5
+          - node_load15
 
     clusterMetrics:
       enabled: true
@@ -67,6 +70,10 @@ data:
         metricsTuning:
           includeMetrics:
             - machine_cpu_cores
+      coredns:
+        metricsTuning:
+          includeMetrics:
+            - coredns_cache_hits_total
 
     podLogs:
       enabled: false
