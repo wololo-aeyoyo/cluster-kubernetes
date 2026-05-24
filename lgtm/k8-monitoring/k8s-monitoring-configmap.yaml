@@ -49,6 +49,9 @@ data:
       collector: alloy-metrics
       destinations:
         - mimir
+      metricsTuning:
+        includeMetrics:
+          - node_boot_time_seconds
 
     clusterMetrics:
       enabled: true
@@ -74,3 +77,6 @@ data:
         - mimir
       linuxHosts:
         enabled: true
+        metricsTuning:
+          includeMetrics:
+            - node_uname_info
