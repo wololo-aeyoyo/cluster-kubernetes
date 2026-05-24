@@ -52,6 +52,7 @@ data:
       metricsTuning:
         includeMetrics:
           - node_boot_time_seconds
+          - node_time_seconds
 
     clusterMetrics:
       enabled: true
