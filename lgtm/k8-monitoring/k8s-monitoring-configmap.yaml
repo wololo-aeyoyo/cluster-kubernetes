@@ -77,6 +77,7 @@ data:
             - apiserver_request_duration_seconds_count
             - workqueue_depth
             - process_resident_memory_bytes
+            - process_cpu_seconds_total
       coredns:
         metricsTuning:
           includeMetrics:
