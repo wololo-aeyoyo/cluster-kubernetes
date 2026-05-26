@@ -63,22 +63,8 @@ data:
         metricsTuning:
           includeMetrics:
             - machine_cpu_cores
-      apiServer:
+      kubeDNS:
         enabled: true
-        metricsTuning:
-          includeMetrics:
-            - apiserver_request_total
-            - apiserver_request_duration_seconds
-            - apiserver_current_inflight_requests
-            - apiserver_dropped_requests_total
-            - apiserver_request_terminations_total
-            - apiserver_requested_deprecated_apis
-            - apiserver_request_duration_seconds_sum
-            - apiserver_request_duration_seconds_count
-            - workqueue_depth
-            - process_resident_memory_bytes
-            - process_cpu_seconds_total
-      coredns:
         metricsTuning:
           includeMetrics:
             - coredns_build_info
@@ -101,6 +87,21 @@ data:
             - coredns_kubernetes_dns_programming_duration_seconds
             - coredns_panics_total
             - coredns_plugin_enabled
+      apiServer:
+        enabled: true
+        metricsTuning:
+          includeMetrics:
+            - apiserver_request_total
+            - apiserver_request_duration_seconds
+            - apiserver_current_inflight_requests
+            - apiserver_dropped_requests_total
+            - apiserver_request_terminations_total
+            - apiserver_requested_deprecated_apis
+            - apiserver_request_duration_seconds_sum
+            - apiserver_request_duration_seconds_count
+            - workqueue_depth
+            - process_resident_memory_bytes
+            - process_cpu_seconds_total
 
     podLogs:
       enabled: false
