@@ -121,3 +121,15 @@ data:
             - node_load1
             - node_load5
             - node_load15
+            - node_disk_io_now
+            - node_disk_read_bytes_total
+            - node_disk_writes_completed_total
+            - node_disk_write_bytes_total
+            - node_network_receive_bytes_total
+            - node_network_transmit_bytes_total
+            - node_network_receive_packets_total
+            - node_network_transmit_packets_total
+            - node_network_receive_errs_total
+            - node_network_transmit_errs_total
+            - node_network_receive_drop_total
+            - node_network_transmit_drop_total
