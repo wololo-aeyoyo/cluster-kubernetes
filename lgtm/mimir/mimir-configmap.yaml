@@ -196,3 +196,5 @@ data:
     kafka:
       enabled: true
       logRetentionHours: 2
+      logRetentionBytes: "4294967296"
+      logSegmentBytes: "134217728"
