@@ -16,7 +16,7 @@ spec:
   imageRepositoryRef:
     name: resume-web
   filterTags:
-    pattern: ^master$
+    pattern: ^latest$
   policy:
     alphabetical:
       order: asc
