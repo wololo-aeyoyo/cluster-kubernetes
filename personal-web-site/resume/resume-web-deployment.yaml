@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: resume-web
-          image: wololoaeyoyo/humberto-resume:latest # {"$imagepolicy": "flux-system:resume-web"}
+          image: docker.io/wololoaeyoyo/humberto-resume:latest # {"$imagepolicy": "flux-system:resume-web"}
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
