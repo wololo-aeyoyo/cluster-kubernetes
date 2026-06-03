@@ -157,7 +157,7 @@ data:
     mimir:
       structuredConfig:
         limits:
-          compactor_blocks_retention_period: 2h
+          compactor_blocks_retention_period: 30d
 
         blocks_storage:
           backend: s3
