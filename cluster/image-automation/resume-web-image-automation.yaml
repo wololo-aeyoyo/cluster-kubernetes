@@ -22,6 +22,29 @@ spec:
       order: asc
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: index-links
+  namespace: flux-system
+spec:
+  image: docker.io/wololoaeyoyo/humberto-index
+  interval: 1m0s
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: index-links
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: index-links
+  filterTags:
+    pattern: ^main-[0-9]{14}$
+  policy:
+    alphabetical:
+      order: asc
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageUpdateAutomation
 metadata:
   name: resume-web
@@ -43,5 +66,5 @@ spec:
     push:
       branch: main
   update:
-    path: ./personal-web-site/resume
+    path: ./personal-web-site
     strategy: Setters

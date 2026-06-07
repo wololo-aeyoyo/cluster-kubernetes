@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: index-links-service
+  namespace: personal-web-site
+  labels:
+    app: index-links
+spec:
+  type: ClusterIP
+  selector:
+    app: index-links
+  ports:
+    - name: http
+      port: 3000
+      targetPort: 3000

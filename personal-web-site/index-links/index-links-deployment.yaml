@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: index-links
+  namespace: personal-web-site
+  labels:
+    app: index-links
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: index-links
+  template:
+    metadata:
+      labels:
+        app: index-links
+    spec:
+      containers:
+        - name: index-links
+          image: docker.io/wololoaeyoyo/humberto-index:main-00000000000000 # {"$imagepolicy": "flux-system:index-links"}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: NEXT_TELEMETRY_DISABLED
+              value: "1"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+      restartPolicy: Always
