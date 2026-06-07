@@ -1,19 +1,19 @@
-# apiVersion: networking.k8s.io/v1
-# kind: Ingress
-# metadata:
-#   name: index-links-ingress
-#   namespace: personal-web-site
-#   annotations:
-#     kubernetes.io/ingress.class: cloudflare-tunnel
-# spec:
-#   rules:
-#     - host: hraniolo.dev
-#       http:
-#         paths:
-#           - path: /
-#             pathType: Prefix
-#             backend:
-#               service:
-#                 name: index-links-service
-#                 port:
-#                   number: 3000
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: index-links-ingress
+  namespace: personal-web-site
+  annotations:
+    kubernetes.io/ingress.class: cloudflare-tunnel
+spec:
+  rules:
+    - host: hraniolo.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: index-links-service
+                port:
+                  number: 3000
