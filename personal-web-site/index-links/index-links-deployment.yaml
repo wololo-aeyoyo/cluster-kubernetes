@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: index-links
-          image: docker.io/wololoaeyoyo/humberto-index:main-20260607040684 # {"$imagepolicy": "flux-system:index-links"}
+          image: docker.io/wololoaeyoyo/humberto-index:main-20260607060698 # {"$imagepolicy": "flux-system:index-links"}
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
