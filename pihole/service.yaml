@@ -1,11 +1,13 @@
-# DNS service with a pinned MetalLB IP — adjust the annotation if 192.168.1.82 is already taken
+# Kubernetes can't mix TCP and UDP in one LoadBalancer; two services share the same IP via allow-shared-ip
+# Pool .80-.90: .80=chibisafe .81=n8n .82=n8n-postgres .83=nginx → .84 is free
 apiVersion: v1
 kind: Service
 metadata:
-  name: pihole-dns
+  name: pihole-dns-tcp
   namespace: pihole
   annotations:
-    metallb.universe.tf/loadBalancerIPs: 192.168.1.82
+    metallb.universe.tf/loadBalancerIPs: 192.168.1.84
+    metallb.universe.tf/allow-shared-ip: pihole-dns
 spec:
   selector:
     app: pihole
@@ -15,6 +17,20 @@ spec:
       port: 53
       targetPort: 53
       protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pihole-dns-udp
+  namespace: pihole
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: 192.168.1.84
+    metallb.universe.tf/allow-shared-ip: pihole-dns
+spec:
+  selector:
+    app: pihole
+  type: LoadBalancer
+  ports:
     - name: dns-udp
       port: 53
       targetPort: 53
