@@ -1,0 +1,37 @@
+# DNS service with a pinned MetalLB IP — adjust the annotation if 192.168.1.82 is already taken
+apiVersion: v1
+kind: Service
+metadata:
+  name: pihole-dns
+  namespace: pihole
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: 192.168.1.82
+spec:
+  selector:
+    app: pihole
+  type: LoadBalancer
+  ports:
+    - name: dns-tcp
+      port: 53
+      targetPort: 53
+      protocol: TCP
+    - name: dns-udp
+      port: 53
+      targetPort: 53
+      protocol: UDP
+---
+# Internal ClusterIP for nginx to proxy the web UI
+apiVersion: v1
+kind: Service
+metadata:
+  name: pihole-web
+  namespace: pihole
+spec:
+  selector:
+    app: pihole
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP
