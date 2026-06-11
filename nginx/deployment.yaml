@@ -48,7 +48,11 @@ spec:
           - name: nginx-openclaw
             mountPath: /etc/nginx/sites-enabled/openclaw.conf
             subPath: openclaw.conf
-            
+
+          - name: nginx-pihole
+            mountPath: /etc/nginx/sites-enabled/pihole.conf
+            subPath: pihole.conf
+
       volumes:
         - name: nginx-config
           configMap:
@@ -84,3 +88,10 @@ spec:
             items:
               - key: openclaw.conf
                 path: openclaw.conf
+
+        - name: nginx-pihole
+          configMap:
+            name: nginx-pihole
+            items:
+              - key: pihole.conf
+                path: pihole.conf
