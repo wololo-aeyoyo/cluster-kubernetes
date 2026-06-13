@@ -36,6 +36,29 @@ spec:
       targetPort: 53
       protocol: UDP
 ---
+# Tailscale ingress — gives Pi-hole a tailnet IP; set it as a nameserver in the Tailscale admin console
+apiVersion: v1
+kind: Service
+metadata:
+  name: pihole-dns-tailscale
+  namespace: pihole
+  annotations:
+    tailscale.com/hostname: pihole
+spec:
+  selector:
+    app: pihole
+  type: LoadBalancer
+  loadBalancerClass: tailscale.com/tailscale
+  ports:
+    - name: dns-tcp
+      port: 53
+      targetPort: 53
+      protocol: TCP
+    - name: dns-udp
+      port: 53
+      targetPort: 53
+      protocol: UDP
+---
 # Internal ClusterIP for nginx to proxy the web UI
 apiVersion: v1
 kind: Service
