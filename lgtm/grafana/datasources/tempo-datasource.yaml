@@ -1,0 +1,29 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  name: tempo-datasource
+  namespace: grafana
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: "grafana"
+  datasource:
+    name: Tempo
+    type: tempo
+    access: proxy
+    isDefault: false
+    url: http://tempo-tempo-release.tempo.svc.cluster.local:3200
+    jsonData:
+      httpMethod: GET
+      serviceMap:
+        datasourceUid: mimir
+      nodeGraph:
+        enabled: true
+      traceQuery:
+        timeShiftEnabled: true
+        spanStartTimeShift: 1h
+        spanEndTimeShift: -1h
+      spanBar:
+        type: Duration
+      lokiSearch:
+        datasourceUid: loki
