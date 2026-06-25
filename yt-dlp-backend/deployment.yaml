@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: yt-dlp-backend
-          image: ghcr.io/wololo-aeyoyo/yt-dlp-backend:main-00000000000000 # {"$imagepolicy": "flux-system:yt-dlp-backend"}
+          image: ghcr.io/wololo-aeyoyo/yt-dlp-backend:main-20260625140659 # {"$imagepolicy": "flux-system:yt-dlp-backend"}
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
