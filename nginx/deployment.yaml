@@ -53,6 +53,10 @@ spec:
             mountPath: /etc/nginx/sites-enabled/pihole.conf
             subPath: pihole.conf
 
+          - name: nginx-faro
+            mountPath: /etc/nginx/sites-enabled/faro.conf
+            subPath: faro.conf
+
       volumes:
         - name: nginx-config
           configMap:
@@ -95,3 +99,10 @@ spec:
             items:
               - key: pihole.conf
                 path: pihole.conf
+
+        - name: nginx-faro
+          configMap:
+            name: nginx-faro
+            items:
+              - key: faro.conf
+                path: faro.conf

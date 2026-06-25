@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alloy-faro-configmap
+  namespace: alloy
+data:
+  values.yaml: |
+    alloy:
+      listenAddr: 0.0.0.0
+      listenPort: 12345
+      configMap:
+        create: true
+        name: alloy-faro-configmap
+        content: |-
+          faro.receiver "frontend" {
+            server {
+              listen_address       = "0.0.0.0"
+              listen_port          = 12347
+              cors_allowed_origins = ["*"]
+            }
+
+            output {
+              logs   = [loki.write.faro.receiver]
+              traces = [otelcol.exporter.otlp.tempo.input]
+            }
+          }
+
+          loki.write "faro" {
+            endpoint {
+              url = "http://loki-loki-gateway.loki.svc.cluster.local/loki/api/v1/push"
+            }
+          }
+
+          otelcol.exporter.otlp "tempo" {
+            client {
+              endpoint = "tempo-tempo-release.tempo.svc.cluster.local:4317"
+              tls {
+                insecure = true
+              }
+            }
+          }

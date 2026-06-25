@@ -129,6 +129,34 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: nginx-faro
+  namespace: default
+data:
+  faro.conf: |
+    server {
+        listen 80;
+        listen [::]:80;
+        listen 443;
+        listen [::]:443;
+        server_name faro.wololoaeyoyo.com;
+
+        location / {
+            proxy_pass http://alloy-faro.alloy.svc.cluster.local:12347;
+
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+
+            # No basic auth — browsers need unauthenticated access
+            # CORS is handled by the Alloy faro.receiver component
+        }
+    }
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: nginx-pihole
   namespace: default
 data:

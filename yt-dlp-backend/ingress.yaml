@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: yt-dlp-backend-ingress
+  namespace: yt-dlp-backend
+  annotations:
+    kubernetes.io/ingress.class: cloudflare-tunnel
+spec:
+  rules:
+    - host: yt-dlp.wololoaeyoyo.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: yt-dlp-backend
+                port:
+                  number: 8000

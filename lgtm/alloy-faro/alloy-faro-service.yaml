@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: alloy-faro
+  namespace: alloy
+spec:
+  selector:
+    app.kubernetes.io/name: alloy
+    app.kubernetes.io/instance: alloy-faro
+  type: ClusterIP
+  ports:
+    - name: faro
+      port: 12347
+      targetPort: 12347
+      protocol: TCP

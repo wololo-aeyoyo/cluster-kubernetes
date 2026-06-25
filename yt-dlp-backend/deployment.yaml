@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yt-dlp-backend
+  namespace: yt-dlp-backend
+  labels:
+    app: yt-dlp-backend
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: yt-dlp-backend
+  template:
+    metadata:
+      labels:
+        app: yt-dlp-backend
+    spec:
+      containers:
+        - name: yt-dlp-backend
+          image: ghcr.io/wololo-aeyoyo/yt-dlp-backend:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: CHIBISAFE_BASE_URL
+              value: "https://chibisafe.wololoaeyoyo.com"
+            - name: DOWNLOAD_DIR
+              value: "/tmp/yt-dlp-downloads"
+            - name: MAX_FILESIZE_MB
+              value: "2000"
+            - name: PG_HOST
+              value: "192.168.1.82"
+            - name: PG_PORT
+              value: "5432"
+            - name: PG_USER
+              valueFrom:
+                secretKeyRef:
+                  name: yt-dlp-secret
+                  key: PG_USER
+            - name: PG_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: yt-dlp-secret
+                  key: PG_DATABASE
+            - name: JWT_EXPIRE_HOURS
+              value: "24"
+            - name: ENVIRONMENT
+              value: "production"
+            - name: JSON_LOGS
+              value: "true"
+            - name: LOKI_URL
+              value: "http://loki-loki-gateway.loki.svc.cluster.local/loki/api/v1/push"
+            - name: OTEL_ENDPOINT
+              value: "http://tempo-tempo-release.tempo.svc.cluster.local:4317"
+            - name: MIMIR_URL
+              value: "http://mimir-mimir-gateway.mimir.svc.cluster.local/api/v1/push"
+            - name: PYROSCOPE_URL
+              value: "http://pyroscope-pyroscope.pyroscope.svc.cluster.local:4040"
+            - name: CHIBISAFE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: yt-dlp-secret
+                  key: CHIBISAFE_API_KEY
+            - name: PG_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: yt-dlp-secret
+                  key: PG_PASSWORD
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: yt-dlp-secret
+                  key: JWT_SECRET
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
