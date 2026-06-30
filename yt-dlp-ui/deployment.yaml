@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: yt-dlp-ui
-          image: ghcr.io/wololo-aeyoyo/yt-dlp-ui:main-00000000000000 # {"$imagepolicy": "flux-system:yt-dlp-ui"}
+          image: ghcr.io/wololo-aeyoyo/yt-dlp-ui:main-20260630030620 # {"$imagepolicy": "flux-system:yt-dlp-ui"}
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
