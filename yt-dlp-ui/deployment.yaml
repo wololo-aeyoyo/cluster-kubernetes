@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yt-dlp-ui
+  namespace: yt-dlp-ui
+  labels:
+    app: yt-dlp-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: yt-dlp-ui
+  template:
+    metadata:
+      labels:
+        app: yt-dlp-ui
+    spec:
+      containers:
+        - name: yt-dlp-ui
+          image: ghcr.io/wololo-aeyoyo/yt-dlp-ui:main-00000000000000 # {"$imagepolicy": "flux-system:yt-dlp-ui"}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: VITE_API_BASE
+              value: "https://yt-dlp.wololoaeyoyo.com"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi

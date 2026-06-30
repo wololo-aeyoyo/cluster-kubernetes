@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: yt-dlp-ui-ingress
+  namespace: yt-dlp-ui
+  annotations:
+    kubernetes.io/ingress.class: cloudflare-tunnel
+spec:
+  rules:
+    - host: yt-dlp-ui.wololoaeyoyo.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: yt-dlp-ui
+                port:
+                  number: 8080
