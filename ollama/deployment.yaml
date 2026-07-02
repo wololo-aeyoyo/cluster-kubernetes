@@ -24,7 +24,7 @@ spec:
             - |
               /bin/ollama serve &
               OLLAMA_PID=$!
-              until curl -sf http://localhost:11434/api/version > /dev/null 2>&1; do
+              until wget -qO- http://localhost:11434/api/version > /dev/null 2>&1; do
                 sleep 1
               done
               ollama pull kimi-k2.6:cloud
