@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ollama
+  namespace: ollama
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ollama
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: ollama
+    spec:
+      initContainers:
+        - name: model-pull
+          image: ollama/ollama:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              /bin/ollama serve &
+              OLLAMA_PID=$!
+              until curl -sf http://localhost:11434/api/version > /dev/null 2>&1; do
+                sleep 1
+              done
+              ollama pull kimi-k2.6:cloud
+              kill $OLLAMA_PID
+          volumeMounts:
+            - mountPath: /root/.ollama
+              name: ollama-data
+      containers:
+        - name: ollama
+          image: ollama/ollama:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 11434
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 500m
+              memory: 2Gi
+            limits:
+              cpu: "4"
+              memory: 16Gi
+          volumeMounts:
+            - mountPath: /root/.ollama
+              name: ollama-data
+      volumes:
+        - name: ollama-data
+          persistentVolumeClaim:
+            claimName: ollama-data

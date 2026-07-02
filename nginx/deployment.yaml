@@ -57,6 +57,10 @@ spec:
             mountPath: /etc/nginx/sites-enabled/faro.conf
             subPath: faro.conf
 
+          - name: nginx-ollama
+            mountPath: /etc/nginx/sites-enabled/ollama.conf
+            subPath: ollama.conf
+
       volumes:
         - name: nginx-config
           configMap:
@@ -106,3 +110,10 @@ spec:
             items:
               - key: faro.conf
                 path: faro.conf
+
+        - name: nginx-ollama
+          configMap:
+            name: nginx-ollama
+            items:
+              - key: ollama.conf
+                path: ollama.conf
