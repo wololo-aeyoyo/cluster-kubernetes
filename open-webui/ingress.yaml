@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: open-webui-ingress
+  namespace: open-webui
+  annotations:
+    kubernetes.io/ingress.class: cloudflare-tunnel
+spec:
+  rules:
+    - host: open-webui.wololoaeyoyo.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: open-webui
+                port:
+                  number: 8080
