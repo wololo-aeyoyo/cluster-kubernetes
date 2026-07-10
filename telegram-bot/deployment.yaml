@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: telegram-bot
-          image: ghcr.io/wololo-aeyoyo/telegram_bot:main-20260710024527 # {"$imagepolicy": "flux-system:telegram-bot"}
+          image: ghcr.io/wololo-aeyoyo/telegram_bot:main-20260710170206 # {"$imagepolicy": "flux-system:telegram-bot"}
           imagePullPolicy: Always
           env:
             # --- Telegram ---
