@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telegram-bot
+  namespace: telegram-bot
+  labels:
+    app: telegram-bot
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: telegram-bot
+  template:
+    metadata:
+      labels:
+        app: telegram-bot
+    spec:
+      containers:
+        - name: telegram-bot
+          image: ghcr.io/wololo-aeyoyo/telegram_bot:main-20260709000000 # {"$imagepolicy": "flux-system:telegram-bot"}
+          imagePullPolicy: Always
+          env:
+            # --- Telegram ---
+            - name: TELEGRAM_BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: telegram-bot-secret
+                  key: TELEGRAM_BOT_TOKEN
+            - name: TELEGRAM_ALLOWED_USER_IDS
+              valueFrom:
+                secretKeyRef:
+                  name: telegram-bot-secret
+                  key: TELEGRAM_ALLOWED_USER_IDS
+            - name: TELEGRAM_TRIGGER_PREFIXES
+              value: "bot,hey bot,ok bot,yo bot,botto,bottino,oi,ao,robocla,robot,clanker"
+            # --- LLM router (NVIDIA NIM) ---
+            - name: LLM_BASE_URL
+              value: "https://integrate.api.nvidia.com/v1"
+            - name: LLM_MODEL
+              value: "deepseek-ai/deepseek-v4-flash"
+            - name: LLM_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: telegram-bot-secret
+                  key: LLM_API_KEY
+            # --- yt-dlp backend (in-cluster) ---
+            - name: YTDLP_BASE_URL
+              value: "http://yt-dlp-backend.yt-dlp-backend.svc.cluster.local:8000"
+            - name: YTDLP_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: telegram-bot-secret
+                  key: YTDLP_USERNAME
+            - name: YTDLP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: telegram-bot-secret
+                  key: YTDLP_PASSWORD
+            # --- Spotify ---
+            - name: SPOTIFY_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: telegram-bot-secret
+                  key: SPOTIFY_CLIENT_ID
+            - name: SPOTIFY_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: telegram-bot-secret
+                  key: SPOTIFY_CLIENT_SECRET
+            - name: SPOTIFY_REFRESH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: telegram-bot-secret
+                  key: SPOTIFY_REFRESH_TOKEN
+            - name: SPOTIFY_DEFAULT_PLAYLIST_ID
+              valueFrom:
+                secretKeyRef:
+                  name: telegram-bot-secret
+                  key: SPOTIFY_DEFAULT_PLAYLIST_ID
+            # --- Gelbooru ---
+            - name: GELBOORU_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: telegram-bot-secret
+                  key: GELBOORU_API_KEY
+            - name: GELBOORU_USER_ID
+              valueFrom:
+                secretKeyRef:
+                  name: telegram-bot-secret
+                  key: GELBOORU_USER_ID
+            - name: GELBOORU_RATING
+              value: "all"
+            # --- Observability (LGTM stack) ---
+            - name: OTEL_SERVICE_NAME
+              value: "telegram-bot"
+            - name: OTEL_SERVICE_VERSION
+              value: "0.1.0"
+            - name: LOG_LEVEL
+              value: "info"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://tempo-tempo-release.tempo.svc.cluster.local:4318"
+            - name: PYROSCOPE_SERVER_ADDRESS
+              value: "http://pyroscope-pyroscope.pyroscope.svc.cluster.local:4040"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
