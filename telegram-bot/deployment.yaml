@@ -39,7 +39,7 @@ spec:
             - name: LLM_BASE_URL
               value: "https://integrate.api.nvidia.com/v1"
             - name: LLM_MODEL
-              value: "deepseek-ai/deepseek-v4-flash"
+              value: "nvidia/nemotron-3-nano-30b-a3b"
             - name: LLM_API_KEY
               valueFrom:
                 secretKeyRef:
