@@ -31,6 +31,28 @@ data:
     podLogsViaKubernetesApi:
       enabled: true
       collector: alloy-logs
+      extraLogProcessingStages: |
+        stage.json {
+          expressions = {
+            level = "level",
+            severity = "severity",
+          }
+        }
+        stage.logfmt {
+          mapping = {
+            level = "",
+            severity = "",
+          }
+        }
+        stage.regex {
+          expression = "(?i)(?:^|\\s)(?:level|lvl|severity)[=:\"]+\\s*(?P<level>error|warn(?:ing)?|info|debug|critical|fatal|trace)"
+        }
+        stage.labels {
+          values = {
+            level = "",
+            severity = "",
+          }
+        }
 
     clusterEvents:
       enabled: true
