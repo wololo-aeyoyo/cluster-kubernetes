@@ -38,12 +38,6 @@ data:
             severity = "severity",
           }
         }
-        stage.logfmt {
-          mapping = {
-            level = "",
-            severity = "",
-          }
-        }
         stage.regex {
           expression = "(?i)(?:^|\\s)(?:level|lvl|severity)[=:\"]+\\s*(?P<level>error|warn(?:ing)?|info|debug|critical|fatal|trace)"
         }
