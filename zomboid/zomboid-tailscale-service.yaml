@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: zomboid-tailscale
+  namespace: zomboid
+  annotations:
+    tailscale.com/expose: "true"
+    tailscale.com/hostname: "zomboid"
+spec:
+  type: ClusterIP
+  selector:
+    app: zomboid-dedicated-server
+    release: zomboid-zomboid-deployment
+  ports:
+    - name: game-port
+      port: 16261
+      targetPort: 16261
+      protocol: UDP
+    - name: direct-port
+      port: 16262
+      targetPort: 16262
+      protocol: UDP
