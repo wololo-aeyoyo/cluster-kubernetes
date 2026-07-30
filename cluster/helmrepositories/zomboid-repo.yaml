@@ -1,0 +1,8 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: zomboid-repo
+  namespace: zomboid
+spec:
+  interval: 1m0s
+  url: https://jsknnr.github.io/helm-charts
