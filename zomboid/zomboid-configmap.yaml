@@ -9,8 +9,11 @@ data:
       type: ClusterIP
     resources:
       requests:
-        memory: 12G
-        cpu: 6.0
+        memory: 5Gi
+        cpu: 1.5
+      limits:
+        memory: 6Gi
+        cpu: 3.0
     volumes:
       serverPVC:
         size: 25Gi
@@ -20,7 +23,7 @@ data:
     config:
       serverName: "Merwebo Zomboid"
       mapNames: "Muldraugh, KY"
-      maxMemory: "10g"
+      maxMemory: "4g"
       maxPlayers: "16"
       pvp: "true"
       public: "false"
