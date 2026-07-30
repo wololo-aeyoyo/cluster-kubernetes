@@ -35,5 +35,5 @@ data:
       steamVAC: "true"
       antiCheatType21: "true"
       # True Music, Common Sense, Better Sorting
-      modIDs: "2613146550;2875848298;2313387159"
-      modNames: "truemusic;BB_CommonSense;BetterSortCC"
+      # modIDs: "2613146550;2875848298;2313387159"
+      #modNames: "truemusic;BB_CommonSense;BetterSortCC"
