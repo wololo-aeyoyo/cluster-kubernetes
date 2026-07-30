@@ -35,5 +35,13 @@ spec:
               spec:
                 template:
                   spec:
+                    containers:
+                      - name: zomboid-dedicated-server
+                        env:
+                          - name: SERVER_IP
+                            valueFrom:
+                              fieldRef:
+                                apiVersion: v1
+                                fieldPath: status.podIP
                     nodeSelector:
                       kubernetes.io/arch: amd64
