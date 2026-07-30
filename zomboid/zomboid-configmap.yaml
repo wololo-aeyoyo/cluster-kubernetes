@@ -24,7 +24,7 @@ data:
       storageClassName: longhorn
     config:
       serverName: "Merwebo Zomboid"
-      mapNames: "Muldraugh, KY"
+      # mapNames: "Muldraugh, KY"
       maxMemory: "4g"
       maxPlayers: "16"
       pvp: "true"
