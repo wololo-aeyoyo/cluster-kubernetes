@@ -10,6 +10,12 @@ data:
     alloy:
       listenAddr: 0.0.0.0
       listenPort: 12345
+      extraEnv:
+        - name: FARO_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: alloy-collector-secret
+              key: FARO_API_KEY
       configMap:
         create: true
         name: alloy-collector-configmap
@@ -19,6 +25,7 @@ data:
               listen_address       = "0.0.0.0"
               listen_port          = 12347
               cors_allowed_origins = ["*"]
+              api_key              = sys.env("FARO_API_KEY")
             }
 
             output {
