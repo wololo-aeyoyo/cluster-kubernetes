@@ -141,7 +141,7 @@ data:
         server_name faro.wololoaeyoyo.com;
 
         location / {
-            proxy_pass http://alloy-faro.alloy.svc.cluster.local:12347;
+            proxy_pass http://alloy-collector.alloy.svc.cluster.local:12347;
 
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;

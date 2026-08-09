@@ -1,7 +1,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: alloy-faro
+  name: alloy-collector
   namespace: alloy
 spec:
   targetNamespace: alloy
@@ -17,5 +17,5 @@ spec:
   interval: 1m0s
   valuesFrom:
     - kind: ConfigMap
-      name: alloy-faro-configmap
+      name: alloy-collector-configmap
       valuesKey: values.yaml
