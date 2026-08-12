@@ -10,6 +10,8 @@ data:
     alloy:
       listenAddr: 0.0.0.0
       listenPort: 12345
+      extraArgs:
+        - --log.level=debug
       extraEnv:
         - name: FARO_API_KEY
           valueFrom:
