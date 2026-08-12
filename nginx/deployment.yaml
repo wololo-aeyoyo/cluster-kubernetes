@@ -57,6 +57,14 @@ spec:
             mountPath: /etc/nginx/sites-enabled/ollama.conf
             subPath: ollama.conf
 
+          - name: nginx-otlp-http
+            mountPath: /etc/nginx/sites-enabled/otlp-http.conf
+            subPath: otlp-http.conf
+
+          - name: nginx-otlp-grpc
+            mountPath: /etc/nginx/sites-enabled/otlp-grpc.conf
+            subPath: otlp-grpc.conf
+
       volumes:
         - name: nginx-config
           configMap:
@@ -106,3 +114,17 @@ spec:
             items:
               - key: ollama.conf
                 path: ollama.conf
+
+        - name: nginx-otlp-http
+          configMap:
+            name: nginx-otlp-http
+            items:
+              - key: otlp-http.conf
+                path: otlp-http.conf
+
+        - name: nginx-otlp-grpc
+          configMap:
+            name: nginx-otlp-grpc
+            items:
+              - key: otlp-grpc.conf
+                path: otlp-grpc.conf

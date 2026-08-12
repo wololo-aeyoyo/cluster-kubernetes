@@ -51,6 +51,46 @@ data:
             }
           }
 
+          otelcol.receiver.otlp "otlp_ingest" {
+            grpc {
+              endpoint = "0.0.0.0:4317"
+            }
+            http {
+              endpoint = "0.0.0.0:4318"
+            }
+
+            output {
+              metrics = [otelcol.processor.batch.otlp_ingest.input]
+              logs    = [otelcol.processor.batch.otlp_ingest.input]
+              traces  = [otelcol.processor.batch.otlp_ingest.input]
+            }
+          }
+
+          otelcol.processor.batch "otlp_ingest" {
+            output {
+              metrics = [otelcol.exporter.prometheus.otlp_ingest.input]
+              logs    = [otelcol.exporter.loki.otlp_ingest.input]
+              traces  = [otelcol.exporter.otlphttp.tempo_otlp.input]
+            }
+          }
+
+          otelcol.exporter.otlphttp "tempo_otlp" {
+            client {
+              endpoint = "http://tempo-tempo-release.tempo.svc.cluster.local:4318"
+              tls {
+                insecure = true
+              }
+            }
+          }
+
+          otelcol.exporter.prometheus "otlp_ingest" {
+            forward_to = [prometheus.remote_write.mimir.receiver]
+          }
+
+          otelcol.exporter.loki "otlp_ingest" {
+            forward_to = [loki.write.faro.receiver]
+          }
+
           prometheus.exporter.self "alloy_collector" { }
 
           prometheus.scrape "alloy_collector" {

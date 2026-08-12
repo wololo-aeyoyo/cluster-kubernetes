@@ -183,3 +183,54 @@ data:
             auth_basic_user_file /etc/nginx/pass.txt;
         }
     }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-otlp-http
+  namespace: default
+data:
+  otlp-http.conf: |
+    server {
+        listen 80;
+        listen [::]:80;
+        listen 443;
+        listen [::]:443;
+        server_name otlp.wololoaeyoyo.com;
+
+        location / {
+            proxy_pass http://alloy-collector.alloy.svc.cluster.local:4318;
+
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+
+            auth_basic           "Administrator's Area";
+            auth_basic_user_file /etc/nginx/pass.txt;
+        }
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-otlp-grpc
+  namespace: default
+data:
+  otlp-grpc.conf: |
+    server {
+        listen 80;
+        listen [::]:80;
+        listen 443;
+        listen [::]:443;
+        http2 on;
+        server_name otlp-grpc.wololoaeyoyo.com;
+
+        auth_basic           "Administrator's Area";
+        auth_basic_user_file /etc/nginx/pass.txt;
+
+        location / {
+            grpc_pass grpc://alloy-collector.alloy.svc.cluster.local:4317;
+            proxy_set_header Host $host;
+        }
+    }

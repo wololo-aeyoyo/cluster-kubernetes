@@ -101,13 +101,13 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: faro-ingress
+  name: ollama-ingress
   namespace: default
   annotations:
     kubernetes.io/ingress.class: cloudflare-tunnel
 spec:
   rules:
-    - host: faro.wololoaeyoyo.com
+    - host: ollama.wololoaeyoyo.com
       http:
         paths:
           - path: /
@@ -121,13 +121,33 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ollama-ingress
+  name: otlp-http-ingress
   namespace: default
   annotations:
     kubernetes.io/ingress.class: cloudflare-tunnel
 spec:
   rules:
-    - host: ollama.wololoaeyoyo.com
+    - host: otlp.wololoaeyoyo.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx
+                port:
+                  number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: otlp-grpc-ingress
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: cloudflare-tunnel
+spec:
+  rules:
+    - host: otlp-grpc.wololoaeyoyo.com
       http:
         paths:
           - path: /
