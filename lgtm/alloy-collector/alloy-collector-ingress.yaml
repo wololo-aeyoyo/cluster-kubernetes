@@ -14,6 +14,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: alloy-collector
+                name: alloy-alloy-collector
                 port:
                   number: 12347
