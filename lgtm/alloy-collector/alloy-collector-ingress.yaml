@@ -16,4 +16,4 @@ spec:
               service:
                 name: alloy-alloy-collector
                 port:
-                  number: 12347
+                  number: 12345
