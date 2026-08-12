@@ -53,10 +53,6 @@ spec:
             mountPath: /etc/nginx/sites-enabled/pihole.conf
             subPath: pihole.conf
 
-          - name: nginx-faro
-            mountPath: /etc/nginx/sites-enabled/faro.conf
-            subPath: faro.conf
-
           - name: nginx-ollama
             mountPath: /etc/nginx/sites-enabled/ollama.conf
             subPath: ollama.conf
@@ -103,13 +99,6 @@ spec:
             items:
               - key: pihole.conf
                 path: pihole.conf
-
-        - name: nginx-faro
-          configMap:
-            name: nginx-faro
-            items:
-              - key: faro.conf
-                path: faro.conf
 
         - name: nginx-ollama
           configMap:
