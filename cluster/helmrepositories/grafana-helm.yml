@@ -16,5 +16,5 @@ spec:
   interval: 10m
   url: oci://ghcr.io/grafana/kustomize/grafana-operator
   ref:
-    tag: v5.22.2
+    tag: v5.24.0
 
