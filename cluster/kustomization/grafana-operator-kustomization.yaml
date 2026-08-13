@@ -8,7 +8,7 @@ spec:
   targetNamespace: grafana
   images:
     - name: ghcr.io/grafana/grafana-operator
-      newTag: v5.22.2
+      newTag: v5.24.0
   prune: true
   sourceRef:
     kind: OCIRepository
