@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kanpachi-state
+  namespace: zomboid
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      # /var/lib/kanpachi holds identity.key, api.token and hosted-room.json.
+      # It is load-bearing rather than large: losing it loses the room's network
+      # identity, which means a new invite code and every guest credential void.
+      storage: 1Gi
