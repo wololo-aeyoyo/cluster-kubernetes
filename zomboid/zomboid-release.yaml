@@ -52,7 +52,7 @@ spec:
                     # the upstream image stays untouched.
                     initContainers:
                       - name: kanpachi
-                        image: ghcr.io/wololo-aeyoyo/kanpachi-sidecar:0.4.0-2
+                        image: ghcr.io/wololo-aeyoyo/kanpachi-sidecar:0.4.0-3
                         restartPolicy: Always
                         env:
                           - name: ROOM_NAME
