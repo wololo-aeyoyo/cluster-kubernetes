@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Stub kanpachid emulating the 0.4.0 startup contract:
+#   - opens the control socket FIRST, then reopens the saved room behind it
+#     (daemon/service/arranque.go:155 reabrirLaSala, in a goroutine)
+#   - SIGTERM takes LeaveRoomOnShutdown -> conservarParaReabrir: the saved-room
+#     file is KEPT, not cleared
+#
+# FAKE_RESOLVE_DELAY controls how long before the reopen leaves Idle. It is the
+# knob that decides who wins the resume race, so vary it.
+set -uo pipefail
+
+SOCK=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --pipe) SOCK="$2"; shift 2 ;;
+    *) shift ;;
+  esac
+done
+
+STATE_DIR="${KANPACHI_STATE_DIR:?}"
+RUN_DIR="$(dirname "$SOCK")"
+echo "idle" > "$RUN_DIR/conn"
+
+python3 -c "
+import socket,sys,os,time
+p=sys.argv[1]
+try: os.unlink(p)
+except FileNotFoundError: pass
+s=socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+s.bind(p); s.listen(5)
+open(p+'.ready','w').close()
+while True: time.sleep(3600)
+" "$SOCK" &
+PY=$!
+
+trap 'echo "[stub] SIGTERM: keeping the saved room" >&2; kill $PY 2>/dev/null; exit 0' TERM INT
+
+while [ ! -e "$SOCK.ready" ]; do sleep 0.1; done
+
+if [ -f "$STATE_DIR/hosted-room.json" ]; then
+  echo "[stub] a saved room exists, reopening it by myself" >&2
+  (
+    sleep "${FAKE_RESOLVE_DELAY:-1}"; echo "resolving"  > "$RUN_DIR/conn"
+    sleep 2;                          echo "connecting" > "$RUN_DIR/conn"
+    sleep 2; echo "${FAKE_REOPEN_RESULT:-connected}"    > "$RUN_DIR/conn"
+    echo "[stub] reopen finished: $(cat "$RUN_DIR/conn")" >&2
+  ) &
+fi
+
+wait $PY

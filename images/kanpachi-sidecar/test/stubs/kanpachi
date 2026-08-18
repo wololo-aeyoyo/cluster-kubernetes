@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# Stub kanpachi CLI enforcing the 0.4.0 rules that matter here:
+#   - `resume` returns ErrBusy (exit 1) unless conn is idle  (ResumeRoom)
+#   - `--yes` is a flag of host/join/upgrade ONLY; elsewhere it is usage, exit 2
+#   - `leave` CLOSES the room and clears the saved-room file  (ClearRoom)
+set -uo pipefail
+
+STATE_DIR="${KANPACHI_STATE_DIR:?}"
+RUN_DIR="${KANPACHI_RUN_DIR:?}"
+CONN_FILE="$RUN_DIR/conn"
+JSON=0
+
+args=()
+for a in "$@"; do
+  case "$a" in
+    --json) JSON=1 ;;
+    *) args+=("$a") ;;
+  esac
+done
+set -- "${args[@]}"
+
+conn() { cat "$CONN_FILE" 2>/dev/null || echo idle; }
+CMD="${1:-}"; shift || true
+
+case "$CMD" in
+  seed)     echo "seed set to ${1:-}" ; exit 0 ;;
+  password) cat > /dev/null; echo "password accepted"; exit 0 ;;
+
+  status)
+    c="$(conn)"
+    if [ "$JSON" = 1 ]; then
+      if [ "$c" = connected ] || [ "$c" = degraded ]; then
+        echo "{\"conn\":\"$c\",\"role\":\"host\",\"local_ip\":\"100.91.191.1\",\"subnet\":\"100.91.191.0/24\"}"
+      else
+        echo "{\"conn\":\"$c\",\"role\":\"host\"}"
+      fi
+    else
+      echo "conn $c"
+    fi
+    exit 0 ;;
+
+  pending)
+    if [ -f "$STATE_DIR/hosted-room.json" ]; then
+      [ "$JSON" = 1 ] && echo '{"found":true,"room":{"name":"Merwebo Zomboid","code":"VA3BSF5L"}}' || echo "Saved room Merwebo Zomboid"
+    else
+      [ "$JSON" = 1 ] && echo '{"found":false}' || echo "No room was left from the previous start."
+    fi
+    exit 0 ;;
+
+  host)
+    if [ "${1:-}" != "--yes" ]; then
+      echo "this needs you to confirm the registry, and there is no terminal to ask in" >&2; exit 1
+    fi
+    shift
+    echo "{\"name\":\"$*\"}" > "$STATE_DIR/hosted-room.json"
+    echo connected > "$CONN_FILE"
+    echo "room open: $*"; exit 0 ;;
+
+  resume)
+    for a in "$@"; do
+      case "$a" in
+        --*) echo "kanpachi: unknown flag $a for resume" >&2; exit 2 ;;
+      esac
+    done
+    if [ "$(conn)" != idle ]; then
+      echo "ErrBusy: ya hay una sala en marcha" >&2; exit 1
+    fi
+    [ -f "$STATE_DIR/hosted-room.json" ] || { echo "ErrNoSavedRoom" >&2; exit 1; }
+    echo connected > "$CONN_FILE"
+    echo "resumed"; exit 0 ;;
+
+  game)  echo "profile ${1:-<none>} applied"; exit 0 ;;
+  link)  echo "https://kanpachi.accentio.dev/VA3BSF5L#k3y"; exit 0 ;;
+  leave) rm -f "$STATE_DIR/hosted-room.json"; echo idle > "$CONN_FILE"; echo "left"; exit 0 ;;
+  *)     echo "kanpachi: unknown command ${CMD}" >&2; exit 2 ;;
+esac

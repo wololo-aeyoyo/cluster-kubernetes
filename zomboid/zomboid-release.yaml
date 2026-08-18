@@ -43,5 +43,54 @@ spec:
                               fieldRef:
                                 apiVersion: v1
                                 fieldPath: status.podIP
+                    # A native sidecar (k8s >= 1.29): it starts before the game
+                    # and is torn down after it, and the chart's Deployment
+                    # template has no extraContainers hook, so post-render is the
+                    # only way in. Containers in a pod share one network
+                    # namespace, so the TUN adapter this creates is visible to
+                    # Zomboid as if Kanpachi were installed alongside it, while
+                    # the upstream image stays untouched.
+                    initContainers:
+                      - name: kanpachi
+                        image: ghcr.io/wololo-aeyoyo/kanpachi-sidecar:0.4.0-1
+                        restartPolicy: Always
+                        env:
+                          - name: ROOM_NAME
+                            value: "Merwebo Zomboid"
+                        envFrom:
+                          - secretRef:
+                              name: kanpachi-secret
+                        securityContext:
+                          # The chart sets runAsUser 10000 at pod level; this
+                          # container-level override wins for the sidecar alone.
+                          # Its allowPrivilegeEscalation: false is set on the
+                          # Zomboid container, so it does not constrain us.
+                          runAsUser: 0
+                          runAsGroup: 0
+                          allowPrivilegeEscalation: true
+                          capabilities:
+                            add: ["NET_ADMIN", "NET_RAW"]
+                        volumeMounts:
+                          - name: kanpachi-state
+                            mountPath: /var/lib/kanpachi
+                          - name: kanpachi-run
+                            mountPath: /run/kanpachi
+                          - name: kanpachi-shared
+                            mountPath: /shared
+                          - name: dev-net-tun
+                            mountPath: /dev/net/tun
+                    volumes:
+                      - name: kanpachi-state
+                        persistentVolumeClaim:
+                          claimName: kanpachi-state
+                      - name: kanpachi-run
+                        emptyDir:
+                          medium: Memory
+                      - name: kanpachi-shared
+                        emptyDir: {}
+                      - name: dev-net-tun
+                        hostPath:
+                          path: /dev/net/tun
+                          type: CharDevice
                     nodeSelector:
                       kubernetes.io/arch: amd64
