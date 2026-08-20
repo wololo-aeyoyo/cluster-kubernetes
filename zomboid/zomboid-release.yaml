@@ -41,38 +41,32 @@ spec:
                     terminationGracePeriodSeconds: 60
                     containers:
                       - name: zomboid-dedicated-server
-                        # -nosteam has to be injected rather than passed. The
-                        # image's entrypoint builds LAUNCH_ARGS itself and
-                        # forwards nothing from argv, its CMD is the entrypoint
-                        # (so a plain args: would replace it, not extend the
-                        # game's flags), and the chart exposes no extraArgs. So
-                        # the script is edited on the way past, in /tmp; the
-                        # image and the PVCs stay untouched. If a future image
-                        # changes that array the sed stops matching, which is
-                        # why the grep is here: fail loudly rather than boot a
-                        # Steam-enabled server nobody can join.
-                        command: ["/bin/bash", "-c"]
-                        args:
-                          - |
-                            set -euo pipefail
-                            cp /home/steam/entrypoint.sh /tmp/entrypoint.sh
-                            sed -i 's|^  -cachedir=|  -nosteam\n  -cachedir=|' /tmp/entrypoint.sh
-                            grep -q -- -nosteam /tmp/entrypoint.sh || {
-                              echo "ERROR: -nosteam was not injected; the image's entrypoint changed shape" >&2
-                              exit 1
-                            }
-                            exec /tmp/entrypoint.sh
+                        # No -nosteam, and no entrypoint rewrite to inject it.
+                        # A Steam client will not talk to a -nosteam server, and
+                        # everybody joining this room owns the game on Steam.
+                        # Measured on the same setup: with it, the client said
+                        # "server failed to respond" while a raw RakNet probe
+                        # from a socket got OPEN_CONNECTION_REPLY_1 back, so the
+                        # server was up and the game refused it. Without it, the
+                        # client connects.
+                        #
+                        # A Steam server needs 8766-8767 as well as 16261-16262.
+                        # Kanpachi 0.6.8 opens both ranges for this profile.
                         env:
-                          # 0.0.0.0, and NOT the pod's IP. Sharing a network
-                          # namespace is not enough: Kanpachi delivers real
-                          # packets to its own address on kanpachi0, so a server
-                          # bound to the pod's address never sees them and the
-                          # kernel answers "udp port 16261 unreachable" to every
-                          # guest while the tunnel, the ports and every screen
-                          # look perfect. Tailscale hides this because its
-                          # sidecar terminates traffic and forwards it to the pod
-                          # IP; Kanpachi does not proxy. Measured 2026-08-19 with
-                          # a drop capture on a guest.
+                          # The image REJECTS this value on purpose. Its
+                          # entrypoint reads:
+                          #
+                          #   if [ "${SERVER_IP}" == "0.0.0.0" ] || [ -z ... ]
+                          #     SERVER_IP=$(hostname -i)
+                          #
+                          # so the server binds to the pod's address either way,
+                          # and unsetting this changes nothing but the wording of
+                          # the warning. Kanpachi is what makes the room reach it:
+                          # in a container it sends the room's traffic to wherever
+                          # the game actually listens, in the profile's ports, and
+                          # `kanpachi status` names the address. It is kept here
+                          # so a future image that honours 0.0.0.0 gets the better
+                          # bind for free.
                           - name: SERVER_IP
                             value: "0.0.0.0"
                     # A native sidecar (k8s >= 1.29): it starts before the game
@@ -88,12 +82,20 @@ spec:
                         # Upstream's own image. Only whole versions are
                         # published, so it is pinned rather than :latest.
                         #
-                        # 0.6.6 or newer: it says whether the game's server is
-                        # actually listening, and where. If the bind above ever
-                        # goes back to a single address, this version sends the
-                        # room's traffic there anyway and says so, instead of
-                        # leaving a room that looks healthy and is not.
-                        image: ghcr.io/alvarogabrielgomez/kanpachi:0.6.6
+                        # 0.6.8 or newer, and 0.6.6 does not work here. On 0.6.6
+                        # the host only recalculated its firewall rules from the
+                        # engine's `peers_changed` event, and that event does not
+                        # arrive: a guest holds a credential and an open control
+                        # channel, the host still counts one member, and every
+                        # packet for the game dies at the host's own gate. Fixed
+                        # in 0.6.7.
+                        #
+                        # 0.6.8 adds the rest of what this deployment needs: the
+                        # redirect travels to the guests instead of only being
+                        # applied here, a change in it is announced at once
+                        # rather than up to two minutes later, and the Zomboid
+                        # profile carries Steam's ports.
+                        image: ghcr.io/alvarogabrielgomez/kanpachi:0.6.8
                         restartPolicy: Always
                         env:
                           # The only name the guests get to read. Without it the
