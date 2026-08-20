@@ -41,6 +41,27 @@ spec:
                     terminationGracePeriodSeconds: 60
                     containers:
                       - name: zomboid-dedicated-server
+                        # -nosteam has to be injected rather than passed. The
+                        # image's entrypoint builds LAUNCH_ARGS itself and
+                        # forwards nothing from argv, its CMD is the entrypoint
+                        # (so a plain `args:` would replace it, not extend the
+                        # game's flags), and the chart exposes no extraArgs. So
+                        # the script is edited on the way past, in /tmp; the
+                        # image and the PVCs stay untouched. If a future image
+                        # changes that array the sed stops matching, which is
+                        # why the grep is here: fail loudly rather than boot a
+                        # Steam-enabled server nobody can join.
+                        command: ["/bin/bash", "-c"]
+                        args:
+                          - |
+                            set -euo pipefail
+                            cp /home/steam/entrypoint.sh /tmp/entrypoint.sh
+                            sed -i 's|^  -cachedir=|  -nosteam\n  -cachedir=|' /tmp/entrypoint.sh
+                            grep -q -- -nosteam /tmp/entrypoint.sh || {
+                              echo "ERROR: -nosteam was not injected; the image's entrypoint changed shape" >&2
+                              exit 1
+                            }
+                            exec /tmp/entrypoint.sh
                         env:
                           - name: SERVER_IP
                             valueFrom:
