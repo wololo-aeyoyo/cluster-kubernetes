@@ -35,6 +35,10 @@ spec:
               spec:
                 template:
                   spec:
+                    # Kanpachi's shutdown needs up to 45s, and cutting it short
+                    # leaves its nftables rules applied on the node. The default
+                    # 30 is not enough; upstream's compose asks for 60.
+                    terminationGracePeriodSeconds: 60
                     containers:
                       - name: zomboid-dedicated-server
                         env:
@@ -49,14 +53,25 @@ spec:
                     # only way in. Containers in a pod share one network
                     # namespace, so the TUN adapter this creates is visible to
                     # Zomboid as if Kanpachi were installed alongside it, while
-                    # the upstream image stays untouched.
+                    # the upstream image stays untouched. This is the k8s form of
+                    # upstream's docker/templates/compose.sidecar.yml.
                     initContainers:
                       - name: kanpachi
-                        image: ghcr.io/wololo-aeyoyo/kanpachi-sidecar:0.4.0-4
+                        # Upstream's own image. Only whole versions are
+                        # published, so it is pinned rather than :latest.
+                        image: ghcr.io/alvarogabrielgomez/kanpachi:0.6.4
                         restartPolicy: Always
                         env:
-                          - name: ROOM_NAME
+                          # The only name the guests get to read. Without it the
+                          # room is named after the pod's hostname.
+                          - name: KANPACHI_ROOM_NAME
                             value: "Merwebo Zomboid"
+                          # From the catalogue, and it brings the game's ports
+                          # with it. Excludes KANPACHI_PORTS_*.
+                          - name: KANPACHI_GAME
+                            value: "project-zomboid"
+                        # KANPACHI_SEED, and KANPACHI_SEED_PASSWORD if the
+                        # registry asks for one.
                         envFrom:
                           - secretRef:
                               name: kanpachi-secret
@@ -69,14 +84,18 @@ spec:
                           runAsGroup: 0
                           allowPrivilegeEscalation: true
                           capabilities:
+                            # NET_ADMIN is the one the entrypoint checks for:
+                            # the daemon builds a virtual adapter and writes
+                            # nftables rules.
                             add: ["NET_ADMIN", "NET_RAW"]
                         volumeMounts:
+                          # The room lives here: identity.key, the saved room,
+                          # the game profiles and the log.
                           - name: kanpachi-state
                             mountPath: /var/lib/kanpachi
+                          # The daemon's control socket, api.sock.
                           - name: kanpachi-run
                             mountPath: /run/kanpachi
-                          - name: kanpachi-shared
-                            mountPath: /shared
                           - name: dev-net-tun
                             mountPath: /dev/net/tun
                     volumes:
@@ -86,8 +105,6 @@ spec:
                       - name: kanpachi-run
                         emptyDir:
                           medium: Memory
-                      - name: kanpachi-shared
-                        emptyDir: {}
                       - name: dev-net-tun
                         hostPath:
                           path: /dev/net/tun
