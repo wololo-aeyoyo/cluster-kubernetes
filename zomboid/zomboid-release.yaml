@@ -44,7 +44,7 @@ spec:
                         # -nosteam has to be injected rather than passed. The
                         # image's entrypoint builds LAUNCH_ARGS itself and
                         # forwards nothing from argv, its CMD is the entrypoint
-                        # (so a plain `args:` would replace it, not extend the
+                        # (so a plain args: would replace it, not extend the
                         # game's flags), and the chart exposes no extraArgs. So
                         # the script is edited on the way past, in /tmp; the
                         # image and the PVCs stay untouched. If a future image
@@ -63,11 +63,18 @@ spec:
                             }
                             exec /tmp/entrypoint.sh
                         env:
+                          # 0.0.0.0, and NOT the pod's IP. Sharing a network
+                          # namespace is not enough: Kanpachi delivers real
+                          # packets to its own address on kanpachi0, so a server
+                          # bound to the pod's address never sees them and the
+                          # kernel answers "udp port 16261 unreachable" to every
+                          # guest while the tunnel, the ports and every screen
+                          # look perfect. Tailscale hides this because its
+                          # sidecar terminates traffic and forwards it to the pod
+                          # IP; Kanpachi does not proxy. Measured 2026-08-19 with
+                          # a drop capture on a guest.
                           - name: SERVER_IP
-                            valueFrom:
-                              fieldRef:
-                                apiVersion: v1
-                                fieldPath: status.podIP
+                            value: "0.0.0.0"
                     # A native sidecar (k8s >= 1.29): it starts before the game
                     # and is torn down after it, and the chart's Deployment
                     # template has no extraContainers hook, so post-render is the
@@ -80,7 +87,13 @@ spec:
                       - name: kanpachi
                         # Upstream's own image. Only whole versions are
                         # published, so it is pinned rather than :latest.
-                        image: ghcr.io/alvarogabrielgomez/kanpachi:0.6.4
+                        #
+                        # 0.6.6 or newer: it says whether the game's server is
+                        # actually listening, and where. If the bind above ever
+                        # goes back to a single address, this version sends the
+                        # room's traffic there anyway and says so, instead of
+                        # leaving a room that looks healthy and is not.
+                        image: ghcr.io/alvarogabrielgomez/kanpachi:0.6.6
                         restartPolicy: Always
                         env:
                           # The only name the guests get to read. Without it the
