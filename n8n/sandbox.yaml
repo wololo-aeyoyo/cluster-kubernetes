@@ -1,0 +1,153 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: sandbox-api
+  name: sandbox-api
+  namespace: n8n
+spec:
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    service: sandbox-api
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: sandbox-api
+  name: sandbox-api
+  namespace: n8n
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: sandbox-api
+  template:
+    metadata:
+      labels:
+        service: sandbox-api
+    spec:
+      hostname: sandbox-runner-1
+      initContainers:
+        - name: sandbox-certs
+          image: ghcr.io/n8n-io/n8n-sandbox-service-api:latest
+          command: ["sh", "-c"]
+          args:
+            - >
+              bootstrap-mtls.sh --out-dir /tls --api-san sandbox-api
+              --control-san-prefix sandbox-runner &&
+              chown -R sandbox-api:sandbox-api /tls/api
+          env:
+            - name: NUM_RUNNERS
+              value: "1"
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+          volumeMounts:
+            - name: sandbox-tls
+              mountPath: /tls
+      containers:
+        - name: sandbox-api
+          image: ghcr.io/n8n-io/n8n-sandbox-service-api:latest
+          ports:
+            - containerPort: 8080
+            - containerPort: 9090
+          env:
+            - name: SANDBOX_API_KEYS
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-secret
+                  key: N8N_INSTANCE_AI_SANDBOX_API_KEY
+            - name: SANDBOX_API_RUNNER_REGISTRATION_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-secret
+                  key: SANDBOX_API_RUNNER_REGISTRATION_TOKEN
+            - name: SANDBOX_API_RUNNER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-secret
+                  key: SANDBOX_API_RUNNER_API_KEY
+            - name: SANDBOX_API_GRPC_TLS_CERT_FILE
+              value: /tls/api/grpc-server.crt
+            - name: SANDBOX_API_GRPC_TLS_KEY_FILE
+              value: /tls/api/grpc-server.key
+            - name: SANDBOX_API_GRPC_TLS_CLIENT_CA_FILE
+              value: /tls/api/ca.crt
+            - name: SANDBOX_API_RUNNER_CONTROL_GRPC_TLS_CA_FILE
+              value: /tls/api/ca.crt
+            - name: SANDBOX_API_RUNNER_CONTROL_GRPC_TLS_CERT_FILE
+              value: /tls/api/control-grpc-api-client.crt
+            - name: SANDBOX_API_RUNNER_CONTROL_GRPC_TLS_KEY_FILE
+              value: /tls/api/control-grpc-api-client.key
+            - name: SANDBOX_API_RUNNER_CONTROL_GRPC_TLS_SERVER_NAME
+              value: sandbox-runner-1
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          volumeMounts:
+            - name: sandbox-tls
+              mountPath: /tls
+              readOnly: true
+        - name: sandbox-runner-1
+          image: ghcr.io/n8n-io/n8n-sandbox-service-runner-dind:latest
+          securityContext:
+            privileged: true
+          env:
+            - name: SANDBOX_RUNNER_API_KEYS
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-secret
+                  key: SANDBOX_API_RUNNER_API_KEY
+            - name: SANDBOX_RUNNER_REGISTRATION_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-secret
+                  key: SANDBOX_API_RUNNER_REGISTRATION_TOKEN
+            - name: SANDBOX_RUNNER_API_GRPC_ADDR
+              value: 127.0.0.1:9090
+            - name: SANDBOX_RUNNER_HTTP_BASE_URL
+              value: http://127.0.0.1:8080
+            - name: SANDBOX_RUNNER_CONTROL_GRPC_LISTEN_ADDR
+              value: :9091
+            - name: SANDBOX_RUNNER_CONTROL_GRPC_ADVERTISE_ADDR
+              value: sandbox-runner-1:9091
+            - name: SANDBOX_RUNNER_ID
+              value: runner-1
+            - name: SANDBOX_RUNNER_DOCKER_SANDBOX_IMAGE
+              value: ghcr.io/n8n-io/n8n-sandbox-service-sandbox:latest
+            - name: SANDBOX_RUNNER_REGISTRATION_GRPC_CA_FILE
+              value: /tls/runner/ca.crt
+            - name: SANDBOX_RUNNER_REGISTRATION_GRPC_CERT_FILE
+              value: /tls/runner/grpc-client.crt
+            - name: SANDBOX_RUNNER_REGISTRATION_GRPC_KEY_FILE
+              value: /tls/runner/grpc-client.key
+            - name: SANDBOX_RUNNER_REGISTRATION_GRPC_SERVER_NAME
+              value: sandbox-api
+            - name: SANDBOX_RUNNER_CONTROL_GRPC_TLS_CERT_FILE
+              value: /tls/runner/control-grpc-server.crt
+            - name: SANDBOX_RUNNER_CONTROL_GRPC_TLS_KEY_FILE
+              value: /tls/runner/control-grpc-server.key
+            - name: SANDBOX_RUNNER_CONTROL_GRPC_TLS_CLIENT_CA_FILE
+              value: /tls/runner/ca.crt
+          volumeMounts:
+            - name: sandbox-tls
+              mountPath: /tls
+              readOnly: true
+      restartPolicy: Always
+      volumes:
+        - name: sandbox-tls
+          emptyDir: {}
