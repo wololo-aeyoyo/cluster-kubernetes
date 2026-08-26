@@ -86,22 +86,40 @@ spec:
                         # A Steam server needs 8766-8767 as well as 16261-16262.
                         # Kanpachi opens both ranges for this profile.
                         env:
-                          # The image REJECTS this value on purpose. Its
-                          # entrypoint reads:
+                          # The room's own address, and the game binds straight
+                          # to it.
+                          #
+                          # `0.0.0.0` was here before, which the image REJECTS
+                          # on purpose: its entrypoint reads
                           #
                           #   if [ "${SERVER_IP}" == "0.0.0.0" ] || [ -z ... ]
                           #     SERVER_IP=$(hostname -i)
                           #
-                          # so the server binds to the pod's address either way,
-                          # and unsetting this changes nothing but the wording of
-                          # the warning. Kanpachi is what makes the room reach it:
-                          # in a container it sends the room's traffic to wherever
-                          # the game actually listens, in the profile's ports, and
-                          # `kanpachi status` names the address. It is kept here
-                          # so a future image that honours 0.0.0.0 gets the better
-                          # bind for free.
+                          # and that fallback is what hostNetwork broke.
+                          # Measured on 2026-08-26, in the game's own log:
+                          #
+                          #   SERVER_IP unusable (e.g. 0.0.0.0) or not set,
+                          #   using container IP instead: 127.0.1.1
+                          #
+                          # Sharing the node's network namespace means
+                          # `hostname -i` answers with the node's loopback entry
+                          # rather than a pod address, so the server bound to
+                          # 127.0.1.1 and nobody in the room could reach it.
+                          # Kanpachi saw it, said so in the window, and refused
+                          # to paper over it: it will not translate room traffic
+                          # to a loopback address, because the kernel drops such
+                          # a packet as martian and the room would look healthy
+                          # while not one datagram arrived.
+                          #
+                          # This address is the host's seat in its own room, and
+                          # it is stable: the host is always `.1`, and the subnet
+                          # lives in the room saved on the kanpachi-state volume.
+                          # It also needs no translation, which is one moving
+                          # part fewer. Reaching the server from the LAN, without
+                          # Kanpachi, stops working, which is the point of the
+                          # room.
                           - name: SERVER_IP
-                            value: "0.0.0.0"
+                            value: "100.93.137.1"
                     # A native sidecar (k8s >= 1.29): it starts before the game
                     # and is torn down after it, and the chart's Deployment
                     # template has no extraContainers hook, so post-render is the
@@ -154,6 +172,39 @@ spec:
                         image: ghcr.io/alvarogabrielgomez/kanpachi:latest
                         imagePullPolicy: Always
                         restartPolicy: Always
+                        # The game may not start before the room is up, and
+                        # without this it did.
+                        #
+                        # A native sidecar only has to have STARTED for the main
+                        # container to begin, and Kanpachi needs close to a
+                        # minute to bring up its two adapters and take its
+                        # address. With the server binding straight to
+                        # 100.93.137.1, starting first means binding an address
+                        # that does not exist yet.
+                        #
+                        # A startup probe is what holds the game there: k8s does
+                        # not start it until this answers. 60 tries every 5
+                        # seconds is five minutes, which covers a slow start
+                        # without hanging a broken one forever.
+                        #
+                        # `degraded` counts as up. It means the room is
+                        # travelling through a relay, which is slower and is
+                        # still a room: holding the game back over it would
+                        # trade a working server for a faster one that never
+                        # starts.
+                        #
+                        # It also fills the gap that cost thirty-three hours on
+                        # 2026-08-25, when Kubernetes reported this sidecar
+                        # Ready the whole time it was admitting nobody: there was
+                        # no probe that could tell.
+                        startupProbe:
+                          exec:
+                            command:
+                              - sh
+                              - -c
+                              - kanpachi --json status | grep -Eq '"conn":"(connected|degraded)"'
+                          periodSeconds: 5
+                          failureThreshold: 60
                         env:
                           # The only name the guests get to read. Without it the
                           # room is named after the pod's hostname.
