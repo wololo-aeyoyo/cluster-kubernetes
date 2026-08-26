@@ -33,17 +33,6 @@ spec:
               metadata:
                 name: zomboid-dedicated-server
               spec:
-                # Recreate, not RollingUpdate. With hostNetwork the ports are
-                # the node's, so a surge pod cannot bind while the old one still
-                # holds them, and the rollout would sit there until it timed
-                # out. Recreate takes the old pod down first, which costs a gap
-                # of downtime and is the only order that can work here.
-                strategy:
-                  type: Recreate
-                  # Explicitly removed: the API rejects a Recreate strategy that
-                  # still carries a rollingUpdate block, and the chart may set
-                  # one. If it does not, this deletes nothing.
-                  rollingUpdate: null
                 template:
                   spec:
                     # The pod shares the node's network namespace, which is what
@@ -56,7 +45,15 @@ spec:
                     #
                     # The price, and it is deliberate: this pod's ports ARE the
                     # node's ports. 16261-16262 and 8766-8767 are claimed on the
-                    # node itself, so nothing else on it may hold them.
+                    # node itself, so nothing else on it may hold them. Checked
+                    # across the cluster: what else takes ports on a node is
+                    # node-exporter on 9100 and metallb's speaker on 7472 and
+                    # 7946, and neither collides.
+                    #
+                    # This depends on the chart rendering `strategy: Recreate`,
+                    # which it does today. A rolling update cannot work here: a
+                    # surge pod would have to bind ports the old pod still
+                    # holds, and it would sit there until it timed out.
                     #
                     # And two consequences worth knowing before changing
                     # anything here. Kanpachi's nftables rules land in the
