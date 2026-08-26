@@ -33,8 +33,44 @@ spec:
               metadata:
                 name: zomboid-dedicated-server
               spec:
+                # Recreate, not RollingUpdate. With hostNetwork the ports are
+                # the node's, so a surge pod cannot bind while the old one still
+                # holds them, and the rollout would sit there until it timed
+                # out. Recreate takes the old pod down first, which costs a gap
+                # of downtime and is the only order that can work here.
+                strategy:
+                  type: Recreate
+                  # Explicitly removed: the API rejects a Recreate strategy that
+                  # still carries a rollingUpdate block, and the chart may set
+                  # one. If it does not, this deletes nothing.
+                  rollingUpdate: null
                 template:
                   spec:
+                    # The pod shares the node's network namespace, which is what
+                    # buys a direct path instead of a relayed one. Without it a
+                    # pod leaves through the CNI with address translation in the
+                    # way, and from outside that reads as symmetric NAT: the
+                    # engine detects it and routes the room through the seed,
+                    # which works and is slower. Nothing inside the pod can
+                    # change that, because the translation happens a layer down.
+                    #
+                    # The price, and it is deliberate: this pod's ports ARE the
+                    # node's ports. 16261-16262 and 8766-8767 are claimed on the
+                    # node itself, so nothing else on it may hold them.
+                    #
+                    # And two consequences worth knowing before changing
+                    # anything here. Kanpachi's nftables rules land in the
+                    # node's namespace rather than the pod's, scoped to its own
+                    # tunnel interface and the room's subnet. And the base
+                    # quarantine MUST stay off, which is the image's default and
+                    # is why KANPACHI_QUARANTINE is absent below: its scope is
+                    # the whole network namespace, and here that namespace
+                    # belongs to the node.
+                    hostNetwork: true
+                    # Required with hostNetwork for anything in the pod to
+                    # resolve cluster services; without it both containers read
+                    # the node's resolv.conf.
+                    dnsPolicy: ClusterFirstWithHostNet
                     # Kanpachi's shutdown needs up to 45s, and cutting it short
                     # leaves its nftables rules applied on the node. The default
                     # 30 is not enough; upstream's compose asks for 60.
@@ -95,6 +131,21 @@ spec:
                         # applied here, a change in it is announced at once
                         # rather than up to two minutes later, and the Zomboid
                         # profile carries Steam's ports.
+                        #
+                        # 0.7.0 is what this pod runs on, and 0.6.8 admitted
+                        # nobody here for thirty-three hours while Kubernetes
+                        # reported it Ready. Who may reach the control port was
+                        # computed from the engine's mesh table, which says who
+                        # is alive rather than who is a member: it arrives late,
+                        # it arrives before the route carries an address, and it
+                        # has no event at all for somebody who drops off. The
+                        # gate was applied four seconds before the guest showed
+                        # up in the mesh and nothing re-read it, so every SYN
+                        # after that died in the gate's drop. 0.7.0 decides
+                        # membership from the host's credential book, re-reads
+                        # the mesh once it has converged, and logs every room
+                        # state change to stdout, which is the only log
+                        # `kubectl logs` shows.
                         image: ghcr.io/alvarogabrielgomez/kanpachi:0.7.0
                         restartPolicy: Always
                         env:
