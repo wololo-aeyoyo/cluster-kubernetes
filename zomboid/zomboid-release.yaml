@@ -86,40 +86,24 @@ spec:
                         # A Steam server needs 8766-8767 as well as 16261-16262.
                         # Kanpachi opens both ranges for this profile.
                         env:
-                          # The room's own address, and the game binds straight
-                          # to it.
-                          #
-                          # `0.0.0.0` was here before, which the image REJECTS
-                          # on purpose: its entrypoint reads
+                          # The image REJECTS this value on purpose. Its
+                          # entrypoint reads:
                           #
                           #   if [ "${SERVER_IP}" == "0.0.0.0" ] || [ -z ... ]
                           #     SERVER_IP=$(hostname -i)
                           #
-                          # and that fallback is what hostNetwork broke.
-                          # Measured on 2026-08-26, in the game's own log:
+                          # and with hostNetwork that fallback answers the
+                          # node's loopback entry, so the server binds to
+                          # 127.0.1.1. Kanpachi reaches it there: it sends the
+                          # room's traffic to wherever the game listens, and
+                          # since 0.7.3 that includes a loopback address.
                           #
-                          #   SERVER_IP unusable (e.g. 0.0.0.0) or not set,
-                          #   using container IP instead: 127.0.1.1
-                          #
-                          # Sharing the node's network namespace means
-                          # `hostname -i` answers with the node's loopback entry
-                          # rather than a pod address, so the server bound to
-                          # 127.0.1.1 and nobody in the room could reach it.
-                          # Kanpachi saw it, said so in the window, and refused
-                          # to paper over it: it will not translate room traffic
-                          # to a loopback address, because the kernel drops such
-                          # a packet as martian and the room would look healthy
-                          # while not one datagram arrived.
-                          #
-                          # This address is the host's seat in its own room, and
-                          # it is stable: the host is always `.1`, and the subnet
-                          # lives in the room saved on the kanpachi-state volume.
-                          # It also needs no translation, which is one moving
-                          # part fewer. Reaching the server from the LAN, without
-                          # Kanpachi, stops working, which is the point of the
-                          # room.
+                          # Writing the room's address here instead was
+                          # considered and dropped: that address is drawn at
+                          # random when the room is created, so it would rot
+                          # the first time somebody opened a new one.
                           - name: SERVER_IP
-                            value: "100.93.137.1"
+                            value: "0.0.0.0"
                     # A native sidecar (k8s >= 1.29): it starts before the game
                     # and is torn down after it, and the chart's Deployment
                     # template has no extraContainers hook, so post-render is the
@@ -172,15 +156,14 @@ spec:
                         image: ghcr.io/alvarogabrielgomez/kanpachi:latest
                         imagePullPolicy: Always
                         restartPolicy: Always
-                        # The game may not start before the room is up, and
-                        # without this it did.
+                        # The game may not start before the room is up.
                         #
                         # A native sidecar only has to have STARTED for the main
                         # container to begin, and Kanpachi needs close to a
                         # minute to bring up its two adapters and take its
-                        # address. With the server binding straight to
-                        # 100.93.137.1, starting first means binding an address
-                        # that does not exist yet.
+                        # address. Without this the game comes up into a room
+                        # that does not exist yet, and whoever joins in that
+                        # minute finds a server nobody can reach.
                         #
                         # A startup probe is what holds the game there: k8s does
                         # not start it until this answers. 60 tries every 5
