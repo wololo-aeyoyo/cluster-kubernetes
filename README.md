@@ -25,6 +25,34 @@ The cluster hosts a diverse set of self-hosted services: AI agents, workflow aut
 | **Grafana** | Observability dashboards | `grafana.wololoaeyoyo.com` |
 | **Discord Bot** | HR Music Bot for Discord | — |
 | **Minecraft** | Game server via Helm | — |
+| **Project Zomboid** | Dedicated server, reachable through [Kanpachi](https://github.com/alvarogabrielgomez/kanpachi) instead of an open port | — |
+
+#### Project Zomboid, and how people reach it
+
+The Zomboid server has no port open to the internet. It runs with
+[Kanpachi](https://github.com/alvarogabrielgomez/kanpachi) as a native sidecar,
+which builds an encrypted private network for the players and opens the game's
+ports only toward the people who are already in the room.
+
+Whoever wants to play needs the invite code, which survives restarts as long as
+the `kanpachi-state` volume keeps its data. There is no port forwarding to set
+up and nothing on the router to change.
+
+Three things about this deployment are worth knowing before copying it:
+
+- **It runs with `hostNetwork: true`**, so the pod's ports are the node's ports.
+  Without it the CNI adds address translation, the room falls back to a relay,
+  and the path is slower. `16261-16262` and `8766-8767` belong to the node this
+  pod lands on.
+- **The sidecar needs `NET_ADMIN`, `NET_RAW` and `/dev/net/tun`** to build the
+  network, and it has to be up before the game, which is what a native sidecar
+  is: an init container with `restartPolicy: Always`.
+- **The CNI's CIDR has to stay out of `100.64.0.0/10`.** That is the space
+  Kanpachi hands out room addresses from, and an overlap breaks a room that
+  cannot be reopened. This cluster uses `10.42.0.0/16`, so there is no clash.
+
+The image follows `:latest` with `imagePullPolicy: Always`, so a restart picks
+up the newest release without a commit here.
 
 ### Infrastructure
 
@@ -73,6 +101,7 @@ The cluster hosts a diverse set of self-hosted services: AI agents, workflow aut
 ├── n8n/                    # Workflow automation
 ├── personal-web-site/      # Resume / portfolio site (Next.js)
 ├── minecraft/              # Minecraft server
+├── zomboid/                # Project Zomboid server + Kanpachi sidecar
 ├── chibi-safe/             # File sharing
 ├── bot-discord/            # Discord music bot
 ├── nginx/                  # Reverse proxy
