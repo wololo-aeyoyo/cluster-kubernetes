@@ -51,7 +51,7 @@ spec:
                         # client connects.
                         #
                         # A Steam server needs 8766-8767 as well as 16261-16262.
-                        # Kanpachi 0.6.8 opens both ranges for this profile.
+                        # Kanpachi 0.7.0 opens both ranges for this profile.
                         env:
                           # The image REJECTS this value on purpose. Its
                           # entrypoint reads:
@@ -95,7 +95,7 @@ spec:
                         # applied here, a change in it is announced at once
                         # rather than up to two minutes later, and the Zomboid
                         # profile carries Steam's ports.
-                        image: ghcr.io/alvarogabrielgomez/kanpachi:0.6.8
+                        image: ghcr.io/alvarogabrielgomez/kanpachi:0.7.0
                         restartPolicy: Always
                         env:
                           # The only name the guests get to read. Without it the
