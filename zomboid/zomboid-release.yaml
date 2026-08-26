@@ -84,7 +84,7 @@ spec:
                         # client connects.
                         #
                         # A Steam server needs 8766-8767 as well as 16261-16262.
-                        # Kanpachi 0.7.0 opens both ranges for this profile.
+                        # Kanpachi opens both ranges for this profile.
                         env:
                           # The image REJECTS this value on purpose. Its
                           # entrypoint reads:
@@ -143,7 +143,16 @@ spec:
                         # the mesh once it has converged, and logs every room
                         # state change to stdout, which is the only log
                         # `kubectl logs` shows.
-                        image: ghcr.io/alvarogabrielgomez/kanpachi:0.7.0
+                        #
+                        # `latest` and not a number, so a restart picks up
+                        # the newest release without a commit here. The
+                        # release workflow pushes `:latest` next to the
+                        # version tag on every release that is not a
+                        # prerelease, and `Always` is what makes a restart
+                        # go and look: without it the kubelet keeps serving
+                        # the copy it already has and `latest` never moves.
+                        image: ghcr.io/alvarogabrielgomez/kanpachi:latest
+                        imagePullPolicy: Always
                         restartPolicy: Always
                         env:
                           # The only name the guests get to read. Without it the
