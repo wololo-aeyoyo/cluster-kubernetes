@@ -180,14 +180,26 @@ spec:
                         # 2026-08-25, when Kubernetes reported this sidecar
                         # Ready the whole time it was admitting nobody: there was
                         # no probe that could tell.
+                        #
+                        # Asked with jq and not with grep. The daemon prints
+                        # its JSON indented, so the field arrives as
+                        # `"conn": "connected"` with a space, and a grep for
+                        # `"conn":"connected"` never matched: the probe failed
+                        # 62 times over six minutes with the room up and
+                        # serving, killed the sidecar, and left the game
+                        # container waiting on a container that kept dying.
+                        # jq reads the document instead of its punctuation.
                         startupProbe:
                           exec:
                             command:
                               - sh
                               - -c
-                              - kanpachi --json status | grep -Eq '"conn":"(connected|degraded)"'
+                              - kanpachi --json status | jq -e '.conn == "connected" or .conn == "degraded"' >/dev/null
                           periodSeconds: 5
                           failureThreshold: 60
+                          # One second is not enough to spawn the CLI and
+                          # round-trip the daemon's socket on a busy node.
+                          timeoutSeconds: 3
                         env:
                           # The only name the guests get to read. Without it the
                           # room is named after the pod's hostname.
