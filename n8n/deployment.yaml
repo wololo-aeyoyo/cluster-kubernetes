@@ -65,12 +65,6 @@ spec:
                 secretKeyRef:
                   name: n8n-secret
                   key: N8N_INSTANCE_AI_SANDBOX_API_KEY
-            - name: INSTANCE_AI_BRAVE_SEARCH_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: n8n-secret
-                  key: INSTANCE_AI_BRAVE_SEARCH_API_KEY
-                  optional: true
             - name: DB_TYPE
               value: postgresdb
             - name: DB_POSTGRESDB_HOST
