@@ -56,6 +56,10 @@ spec:
                 secretKeyRef:
                   name: n8n-secret
                   key: N8N_INSTANCE_AI_MODEL_API_KEY
+            # Web search for the AI assistant. Upstream falls back to a bundled
+            # SearXNG when no Brave key is set; see n8n/searxng.yaml.
+            - name: N8N_INSTANCE_AI_SEARXNG_URL
+              value: http://searxng:8080
             - name: N8N_INSTANCE_AI_SANDBOX_ENABLED
               value: "true"
             - name: N8N_INSTANCE_AI_SANDBOX_PROVIDER

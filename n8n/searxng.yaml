@@ -1,0 +1,102 @@
+# SearXNG — internal-only metasearch backend for the n8n AI assistant's web
+# search. Mirrors the upstream one-line-setup stack definition
+# (https://github.com/n8n-io/n8n/blob/master/docker/get-n8n-compose.yml).
+# n8n reaches it at http://searxng:8080 via N8N_INSTANCE_AI_SEARXNG_URL.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: searxng-settings
+  namespace: n8n
+data:
+  # The stock image serves HTML only; n8n's web search needs the JSON API.
+  settings.yml: |
+    use_default_settings: true
+    search:
+      formats:
+        - html
+        - json
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: searxng
+  name: searxng
+  namespace: n8n
+spec:
+  # ClusterIP on purpose: never publish this port. It is a search proxy and
+  # is only meant to be reachable from the n8n pod.
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    service: searxng
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: searxng
+  name: searxng
+  namespace: n8n
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: searxng
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        service: searxng
+    spec:
+      containers:
+        - name: searxng
+          image: ghcr.io/searxng/searxng:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            # Substituted into server.secret_key by the image entrypoint.
+            - name: SEARXNG_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: searxng-secret
+                  key: SEARXNG_SECRET
+          volumeMounts:
+            - name: searxng-settings
+              mountPath: /etc/searxng/settings.yml
+              subPath: settings.yml
+              readOnly: true
+            - name: searxng-cache
+              mountPath: /var/cache/searxng
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+      restartPolicy: Always
+      volumes:
+        - name: searxng-settings
+          configMap:
+            name: searxng-settings
+        - name: searxng-cache
+          emptyDir: {}
