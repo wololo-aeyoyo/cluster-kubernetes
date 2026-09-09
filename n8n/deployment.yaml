@@ -93,7 +93,7 @@ spec:
                   key: POSTGRES_NON_ROOT_PASSWORD
             - name: N8N_PORT
               value: "5678"
-          image: wololoaeyoyo/n8n-latex:latest
+          image: ghcr.io/wololo-aeyoyo/n8n-latex:main-20260909025238 # {"$imagepolicy": "flux-system:n8n-latex"}
           terminationGracePeriodSeconds: 30
           imagePullPolicy: "Always"
           name: n8n
