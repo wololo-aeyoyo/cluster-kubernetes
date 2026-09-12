@@ -13,6 +13,9 @@ spec:
     app.kubernetes.io/instance: minecraft-minecraft-deployment
   ports:
     - name: minecraft
+      # Players still connect on the default MC port, but the container binds
+      # servicePort (25566) because the chart drives SERVER_PORT from it.
+      # Targeting the named port keeps this correct if that value changes.
       port: 25565
-      targetPort: 25565
+      targetPort: minecraft
       protocol: TCP

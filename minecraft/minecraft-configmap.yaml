@@ -1,4 +1,3 @@
-#source https://grafana.com/docs/tempo/latest/collect/logs-in-kubernetes/
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -6,54 +5,89 @@ metadata:
   namespace: minecraft
 data:
   values.yaml: |
+    # All the Mods 10 (ATM10) v8.1 — NeoForge, Minecraft 1.21.1.
+    # The pack ships NeoForge in its own manifest, so the server type is
+    # AUTO_CURSEFORGE rather than FORGE: mc-image-helper reads the manifest and
+    # installs the exact NeoForge build the pack was built against. Setting
+    # type: FORGE here would install the wrong loader.
+    image:
+      # ATM10 is 1.21.1/NeoForge, which requires Java 21. Pinned rather than
+      # :latest so a new upstream default JRE can't break the pack.
+      repository: itzg/minecraft-server
+      tag: java21
+      pullPolicy: IfNotPresent
+
     minecraftServer:
       eula: "true"
-      version: "26.2"
+      version: "1.21.1"
+      type: "AUTO_CURSEFORGE"
       gameMode: survival
-      motd: "Mariguanos y periqueros!!"
+      motd: "Mariguanos y periqueros!! - ATM10"
       onlineMode: false
-      memory: 4g
+      difficulty: normal
+      # Heap. ATM10 wants 10-12G for a comfortable group; the largest node in
+      # this cluster has ~15.6Gi allocatable, so 8G heap + JVM overhead is the
+      # practical ceiling while leaving the node schedulable for anything else.
+      # Drives both -Xms and -Xmx to this value. Aikar's guidance is that the
+      # two should be equal, so this intentionally differs from the -Xms4G
+      # -Xmx8G that ATM10 ships as its stock default. With AlwaysPreTouch the
+      # JVM claims the full 8G at startup, which is why requests.memory is 9Gi
+      # rather than something smaller that grows into the limit.
+      memory: 8192M
+      # Modded world gen and the first chunk-load pass routinely exceed the
+      # vanilla 60s watchdog and would hard-crash the server. -1 disables it.
+      maxTickTime: -1
+      viewDistance: 8
+      maxPlayers: 10
+      # Exposed on 25566 to match the TunnelBinding target below.
       servicePort: 25566
+
+      autoCurseForge:
+        apiKey:
+          # Synced from Vault by minecraft-externalsecret.yaml.
+          existingSecret: minecraft-curseforge-secret
+          secretKey: cf-api-key
+        slug: "all-the-mods-10"
+        # Client file ID for ATM10 8.1 — NOT the ServerFiles-8.1.zip id
+        # (8764245). Server zips carry no manifest, so AUTO_CURSEFORGE
+        # rejects them; it builds the server from the client pack itself.
+        fileId: "8764211"
+
+    extraEnv:
+      # Jetpacks, elytra and creative flight are core to ATM10 progression;
+      # without this the server kicks players for flying.
+      ALLOW_FLIGHT: "true"
+      # Aikar's GC tuning. This emits exactly the -XX flag set from
+      # mcflags.emc.gs that ATM10 ships in its user_jvm_args.txt — UseG1GC,
+      # ParallelRefProcEnabled, MaxGCPauseMillis=200, the G1* percentages,
+      # SurvivorRatio=32, MaxTenuringThreshold=1, the lot. Do not also set
+      # them by hand in jvmXXOpts; that duplicates every flag.
+      # The image switches to Aikar's >12GB variant automatically if
+      # minecraftServer.memory is ever raised to 12G or more.
+      USE_AIKAR_FLAGS: "true"
+
     resources:
       requests:
-        memory: 2Gi
-        cpu: 1
+        memory: 9Gi
+        cpu: 2
       limits:
-        memory: 4Gi
-        cpu: 6
+        # Heap is 8G; the rest is metaspace, GC structures, direct buffers and
+        # mod off-heap allocation, which run high with ~400 mods.
+        memory: 11Gi
+        cpu: 4
+
     persistence:
       annotations: {}
       dataDir:
         enabled: true
-        Size: 6Gi
-    # initContainers:
-    #   - name: mmproxy-init
-    #     image: busybox
-    #     securityContext:
-    #       privileged: true
-    #       capabilities:
-    #         add: ["NET_ADMIN", "NET_RAW"]
-    #     command: ["/bin/sh", "-c"]
-    #     args:
-    #       - |
-    #         ip rule add from 127.0.0.1/8 iif lo table 123 || true
-    #         ip route add local 0.0.0.0/0 dev lo table 123 || true
-    #         ip -6 rule add from ::1/128 iif lo table 123 || true
-    #         ip -6 route add local ::/0 dev lo table 123 || true
-    # sidecarContainers:
-    #   - name: go-mmproxy
-    #     image: ghcr.io/path-network/go-mmproxy:latest
-    #     securityContext:
-    #       capabilities:
-    #         add: ["NET_ADMIN"]
-    #     args:
-    #       - "-l"
-    #       - "0.0.0.0:25565"
-    #       - "-4"
-    #       - "127.0.0.1:25566"
-    #       - "-6"
-    #       - "[::1]:25566"
-    #       - "-p"
-    #       - "tcp"
-    #       - "-v"
-    #       - "2"
+        # Pack install alone is ~4-5Gi before any world data.
+        Size: 30Gi
+
+    # First boot downloads ~400 mods, installs NeoForge and generates the world.
+    # The default liveness probe kills the container 130s in, which would put
+    # the pod in CrashLoopBackOff forever. A startup probe suspends liveness and
+    # readiness until it passes, giving the install up to 30 minutes.
+    startupProbe:
+      enabled: true
+      periodSeconds: 10
+      failureThreshold: 180

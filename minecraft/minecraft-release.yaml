@@ -12,10 +12,22 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: minecraft-repo
-      version: 5.0.0
+      version: 5.2.0
   interval: 1m0s
+  # Helm waits for the pod to go Ready. First boot has to download ~400 mods,
+  # install NeoForge and generate the world, which takes far longer than the
+  # default 5m — without this the install is marked failed and rolled back
+  # mid-download, and never converges.
+  timeout: 45m0s
+  install:
+    remediation:
+      # Leave a failed install in place so the pod logs are inspectable
+      # instead of being torn down on the way out.
+      retries: 0
+  upgrade:
+    remediation:
+      retries: 1
   valuesFrom:
     - kind: ConfigMap
       name: minecraft-configmap
       valuesKey: values.yaml
-
