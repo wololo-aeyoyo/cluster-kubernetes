@@ -17,6 +17,15 @@ data:
       tag: java21
       pullPolicy: IfNotPresent
 
+    # Pinned to worker-7. It is the only node with enough headroom for the
+    # 13Gi/6cpu limits below (8 cpu, ~15.6Gi allocatable), and the Longhorn
+    # data volume is already attached there, so letting the scheduler move
+    # the pod would only mean a remote-replica read path at best and an
+    # unschedulable pod at worst. worker-7 is arm64; the itzg java21 tag is
+    # multi-arch, so the image resolves there fine.
+    nodeSelector:
+      kubernetes.io/hostname: worker-7
+
     minecraftServer:
       eula: "true"
       version: "1.21.1"
@@ -73,8 +82,8 @@ data:
       limits:
         # Heap is 8G; the rest is metaspace, GC structures, direct buffers and
         # mod off-heap allocation, which run high with ~400 mods.
-        memory: 11Gi
-        cpu: 4
+        memory: 13Gi
+        cpu: 6
 
     persistence:
       annotations: {}
