@@ -14,6 +14,8 @@ spec:
       labels:
         app: resume-web
     spec:
+      nodeSelector:
+        kubernetes.io/arch: amd64
       containers:
         - name: resume-web
           image: docker.io/wololoaeyoyo/humberto-resume:main-20260923040983 # {"$imagepolicy": "flux-system:resume-web"}
