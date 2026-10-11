@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: red-discordbot
-          image: phasecorex/red-discordbot:latest
+          image: phasecorex/red-discordbot:full-py311
           imagePullPolicy: Always
           env:
             - name: OWNER
