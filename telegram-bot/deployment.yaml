@@ -17,6 +17,8 @@ spec:
       labels:
         app: telegram-bot
     spec:
+      securityContext:
+        fsGroup: 1000 # the image runs as user "node" (uid/gid 1000); lets it write to the volume
       containers:
         - name: telegram-bot
           image: ghcr.io/wololo-aeyoyo/telegram_bot:main-20261026184143 # {"$imagepolicy": "flux-system:telegram-bot"}
@@ -108,6 +110,10 @@ spec:
               value: "http://tempo-tempo-release.tempo.svc.cluster.local:4318"
             - name: PYROSCOPE_SERVER_ADDRESS
               value: "http://pyroscope-pyroscope.pyroscope.svc.cluster.local:4040"
+          # Long-term memory, people registry and chat transcripts (DATA_DIR).
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
           resources:
             requests:
               cpu: 50m
@@ -115,3 +121,7 @@ spec:
             limits:
               cpu: 500m
               memory: 512Mi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: telegram-bot-data

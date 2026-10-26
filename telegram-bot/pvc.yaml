@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: telegram-bot-data
+  namespace: telegram-bot
+spec:
+  accessModes:
+    - ReadWriteOnce # single replica with strategy Recreate
+  resources:
+    requests:
+      storage: 1Gi # every bot data file is capped at 200 KB
