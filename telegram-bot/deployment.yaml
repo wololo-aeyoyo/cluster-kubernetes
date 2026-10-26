@@ -21,7 +21,7 @@ spec:
         fsGroup: 1000 # the image runs as user "node" (uid/gid 1000); lets it write to the volume
       containers:
         - name: telegram-bot
-          image: ghcr.io/wololo-aeyoyo/telegram_bot:main-20261026184143 # {"$imagepolicy": "flux-system:telegram-bot"}
+          image: ghcr.io/wololo-aeyoyo/telegram_bot:main-20261026193821 # {"$imagepolicy": "flux-system:telegram-bot"}
           imagePullPolicy: Always
           env:
             # --- Telegram ---
