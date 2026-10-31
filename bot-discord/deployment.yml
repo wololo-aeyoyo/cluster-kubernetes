@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: red-discordbot
-          image: phasecorex/red-discordbot:full-py311
+          image: docker.io/phasecorex/red-discordbot:full-py311 # {"$imagepolicy": "flux-system:red-discordbot"}
           imagePullPolicy: Always
           env:
             - name: OWNER

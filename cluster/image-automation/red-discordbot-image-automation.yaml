@@ -1,0 +1,51 @@
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: red-discordbot
+  namespace: flux-system
+spec:
+  image: docker.io/phasecorex/red-discordbot
+  interval: 1h0m0s # Docker Hub rate-limits anonymous pulls; hourly is plenty
+---
+# The upstream tag is mutable (full-py311 is re-pushed on each release), so we
+# track its digest: Flux rewrites the manifest to tag@digest whenever it changes.
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: red-discordbot
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: red-discordbot
+  filterTags:
+    pattern: ^full-py311$
+  policy:
+    alphabetical:
+      order: asc
+  digestReflectionPolicy: Always
+  interval: 1h0m0s
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageUpdateAutomation
+metadata:
+  name: red-discordbot
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  git:
+    checkout:
+      ref:
+        branch: main
+    commit:
+      author:
+        email: fluxcdbot@users.noreply.github.com
+        name: fluxcdbot
+      messageTemplate: "chore(red-discordbot): update image to {{range .Updated.Images}}{{println .}}{{end}}"
+    push:
+      branch: main
+  update:
+    path: ./bot-discord
+    strategy: Setters
